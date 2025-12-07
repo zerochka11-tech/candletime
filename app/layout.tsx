@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import './globals.css';
 import { SiteHeader } from '@/components/SiteHeader';
+import { SiteFooter } from '@/components/SiteFooter';
+import { Analytics } from '@/components/Analytics';
+import { CookieConsent } from '@/components/CookieConsent';
 import { generateMetadata as generateBaseMetadata, generateOrganizationStructuredData } from '@/lib/seo';
 
 const baseMetadata = generateBaseMetadata({
@@ -39,27 +41,16 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationData) }}
         />
       </head>
-      <body className="min-h-screen overflow-x-hidden bg-slate-50 text-slate-1850">
-        {/* Google Analytics */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-M4TVTP953T"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-M4TVTP953T');
-          `}
-        </Script>
-
+      <body className="flex min-h-screen flex-col overflow-x-hidden bg-slate-50 text-slate-1850">
+        <Analytics />
         <SiteHeader />
 
         {/* КОНТЕНТ */}
-        <main className="mx-auto w-full max-w-5xl px-4 py-8 md:py-10">
+        <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-8 md:py-10">
           {children}
         </main>
+        <SiteFooter />
+        <CookieConsent />
       </body>
     </html>
   );
