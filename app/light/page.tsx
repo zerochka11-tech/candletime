@@ -156,7 +156,7 @@ function CandleHero({
         <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-8 md:flex-row md:items-center md:justify-between">
           {/* Текст */}
           <div className="max-w-lg space-y-3 text-center md:text-left">
-            <h2 className="text-xl font-bold leading-tight md:text-2xl">
+            <h2 className="text-2xl font-bold leading-tight md:text-3xl lg:text-4xl lg:leading-tight">
               Зажги свою свечу
             </h2>
             <p className="text-sm leading-relaxed text-slate-200/90 md:text-base">
