@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
+import { DynamicMeta } from '@/components/DynamicMeta';
 
 type Candle = {
   id: string;
@@ -296,6 +297,7 @@ export default function CandlePage() {
 
   return (
     <div className="space-y-6">
+      <DynamicMeta candle={candle} />
       {/* Заголовок и навигация */}
       <div className="flex items-center justify-between">
         <Link
@@ -309,7 +311,7 @@ export default function CandlePage() {
 
       {/* Карточка свечи */}
       <section
-        className={`relative overflow-hidden rounded-3xl border border-slate-300 bg-white p-6 shadow-md md:p-8 ${typeMeta.cardBg}`}
+        className={`relative overflow-hidden rounded-3xl border border-slate-300 bg-white p-4 shadow-md sm:p-6 md:p-8 ${typeMeta.cardBg}`}
       >
         {/* Декоративный градиент */}
         <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
@@ -364,7 +366,7 @@ export default function CandlePage() {
           )}
 
           {/* Информация о времени (компактная версия) */}
-          <div className="flex flex-wrap items-center gap-3 rounded-xl bg-white/60 px-4 py-3 text-xs">
+          <div className="flex flex-wrap items-center gap-2 rounded-xl bg-white/60 px-3 py-2.5 text-[10px] sm:gap-3 sm:px-4 sm:py-3 sm:text-xs">
             <div className="flex items-center gap-1.5">
               <span className="text-slate-500">Зажжена:</span>
               <span className="font-medium text-slate-700">
@@ -394,11 +396,11 @@ export default function CandlePage() {
           </div>
 
           {/* Кнопки действий */}
-          <div className="flex flex-wrap gap-3 pt-2">
+          <div className="flex flex-wrap gap-2 pt-2 sm:gap-3">
             <button
               type="button"
               onClick={handleShare}
-              className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md"
+              className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md sm:gap-2 sm:px-4 sm:text-sm"
             >
               <span>📤</span>
               <span>Поделиться</span>
@@ -406,17 +408,19 @@ export default function CandlePage() {
             <button
               type="button"
               onClick={handleCopyLink}
-              className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md"
+              className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md sm:gap-2 sm:px-4 sm:text-sm"
             >
               <span>{copied ? '✓' : '🔗'}</span>
-              <span>{copied ? 'Скопировано!' : 'Копировать ссылку'}</span>
+              <span className="hidden sm:inline">{copied ? 'Скопировано!' : 'Копировать ссылку'}</span>
+              <span className="sm:hidden">{copied ? 'Скопировано!' : 'Копировать'}</span>
             </button>
             <Link
               href="/light"
-              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-md"
+              className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-slate-900 px-3 py-2 text-xs font-medium text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-md sm:gap-2 sm:px-4 sm:text-sm"
             >
               <span>🕯️</span>
-              <span>Зажечь свою свечу</span>
+              <span className="hidden sm:inline">Зажечь свою свечу</span>
+              <span className="sm:hidden">Зажечь</span>
             </Link>
           </div>
         </div>

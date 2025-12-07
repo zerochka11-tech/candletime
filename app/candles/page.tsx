@@ -146,7 +146,7 @@ export default function CandlesPage() {
 
   if (candles.length === 0) {
     return (
-      <div className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 text-sm text-slate-600 shadow-md md:p-8">
+      <div className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-4 text-sm text-slate-600 shadow-md sm:p-6 md:p-8">
         {/* Декоративный градиент */}
         <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
         
@@ -174,7 +174,7 @@ export default function CandlesPage() {
         </p>
       </header>
 
-      <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 shadow-md md:p-8">
+      <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-4 shadow-md sm:p-6 md:p-8">
         {/* Декоративный градиент */}
         <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
         

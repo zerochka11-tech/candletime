@@ -149,7 +149,7 @@ function CandleHero({
   // Если ничего не выбрано - показываем общий призыв
   if (!selectedTemplate && !isCustom) {
     return (
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 px-6 py-8 text-white shadow-[0_16px_40px_rgba(15,23,42,0.5)] md:px-10 md:py-10">
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 px-4 py-6 text-white shadow-[0_16px_40px_rgba(15,23,42,0.5)] sm:px-6 sm:py-8 md:px-10 md:py-10">
         {/* Декоративный градиент */}
         <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
         
@@ -194,7 +194,7 @@ function CandleHero({
     : 'Создай свою уникальную свечу';
 
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 px-6 py-6 text-white shadow-[0_16px_40px_rgba(15,23,42,0.5)] md:px-8 md:py-7">
+    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 px-4 py-5 text-white shadow-[0_16px_40px_rgba(15,23,42,0.5)] sm:px-6 sm:py-6 md:px-8 md:py-7">
       {/* Декоративный градиент */}
       <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
       
@@ -670,7 +670,7 @@ export default function LightCandlePage() {
 
         {/* Выбор: шаблоны или своя свеча */}
         {!selectedTemplate && !isCustom && (
-          <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 shadow-md md:p-8">
+          <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-4 shadow-md sm:p-6 md:p-8">
             {/* Декоративный градиент */}
             <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
             
@@ -694,7 +694,7 @@ export default function LightCandlePage() {
                     key={template.id}
                     type="button"
                     onClick={() => applyTemplate(template)}
-                    className="group relative flex flex-col items-center gap-2 rounded-xl border border-slate-300 bg-white p-4 text-xs shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-lg"
+                    className="group relative flex flex-col items-center gap-1.5 rounded-xl border border-slate-300 bg-white p-2.5 text-[10px] shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-lg sm:gap-2 sm:p-4 sm:text-xs"
                   >
                     <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-slate-50/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                     <span className="relative text-2xl transition-transform duration-300 group-hover:scale-110">{template.emoji}</span>
@@ -741,7 +741,7 @@ export default function LightCandlePage() {
 
         {/* Форма (показывается только если выбран шаблон или своя свеча) */}
         {(selectedTemplate || isCustom) && (
-          <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 shadow-md md:p-8">
+          <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-4 shadow-md sm:p-6 md:p-8">
             {/* Декоративный градиент */}
             <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
             

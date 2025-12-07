@@ -380,7 +380,7 @@ export default function DashboardPage() {
 
   if (noUser) {
     return (
-      <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 text-sm text-slate-700 shadow-md md:p-8">
+      <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-4 text-sm text-slate-700 shadow-md sm:p-6 md:p-8">
         {/* Декоративный градиент */}
         <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
         
@@ -453,7 +453,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Контент */}
-      <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 shadow-md md:p-8">
+      <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-4 shadow-md sm:p-6 md:p-8">
         {/* Декоративный градиент */}
         <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
         <div className="relative">
@@ -474,7 +474,7 @@ export default function DashboardPage() {
               </div>
 
             {/* Фильтры */}
-            <div className="mb-4 inline-flex flex-wrap gap-2 rounded-full border border-slate-300 bg-white p-1.5 text-[11px] shadow-md">
+            <div className="mb-4 flex flex-wrap items-center gap-1.5 rounded-full border border-slate-300 bg-white p-1 text-[10px] shadow-md sm:gap-2 sm:p-1.5 sm:text-[11px]">
               <FilterChip
                 label="Все"
                 active={filter === 'all'}

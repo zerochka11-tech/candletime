@@ -88,7 +88,7 @@ export function SiteHeader() {
         {/* Декоративный градиент */}
         <div className="absolute inset-0 bg-gradient-to-r from-amber-500/3 via-transparent to-indigo-500/3" />
         
-        <nav className="relative mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
+        <nav className="relative mx-auto flex max-w-5xl items-center justify-between gap-2 px-3 py-3 sm:gap-4 sm:px-4">
           {/* Логотип / название */}
           <Link 
             href="/" 
@@ -103,16 +103,16 @@ export function SiteHeader() {
           </Link>
 
           {/* Навигация */}
-          <div className="flex items-center gap-2 text-xs md:gap-3 md:text-sm">
+          <div className="flex items-center gap-1 text-xs sm:gap-2 md:gap-3 md:text-sm">
             <Link
               href="/light"
-              className={`rounded-full px-3 py-1.5 font-medium transition-all duration-300 ${isActive('/light')} ${pathname === '/light' ? 'bg-slate-100 shadow-sm' : 'hover:bg-slate-50 hover:shadow-sm'}`}
+              className={`whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-medium transition-all duration-300 sm:px-3 sm:text-xs ${isActive('/light')} ${pathname === '/light' ? 'bg-slate-100 shadow-sm' : 'hover:bg-slate-50 hover:shadow-sm'}`}
             >
               Зажечь
             </Link>
             <Link
               href="/candles"
-              className={`rounded-full px-3 py-1.5 font-medium transition-all duration-300 ${isActive('/candles')} ${pathname === '/candles' ? 'bg-slate-100 shadow-sm' : 'hover:bg-slate-50 hover:shadow-sm'}`}
+              className={`whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-medium transition-all duration-300 sm:px-3 sm:text-xs ${isActive('/candles')} ${pathname === '/candles' ? 'bg-slate-100 shadow-sm' : 'hover:bg-slate-50 hover:shadow-sm'}`}
             >
               Свечи
             </Link>
@@ -150,9 +150,10 @@ export function SiteHeader() {
               <Link
                 href="/auth/login"
                 title="Войти в аккаунт или зарегистрироваться"
-                className="ml-1 rounded-full border border-slate-300 bg-white px-3.5 py-1.5 text-[11px] font-medium text-slate-800 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg"
+                className="ml-1 whitespace-nowrap rounded-full border border-slate-300 bg-white px-3 py-1.5 text-[11px] font-medium text-slate-800 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg sm:px-3.5"
               >
-                Войти / Регистрация
+                <span className="hidden sm:inline">Войти / Регистрация</span>
+                <span className="sm:hidden">Войти</span>
               </Link>
             )}
           </div>
