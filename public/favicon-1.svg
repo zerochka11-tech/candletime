@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Простая свеча с пламенем -->
+  <rect x="14" y="20" width="4" height="8" fill="#1e293b" rx="2"/>
+  <ellipse cx="16" cy="12" rx="3" ry="4" fill="#fbbf24"/>
+  <ellipse cx="16" cy="10" rx="2" ry="3" fill="#fef3c7"/>
+</svg>
+

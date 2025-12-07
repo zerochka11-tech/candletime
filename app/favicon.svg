@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Стилизованное пламя -->
+  <rect x="14" y="20" width="4" height="8" fill="#0f172a" rx="2"/>
+  <path d="M 16 6 Q 13 10 16 14 Q 19 10 16 6" fill="#fbbf24"/>
+  <path d="M 16 7 Q 14.5 10 16 12 Q 17.5 10 16 7" fill="#fef3c7"/>
+</svg>
+

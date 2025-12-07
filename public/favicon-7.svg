@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Свеча в круге -->
+  <circle cx="16" cy="16" r="15" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="13" y="18" width="6" height="10" fill="#1e293b" rx="3"/>
+  <ellipse cx="16" cy="11" rx="2" ry="3" fill="#fbbf24"/>
+  <ellipse cx="16" cy="9.5" rx="1" ry="2" fill="#fef3c7"/>
+</svg>
+

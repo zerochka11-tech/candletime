@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Минималистичная свеча -->
+  <rect x="12" y="16" width="8" height="12" fill="#0f172a" rx="4"/>
+  <circle cx="16" cy="10" r="3" fill="#fbbf24"/>
+  <circle cx="16" cy="9" r="1.5" fill="#fef3c7"/>
+</svg>
+
