@@ -1,7 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 // Один общий клиент, который будем переиспользовать в приложении
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// ВАЖНО: Убедись, что переменные окружения установлены в Vercel:
+// - NEXT_PUBLIC_SUPABASE_URL
+// - NEXT_PUBLIC_SUPABASE_ANON_KEY
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseAnonKey || 'placeholder-key'
+);
