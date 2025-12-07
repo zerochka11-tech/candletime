@@ -467,7 +467,7 @@ const handleSuccess = async (candleId: string) => {
 ### 3.1. Подключение сайта
 
 #### Шаг 1: Регистрация
-1. Перейди на [search.google.com/search-console](https://search.google.com/search-console)
+1. Перейди на [search.google.com/search-console](://search.google.com/search-console)
 2. Войди в свой Google аккаунт
 3. Нажми **"Добавить ресурс"** (Add property)
 
@@ -500,7 +500,7 @@ export const metadata = {
 ```tsx
 <head>
   <meta name="google-site-verification" content="XXXXXXXXXXXXX" />
-</head>
+</head>https
 ```
 
 3. Задеплой изменения на сайт
