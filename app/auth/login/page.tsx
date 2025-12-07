@@ -73,18 +73,21 @@ export default function LoginPage() {
         </Link>
       </div>
 
-      <section className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-100 md:p-8">
-        <div className="space-y-2">
-          <h1 className="text-xl font-semibold text-slate-900">Вход</h1>
-          <p className="text-sm text-slate-600">
+      <section className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 shadow-sm md:p-8">
+        {/* Декоративный градиент */}
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+        
+        <div className="relative space-y-2">
+          <h1 className="text-xl font-semibold text-slate-900 md:text-2xl">Вход</h1>
+          <p className="text-sm text-slate-600 md:text-base">
             Войди в свой аккаунт, чтобы видеть историю свечей и личный кабинет{' '}
             <span className="font-medium">Мои свечи</span>.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+        <form onSubmit={handleSubmit} className="relative mt-5 space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-900">
+            <label className="mb-1 block text-sm font-medium text-slate-900 md:text-base">
               Электронная почта
             </label>
             <input
@@ -94,12 +97,12 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none transition focus:border-slate-500 focus:bg-white focus:ring-1 focus:ring-slate-500"
+              className="w-full rounded-xl border border-slate-200/70 bg-white px-3 py-2.5 text-sm outline-none shadow-sm transition focus:border-slate-500 focus:ring-1 focus:ring-slate-500"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-900">
+            <label className="mb-1 block text-sm font-medium text-slate-900 md:text-base">
               Пароль
             </label>
             <input
@@ -110,7 +113,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Пароль от аккаунта"
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none transition focus:border-slate-500 focus:bg-white focus:ring-1 focus:ring-slate-500"
+              className="w-full rounded-xl border border-slate-200/70 bg-white px-3 py-2.5 text-sm outline-none shadow-sm transition focus:border-slate-500 focus:ring-1 focus:ring-slate-500"
             />
           </div>
 

@@ -194,8 +194,11 @@ function CandleHero({
     : 'Создай свою уникальную свечу';
 
   return (
-    <section className="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 px-6 py-6 text-white shadow-[0_16px_40px_rgba(15,23,42,0.5)] md:px-8 md:py-7">
-      <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 md:flex-row md:items-center md:justify-between">
+    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 px-6 py-6 text-white shadow-[0_16px_40px_rgba(15,23,42,0.5)] md:px-8 md:py-7">
+      {/* Декоративный градиент */}
+      <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+      
+      <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-6 md:flex-row md:items-center md:justify-between">
         {/* Текст */}
         <div className="max-w-md space-y-2 text-center md:text-left">
           <h2 className="text-lg font-semibold leading-snug md:text-xl">
@@ -667,18 +670,21 @@ export default function LightCandlePage() {
 
         {/* Выбор: шаблоны или своя свеча */}
         {!selectedTemplate && !isCustom && (
-          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-            <div className="mb-4 space-y-1">
-              <h2 className="text-lg font-semibold text-slate-900">
+          <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 shadow-md md:p-8">
+            {/* Декоративный градиент */}
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+            
+            <div className="relative mb-4 space-y-1">
+              <h2 className="text-lg font-semibold text-slate-900 md:text-xl">
                 Выбери шаблон или создай свою свечу
               </h2>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-slate-600 md:text-base">
                 Шаблоны помогут быстро зажечь свечу, или создай свою с нуля
               </p>
             </div>
 
             {/* Шаблоны */}
-            <div className="mb-4">
+            <div className="relative mb-4">
               <label className="mb-3 block text-sm font-medium text-slate-700">
                 Быстрые шаблоны
               </label>
@@ -688,10 +694,11 @@ export default function LightCandlePage() {
                     key={template.id}
                     type="button"
                     onClick={() => applyTemplate(template)}
-                    className="group flex flex-col items-center gap-2 rounded-xl border-2 border-slate-200 bg-slate-50 p-4 text-xs transition hover:border-slate-300 hover:bg-white hover:shadow-md"
+                    className="group relative flex flex-col items-center gap-2 rounded-xl border border-slate-300 bg-white p-4 text-xs shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-lg"
                   >
-                    <span className="text-2xl">{template.emoji}</span>
-                    <span className="font-medium text-slate-700 group-hover:text-slate-900">
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-slate-50/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                    <span className="relative text-2xl transition-transform duration-300 group-hover:scale-110">{template.emoji}</span>
+                    <span className="relative font-medium text-slate-700 group-hover:text-slate-900">
                       {template.name}
                     </span>
                   </button>
@@ -700,26 +707,29 @@ export default function LightCandlePage() {
             </div>
 
             {/* Кнопка "Своя свеча" */}
-            <div className="border-t border-slate-200 pt-4">
+            <div className="relative border-t border-slate-300 pt-4">
               <button
                 type="button"
                 onClick={enableCustom}
-                className="w-full rounded-xl border-2 border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 hover:shadow-sm"
+                className="group w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg"
               >
-                ✨ Создать свою свечу
+                <span className="inline-flex items-center gap-2">
+                  <span className="text-base transition-transform duration-300 group-hover:scale-110">✨</span>
+                  <span>Создать свою свечу</span>
+                </span>
               </button>
             </div>
 
             {hasDraft && (
-              <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3">
+              <div className="relative mt-4 rounded-xl border border-amber-300 bg-white p-3 shadow-md">
                 <div className="flex items-center justify-between">
-                  <p className="text-xs text-amber-800">
+                  <p className="text-xs font-medium text-amber-800">
                     💾 У тебя есть сохраненный черновик
                   </p>
                   <button
                     type="button"
                     onClick={clearDraft}
-                    className="text-xs font-medium text-amber-700 hover:text-amber-900 transition"
+                    className="text-xs font-medium text-amber-700 transition hover:text-amber-900 hover:underline"
                   >
                     Очистить
                   </button>
@@ -731,16 +741,19 @@ export default function LightCandlePage() {
 
         {/* Форма (показывается только если выбран шаблон или своя свеча) */}
         {(selectedTemplate || isCustom) && (
-          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-            <div className="mb-4 flex items-center justify-between">
+          <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 shadow-md md:p-8">
+            {/* Декоративный градиент */}
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+            
+            <div className="relative mb-4 flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">
+                <h2 className="text-lg font-semibold text-slate-900 md:text-xl">
                   {selectedTemplate
                     ? CANDLE_TEMPLATES.find((t) => t.id === selectedTemplate)?.name
                     : 'Своя свеча'}
                 </h2>
                 {selectedTemplate && (
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-slate-500 md:text-sm">
                     Можешь изменить название и сообщение
                   </p>
                 )}
@@ -756,17 +769,17 @@ export default function LightCandlePage() {
                   setIsAnonymous(false);
                   setSelectedType('calm');
                 }}
-                className="text-xs text-slate-500 hover:text-slate-700 transition"
+                className="text-xs text-slate-500 transition hover:text-slate-700 hover:underline md:text-sm"
               >
                 ← Назад к выбору
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+            <form onSubmit={handleSubmit} className="relative space-y-6" noValidate>
               {/* Тип свечи (только для своей свечи) */}
               {isCustom && (
                 <div className="space-y-4">
-                  <label className="text-sm font-semibold text-slate-900">
+                  <label className="text-sm font-semibold text-slate-900 md:text-base">
                     Тип свечи
                   </label>
 
@@ -780,28 +793,31 @@ export default function LightCandlePage() {
                           aria-pressed={isActive}
                           onClick={() => setSelectedType(type.id)}
                           className={
-                            'flex flex-col items-center justify-center rounded-2xl border py-2 text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ' +
+                            'group relative flex flex-col items-center justify-center rounded-2xl border py-2 text-xs transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 ' +
                             (isActive
-                              ? 'border-slate-900 bg-slate-900/90 text-slate-50 shadow-sm'
-                              : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-50')
+                              ? 'border-slate-900 bg-slate-900/90 text-slate-50 shadow-md'
+                              : 'border-slate-300 bg-white text-slate-700 shadow-md hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-lg')
                           }
                         >
+                          {!isActive && (
+                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-slate-50/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                          )}
                           <div
                             className={
-                              'mb-1 flex h-10 w-10 items-center justify-center rounded-full text-lg ' +
+                              'relative mb-1 flex h-10 w-10 items-center justify-center rounded-full text-lg transition-transform duration-300 ' +
                               (isActive
                                 ? 'bg-slate-50 text-slate-900'
-                                : 'bg-slate-100 text-slate-700')
+                                : 'bg-gradient-to-br from-slate-100 to-slate-50 text-slate-700 group-hover:scale-110')
                             }
                           >
                             {type.emoji}
                           </div>
                           <span
                             className={
+                              'relative min-h-[16px] flex items-center ' +
                               (isActive
                                 ? 'font-semibold'
-                                : 'font-medium text-slate-700') +
-                              ' min-h-[16px] flex items-center'
+                                : 'font-medium text-slate-700')
                             }
                           >
                             {type.label}
@@ -812,7 +828,7 @@ export default function LightCandlePage() {
                   </div>
 
                   {/* Карточка с текстом по выбранному типу */}
-                  <div className="rounded-xl border border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100/50 px-4 py-3 text-xs text-slate-700 shadow-sm">
+                  <div className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-xs text-slate-700 shadow-md">
                     <div className="flex items-center gap-2">
                       <span className="text-base">{activeMeta.emoji}</span>
                       <div>
@@ -831,11 +847,11 @@ export default function LightCandlePage() {
             <div className="space-y-4">
               <div>
                 <div className="mb-1 flex items-center justify-between">
-                  <label className="block text-sm font-medium text-slate-900">
+                  <label className="block text-sm font-medium text-slate-900 md:text-base">
                     Название свечи <span className="text-red-500">*</span>
                   </label>
                   <span
-                    className={`text-xs ${
+                    className={`text-xs md:text-sm ${
                       title.length > MAX_TITLE_LENGTH
                         ? 'text-red-600'
                         : title.length > MAX_TITLE_LENGTH * 0.8
@@ -853,10 +869,10 @@ export default function LightCandlePage() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Для кого-то, для чего-то или только сегодня"
-                  className={`w-full rounded-xl border px-3 py-2.5 text-sm outline-none transition ${
+                  className={`w-full rounded-xl border px-3 py-2.5 text-sm outline-none transition shadow-md ${
                     title.length > MAX_TITLE_LENGTH
                       ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-1 focus:ring-red-500'
-                      : 'border-slate-200 bg-slate-50 focus:border-slate-500 focus:bg-white focus:ring-1 focus:ring-slate-500'
+                      : 'border-slate-300 bg-white focus:border-slate-500 focus:ring-1 focus:ring-slate-500'
                   }`}
                 />
                 {title.length > MAX_TITLE_LENGTH * 0.8 && (
@@ -868,11 +884,11 @@ export default function LightCandlePage() {
 
               <div>
                 <div className="mb-1 flex items-center justify-between">
-                  <label className="block text-sm font-medium text-slate-900">
+                  <label className="block text-sm font-medium text-slate-900 md:text-base">
                     Сообщение
                   </label>
                   <span
-                    className={`text-xs ${
+                    className={`text-xs md:text-sm ${
                       message.length > MAX_MESSAGE_LENGTH
                         ? 'text-red-600'
                         : message.length > MAX_MESSAGE_LENGTH * 0.8
@@ -889,10 +905,10 @@ export default function LightCandlePage() {
                   maxLength={MAX_MESSAGE_LENGTH}
                   rows={4}
                   placeholder="Короткое сообщение (по желанию)"
-                  className={`w-full rounded-xl border px-3 py-2.5 text-sm outline-none transition resize-none ${
+                  className={`w-full rounded-xl border px-3 py-2.5 text-sm outline-none transition resize-none shadow-md ${
                     message.length > MAX_MESSAGE_LENGTH
                       ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-1 focus:ring-red-500'
-                      : 'border-slate-200 bg-slate-50 focus:border-slate-500 focus:bg-white focus:ring-1 focus:ring-slate-500'
+                      : 'border-slate-300 bg-white focus:border-slate-500 focus:ring-1 focus:ring-slate-500'
                   }`}
                 />
                 {message.length > MAX_MESSAGE_LENGTH * 0.8 && (
@@ -906,13 +922,13 @@ export default function LightCandlePage() {
             {/* Длительность + анонимность */}
             <div className="grid gap-4 md:grid-cols-[minmax(0,0.7fr)_minmax(0,0.3fr)] md:items-end">
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-slate-900">
+                <label className="mb-1.5 block text-sm font-medium text-slate-900 md:text-base">
                   Длительность
                 </label>
                 <select
                   value={duration}
                   onChange={(e) => setDuration(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none transition focus:border-slate-500 focus:bg-white focus:ring-1 focus:ring-slate-500"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition shadow-md focus:border-slate-500 focus:ring-1 focus:ring-slate-500"
                 >
                   {DURATION_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -922,7 +938,7 @@ export default function LightCandlePage() {
                 </select>
               </div>
 
-              <label className="group flex cursor-pointer items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50 p-3 transition hover:bg-slate-100 md:justify-center">
+              <label className="group flex cursor-pointer items-center gap-2.5 rounded-xl border border-slate-300 bg-white p-3 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-lg md:justify-center">
                 <input
                   type="checkbox"
                   checked={isAnonymous}
@@ -940,7 +956,7 @@ export default function LightCandlePage() {
               <button
                 type="submit"
                 disabled={loading || !title.trim() || title.length > MAX_TITLE_LENGTH || message.length > MAX_MESSAGE_LENGTH}
-                className="w-full rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg disabled:cursor-not-allowed disabled:bg-slate-400 disabled:hover:translate-y-0"
+                className="w-full rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg disabled:cursor-not-allowed disabled:bg-slate-400 disabled:hover:translate-y-0"
               >
                 {loading ? (
                   <span className="inline-flex items-center gap-2">
@@ -956,8 +972,8 @@ export default function LightCandlePage() {
               </button>
 
               {error && (
-                <div className="rounded-xl border border-red-200 bg-red-50 p-3">
-                  <p className="text-xs font-medium text-red-800">{error}</p>
+                <div className="rounded-xl border border-red-300 bg-white p-3 shadow-md">
+                  <p className="text-xs font-medium text-red-800 md:text-sm">{error}</p>
                 </div>
               )}
 

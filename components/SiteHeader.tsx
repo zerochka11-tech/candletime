@@ -79,34 +79,40 @@ export function SiteHeader() {
 
   const isActive = (href: string) =>
     pathname === href
-      ? 'text-slate-900 bg-slate-100'
-      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900';
+      ? 'text-slate-900'
+      : 'text-slate-700 hover:text-slate-900';
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200/60 bg-white/80 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-slate-300 bg-white/95 backdrop-blur-md shadow-sm">
       <div className="relative">
-        <nav className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
+        {/* Декоративный градиент */}
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/3 via-transparent to-indigo-500/3" />
+        
+        <nav className="relative mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
           {/* Логотип / название */}
-          <Link href="/" className="flex items-center gap-2">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-900 text-xs">
+          <Link 
+            href="/" 
+            className="group flex items-center gap-2 transition-transform hover:-translate-y-0.5"
+          >
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-slate-900 to-slate-800 text-xs shadow-md transition-transform duration-300 group-hover:scale-110">
               <span className="h-3 w-2 rounded-full bg-amber-300 shadow-sm" />
             </span>
-            <span className="text-sm font-semibold tracking-tight text-slate-900">
+            <span className="text-sm font-semibold tracking-tight text-slate-900 md:text-base">
               CandleTime
             </span>
           </Link>
 
           {/* Навигация */}
-          <div className="flex items-center gap-3 text-xs md:text-sm">
+          <div className="flex items-center gap-2 text-xs md:gap-3 md:text-sm">
             <Link
               href="/light"
-              className={`rounded-full px-3 py-1.5 transition ${isActive('/light')}`}
+              className={`rounded-full px-3 py-1.5 font-medium transition-all duration-300 ${isActive('/light')} ${pathname === '/light' ? 'bg-slate-100 shadow-sm' : 'hover:bg-slate-50 hover:shadow-sm'}`}
             >
               Зажечь
             </Link>
             <Link
               href="/candles"
-              className={`rounded-full px-3 py-1.5 transition ${isActive('/candles')}`}
+              className={`rounded-full px-3 py-1.5 font-medium transition-all duration-300 ${isActive('/candles')} ${pathname === '/candles' ? 'bg-slate-100 shadow-sm' : 'hover:bg-slate-50 hover:shadow-sm'}`}
             >
               Свечи
             </Link>
@@ -114,9 +120,9 @@ export function SiteHeader() {
             {user && (
               <Link
                 href="/dashboard"
-                className={`hidden rounded-full px-3 py-1.5 transition md:inline-block ${isActive(
+                className={`hidden rounded-full px-3 py-1.5 font-medium transition-all duration-300 md:inline-block ${isActive(
                   '/dashboard'
-                )}`}
+                )} ${pathname === '/dashboard' ? 'bg-slate-100 shadow-sm' : 'hover:bg-slate-50 hover:shadow-sm'}`}
               >
                 Мои свечи
               </Link>
@@ -128,14 +134,14 @@ export function SiteHeader() {
             ) : user ? (
               <div className="ml-1 flex items-center gap-2">
                 {user.email && (
-                  <span className="hidden max-w-[160px] truncate text-[11px] text-slate-500 md:inline">
+                  <span className="hidden max-w-[160px] truncate text-[11px] text-slate-500 md:inline md:text-xs">
                     {user.email}
                   </span>
                 )}
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="rounded-full border border-slate-300 px-3.5 py-1.5 text-[11px] font-medium text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-md"
+                  className="rounded-full border border-slate-300 bg-white px-3.5 py-1.5 text-[11px] font-medium text-slate-800 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg"
                 >
                   Выйти
                 </button>
@@ -144,7 +150,7 @@ export function SiteHeader() {
               <Link
                 href="/auth/login"
                 title="Войти в аккаунт или зарегистрироваться"
-                className="ml-1 rounded-full border border-slate-300 px-3.5 py-1.5 text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-md"
+                className="ml-1 rounded-full border border-slate-300 bg-white px-3.5 py-1.5 text-[11px] font-medium text-slate-800 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg"
               >
                 Войти / Регистрация
               </Link>
@@ -155,7 +161,7 @@ export function SiteHeader() {
         {/* Небольшой notification-чип под хедером */}
         {authNotice && (
           <div className="pointer-events-none absolute inset-x-0 top-full flex justify-center">
-            <div className="pointer-events-auto mt-1 rounded-full bg-slate-900 px-3 py-1 text-[11px] text-slate-50 shadow-sm">
+            <div className="pointer-events-auto mt-1 rounded-full bg-gradient-to-br from-slate-900 to-slate-800 px-3 py-1.5 text-[11px] font-medium text-slate-50 shadow-md">
               {authNotice}
             </div>
           </div>

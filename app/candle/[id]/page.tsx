@@ -263,19 +263,24 @@ export default function CandlePage() {
 
   if (error || !candle) {
     return (
-      <div className="rounded-3xl bg-white p-6 text-center shadow-sm ring-1 ring-slate-100 md:p-8">
-        <h1 className="mb-2 text-xl font-semibold text-slate-900">
-          Свеча не найдена
-        </h1>
-        <p className="mb-4 text-sm text-slate-600">
-          {error || 'Эта свеча не существует или была удалена.'}
-        </p>
-        <Link
-          href="/candles"
-          className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-md"
-        >
-          Посмотреть все свечи
-        </Link>
+      <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 text-center shadow-sm md:p-8">
+        {/* Декоративный градиент */}
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+        
+        <div className="relative">
+          <h1 className="mb-2 text-xl font-semibold text-slate-900 md:text-2xl">
+            Свеча не найдена
+          </h1>
+          <p className="mb-4 text-sm text-slate-600 md:text-base">
+            {error || 'Эта свеча не существует или была удалена.'}
+          </p>
+          <Link
+            href="/candles"
+            className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-md"
+          >
+            Посмотреть все свечи
+          </Link>
+        </div>
       </div>
     );
   }
@@ -304,9 +309,12 @@ export default function CandlePage() {
 
       {/* Карточка свечи */}
       <section
-        className={`rounded-3xl border border-slate-200/70 p-6 shadow-sm md:p-8 ${typeMeta.cardBg}`}
+        className={`relative overflow-hidden rounded-3xl border border-slate-300 bg-white p-6 shadow-md md:p-8 ${typeMeta.cardBg}`}
       >
-        <div className="space-y-6">
+        {/* Декоративный градиент */}
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+        
+        <div className="relative space-y-6">
           {/* Верх: тип, статус, дата */}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2">

@@ -146,31 +146,39 @@ export default function CandlesPage() {
 
   if (candles.length === 0) {
     return (
-      <div className="rounded-3xl bg-white p-6 text-sm text-slate-600 shadow-sm ring-1 ring-slate-100 md:p-8">
-        <h1 className="mb-2 text-xl font-semibold text-slate-900">
-          Пока нет активных свечей
-        </h1>
-        <p>
-          Зажги первую свечу на странице{' '}
-          <span className="font-medium">Зажечь</span> — и она появится здесь.
-        </p>
+      <div className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 text-sm text-slate-600 shadow-md md:p-8">
+        {/* Декоративный градиент */}
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+        
+        <div className="relative">
+          <h1 className="mb-2 text-xl font-semibold text-slate-900 md:text-2xl">
+            Пока нет активных свечей
+          </h1>
+          <p className="text-sm md:text-base">
+            Зажги первую свечу на странице{' '}
+            <span className="font-medium text-slate-900">Зажечь</span> — и она появится здесь.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-6 md:gap-8">
       <header className="space-y-1">
-        <h1 className="text-2xl font-semibold text-slate-900">
+        <h1 className="text-2xl font-semibold text-slate-900 md:text-3xl">
           Активные свечи
         </h1>
-        <p className="text-sm text-slate-600">
-          Свечи, которые всё ещё горят. Сейчас их: {candles.length}
+        <p className="text-sm text-slate-600 md:text-base">
+          Свечи, которые всё ещё горят. Сейчас их: <span className="font-medium text-slate-900">{candles.length}</span>
         </p>
       </header>
 
-      <section className="space-y-3 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-100 md:p-7">
-        <div className="space-y-4">
+      <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 shadow-md md:p-8">
+        {/* Декоративный градиент */}
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+        
+        <div className="relative space-y-3 md:space-y-4">
           {candles.map((candle) => {
             const created = new Date(candle.created_at);
             const expires = new Date(candle.expires_at);
@@ -185,13 +193,13 @@ export default function CandlesPage() {
                 className="group block transition-transform hover:-translate-y-0.5"
               >
                 <article
-                  className={`rounded-2xl p-4 text-sm text-slate-800 transition-shadow ${typeMeta.cardBg} group-hover:shadow-md`}
+                  className={`rounded-2xl border border-slate-300 bg-white p-4 text-sm text-slate-800 shadow-md transition-all duration-300 ${typeMeta.cardBg} group-hover:-translate-y-0.5 group-hover:border-slate-400 group-hover:shadow-lg`}
                 >
                   <div className="mb-2 flex items-center justify-between gap-2">
                     <div
-                      className={`inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[11px] ${typeMeta.chipBg} ${typeMeta.chipText}`}
+                      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium ${typeMeta.chipBg} ${typeMeta.chipText}`}
                     >
-                      <span>{typeMeta.emoji}</span>
+                      <span className="text-sm">{typeMeta.emoji}</span>
                       <span>{typeMeta.label}</span>
                     </div>
                     {/* Только дата, без времени */}

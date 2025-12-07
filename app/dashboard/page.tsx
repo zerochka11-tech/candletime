@@ -205,7 +205,7 @@ function DashboardCandleCard({
 
   return (
     <article
-      className={`group relative rounded-2xl border border-slate-200/70 p-4 text-sm text-slate-800 shadow-sm transition-shadow md:p-5 ${typeMeta.cardBg} hover:shadow-md`}
+      className={`group relative rounded-2xl border border-slate-300 bg-white p-4 text-sm text-slate-800 shadow-md transition-all duration-300 md:p-5 ${typeMeta.cardBg} hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-lg`}
     >
       {/* Верх: тип, статус, дата */}
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
@@ -255,7 +255,7 @@ function DashboardCandleCard({
           <button
             type="button"
             onClick={handleShare}
-            className="inline-flex items-center gap-1 rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md"
+            className="inline-flex items-center gap-1 rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg"
             title="Поделиться"
           >
             <span>📤</span>
@@ -263,7 +263,7 @@ function DashboardCandleCard({
           <button
             type="button"
             onClick={handleCopyLink}
-            className="inline-flex items-center gap-1 rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md"
+            className="inline-flex items-center gap-1 rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg"
             title="Копировать ссылку"
           >
             <span>{copied ? '✓' : '🔗'}</span>
@@ -273,7 +273,7 @@ function DashboardCandleCard({
               type="button"
               onClick={onExtinguish}
               disabled={isUpdating}
-              className="inline-flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1.5 text-[11px] font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1.5 text-[11px] font-medium text-slate-700 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
             >
               <span aria-hidden="true">🔥</span>
               <span>{isUpdating ? 'Гасим…' : 'Погасить'}</span>
@@ -380,18 +380,23 @@ export default function DashboardPage() {
 
   if (noUser) {
     return (
-      <section className="rounded-3xl bg-white p-6 text-sm text-slate-700 shadow-sm ring-1 ring-slate-100 md:p-8">
-        <h1 className="mb-2 text-xl font-semibold text-slate-900">Мои свечи</h1>
-        <p className="mb-4">
-          Личный кабинет доступен после входа в аккаунт. Здесь будут храниться
-          все свечи, которые ты зажигал(а).
-        </p>
-        <Link
-          href="/auth/login"
-          className="inline-flex items-center justify-center rounded-full bg-slate-900 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-md"
-        >
-          Войти и открыть Мои свечи
-        </Link>
+      <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 text-sm text-slate-700 shadow-md md:p-8">
+        {/* Декоративный градиент */}
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+        
+        <div className="relative">
+          <h1 className="mb-2 text-xl font-semibold text-slate-900 md:text-2xl">Мои свечи</h1>
+          <p className="mb-4 text-sm text-slate-600 md:text-base">
+            Личный кабинет доступен после входа в аккаунт. Здесь будут храниться
+            все свечи, которые ты зажигал(а).
+          </p>
+          <Link
+            href="/auth/login"
+            className="inline-flex items-center justify-center rounded-full bg-slate-900 px-6 py-2.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg"
+          >
+            Войти и открыть Мои свечи
+          </Link>
+        </div>
       </section>
     );
   }
@@ -430,48 +435,46 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-6 md:gap-8">
       {/* Заголовок + CTA */}
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Мои свечи</h1>
+        <div className="space-y-1">
+          <h1 className="text-2xl font-semibold text-slate-900 md:text-3xl">Мои свечи</h1>
           {userEmail && (
-            <p className="text-sm text-slate-600">
-              Вошли как <span className="font-medium">{userEmail}</span>
+            <p className="text-sm text-slate-600 md:text-base">
+              Вошли как <span className="font-medium text-slate-900">{userEmail}</span>
             </p>
           )}
         </div>
 
         <Link
           href="/light"
-          className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-xs font-medium text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-md"
+          className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2.5 text-xs font-medium text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg md:text-sm"
         >
           Зажечь новую свечу
         </Link>
       </div>
 
       {/* Контент */}
-      <section className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-100 md:p-7">
-        {!hasCandles ? (
-          <p className="text-sm text-slate-600">
-            У тебя пока нет свечей за последние 30 дней. Зажги первую на странице{' '}
-            <span className="font-medium">Зажечь</span>.
-          </p>
-        ) : (
-          <>
-            {/* Подзаголовок */}
-            <div className="mb-4 flex flex-col gap-2 text-xs text-slate-600 md:flex-row md:items-center md:justify-between">
-              <span>
-                История хранится за последние 30 дней. Активные свечи можно
-                досрочно погасить — они исчезнут из общего списка, но останутся
-                здесь.
-              </span>
-              {activeCandles > 0 && (
-                <span className="text-[11px] text-slate-500">
-                  Сейчас горит: {activeCandles}
+      <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 shadow-md md:p-8">
+        {/* Декоративный градиент */}
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+        <div className="relative">
+          {!hasCandles ? (
+            <p className="text-sm text-slate-600 md:text-base">
+              У тебя пока нет свечей за последние 30 дней. Зажги первую на странице{' '}
+              <span className="font-medium">Зажечь</span>.
+            </p>
+          ) : (
+            <>
+              {/* Подзаголовок */}
+              <div className="mb-4 text-xs text-slate-600 md:text-sm">
+                <span>
+                  История хранится за последние 30 дней. Активные свечи можно
+                  досрочно погасить — они исчезнут из общего списка, но останутся
+                  здесь.
                 </span>
-              )}
-            </div>
+              </div>
 
             {/* Фильтры */}
-            <div className="mb-4 inline-flex flex-wrap gap-2 rounded-full bg-slate-50 p-1 text-[11px]">
+            <div className="mb-4 inline-flex flex-wrap gap-2 rounded-full border border-slate-300 bg-white p-1.5 text-[11px] shadow-md">
               <FilterChip
                 label="Все"
                 active={filter === 'all'}
@@ -537,7 +540,7 @@ export default function DashboardPage() {
                         type="button"
                         onClick={() => setPage((p) => Math.max(1, p - 1))}
                         disabled={safePage === 1}
-                        className="rounded-full border border-slate-300 bg-white px-3 py-1 text-[11px] font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+                        className="rounded-full border border-slate-300 bg-white px-3 py-1 text-[11px] font-medium text-slate-700 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         ← Назад
                       </button>
@@ -552,7 +555,7 @@ export default function DashboardPage() {
                           setPage((p) => Math.min(totalPages, p + 1))
                         }
                         disabled={safePage === totalPages}
-                        className="rounded-full border border-slate-300 bg-white px-3 py-1 text-[11px] font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+                        className="rounded-full border border-slate-300 bg-white px-3 py-1 text-[11px] font-medium text-slate-700 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         Далее →
                       </button>
@@ -563,6 +566,7 @@ export default function DashboardPage() {
             )}
           </>
         )}
+        </div>
       </section>
     </div>
   );
@@ -584,10 +588,10 @@ function FilterChip({
       type="button"
       onClick={onClick}
       className={
-        'inline-flex items-center gap-1 rounded-full px-3 py-1 transition ' +
+        'inline-flex items-center gap-1 rounded-full px-3 py-1.5 font-medium transition-all duration-300 ' +
         (active
-          ? 'bg-white text-slate-900 shadow-sm'
-          : 'text-slate-600 hover:bg-white hover:text-slate-900')
+          ? 'bg-slate-900 text-white shadow-md'
+          : 'bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 hover:shadow-sm')
       }
     >
       <span>{label}</span>
