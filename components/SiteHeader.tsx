@@ -120,7 +120,7 @@ export function SiteHeader() {
             {user && (
               <Link
                 href="/dashboard"
-                className={`hidden rounded-full px-3 py-1.5 font-medium transition-all duration-300 md:inline-block ${isActive(
+                className={`whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-medium transition-all duration-300 sm:px-3 sm:text-xs ${isActive(
                   '/dashboard'
                 )} ${pathname === '/dashboard' ? 'bg-slate-100 shadow-sm' : 'hover:bg-slate-50 hover:shadow-sm'}`}
               >
