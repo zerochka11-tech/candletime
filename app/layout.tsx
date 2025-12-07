@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import './globals.css';
 import { SiteHeader } from '@/components/SiteHeader';
 import { generateMetadata as generateBaseMetadata, generateOrganizationStructuredData } from '@/lib/seo';
@@ -38,6 +39,20 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen overflow-x-hidden bg-slate-50 text-slate-1850">
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-M4TVTP953T"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-M4TVTP953T');
+          `}
+        </Script>
+
         <SiteHeader />
 
         {/* КОНТЕНТ */}
