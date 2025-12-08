@@ -7,6 +7,7 @@ export const metadata: Metadata = generateBaseMetadata({
   title: 'Политика конфиденциальности',
   description: 'Политика конфиденциальности CandleTime. Узнай, как мы собираем, используем и защищаем твои персональные данные. GDPR соответствие и управление cookies.',
   path: '/privacy',
+  keywords: ['политика конфиденциальности', 'конфиденциальность', 'GDPR', 'защита данных', 'cookies'],
 });
 
 export default function PrivacyLayout({

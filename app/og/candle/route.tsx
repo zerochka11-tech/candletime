@@ -44,6 +44,37 @@ export async function GET(request: NextRequest) {
 
     const emoji = typeEmojis[candleType] || '🕯️';
 
+    // Цвета для разных типов свечей
+    const typeColors: Record<string, { glow: string; flame: string; gradient: string }> = {
+      calm: {
+        glow: 'rgba(14, 165, 233, 0.2)',
+        flame: '#38bdf8',
+        gradient: 'linear-gradient(135deg, #0c4a6e 0%, #075985 50%, #0369a1 100%)',
+      },
+      support: {
+        glow: 'rgba(16, 185, 129, 0.2)',
+        flame: '#34d399',
+        gradient: 'linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%)',
+      },
+      memory: {
+        glow: 'rgba(99, 102, 241, 0.2)',
+        flame: '#818cf8',
+        gradient: 'linear-gradient(135deg, #312e81 0%, #3730a3 50%, #4338ca 100%)',
+      },
+      gratitude: {
+        glow: 'rgba(245, 158, 11, 0.2)',
+        flame: '#fbbf24',
+        gradient: 'linear-gradient(135deg, #78350f 0%, #92400e 50%, #b45309 100%)',
+      },
+      focus: {
+        glow: 'rgba(244, 63, 94, 0.2)',
+        flame: '#fb7185',
+        gradient: 'linear-gradient(135deg, #881337 0%, #9f1239 50%, #be123c 100%)',
+      },
+    };
+
+    const colors = typeColors[candleType] || typeColors.gratitude;
+
     return new ImageResponse(
       (
         <div
@@ -54,147 +85,253 @@ export async function GET(request: NextRequest) {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'linear-gradient(to bottom right, #f8fafc, #f1f5f9, #ffffff)',
+            background: colors.gradient,
             position: 'relative',
+            overflow: 'hidden',
           }}
         >
-          {/* Декоративные элементы */}
+          {/* Декоративные градиентные круги */}
           <div
             style={{
               position: 'absolute',
-              top: 50,
-              left: 200,
-              width: 160,
-              height: 160,
+              top: -100,
+              left: -100,
+              width: 400,
+              height: 400,
               borderRadius: '50%',
-              background: '#f59e0b',
-              opacity: 0.05,
+              background: `radial-gradient(circle, ${colors.glow} 0%, transparent 70%)`,
+              filter: 'blur(60px)',
             }}
           />
           <div
             style={{
               position: 'absolute',
-              bottom: 100,
-              right: 200,
-              width: 200,
-              height: 200,
+              bottom: -150,
+              right: -150,
+              width: 500,
+              height: 500,
               borderRadius: '50%',
-              background: '#6366f1',
-              opacity: 0.05,
+              background: `radial-gradient(circle, ${colors.glow} 0%, transparent 70%)`,
+              filter: 'blur(80px)',
             }}
           />
 
-          {/* Свеча */}
+          {/* Сетка паттерн */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px)',
+              backgroundSize: '40px 40px',
+              opacity: 0.5,
+            }}
+          />
+
+          {/* Основной контент */}
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              marginBottom: 40,
+              justifyContent: 'center',
+              gap: 30,
+              zIndex: 1,
+              maxWidth: 1000,
+              padding: '60px 40px',
             }}
           >
-            {/* Эмодзи типа */}
+            {/* Эмодзи типа с фоном */}
             <div
               style={{
-                fontSize: 80,
-                marginBottom: 20,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 120,
+                height: 120,
+                borderRadius: '50%',
+                background: 'rgba(255, 255, 255, 0.1)',
+                backdropFilter: 'blur(10px)',
+                marginBottom: 10,
+                fontSize: 70,
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
               }}
             >
               {emoji}
             </div>
-            {/* Пламя */}
-            <div
-              style={{
-                width: 0,
-                height: 0,
-                borderLeft: '15px solid transparent',
-                borderRight: '15px solid transparent',
-                borderBottom: '40px solid #f59e0b',
-                marginBottom: -5,
-                filter: 'drop-shadow(0 0 10px rgba(245, 158, 11, 0.5))',
-              }}
-            />
-            {/* Фитиль */}
-            <div
-              style={{
-                width: 4,
-                height: 30,
-                background: '#475569',
-              }}
-            />
-            {/* Тело свечи */}
-            <div
-              style={{
-                width: 50,
-                height: 150,
-                background: '#ffffff',
-                border: '2px solid #e2e8f0',
-                borderRadius: '25px',
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              }}
-            />
-            {/* Тень */}
-            <div
-              style={{
-                width: 80,
-                height: 15,
-                background: '#000000',
-                opacity: 0.1,
-                borderRadius: '50%',
-                marginTop: -5,
-              }}
-            />
-          </div>
 
-          {/* Текст */}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 16,
-              maxWidth: 900,
-              padding: '0 40px',
-            }}
-          >
-            <h1
+            {/* Свеча с улучшенным дизайном */}
+            <div
               style={{
-                fontSize: 64,
-                fontWeight: 700,
-                color: '#1e293b',
-                textAlign: 'center',
-                margin: 0,
-                lineHeight: 1.2,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 0,
               }}
             >
-              {title.length > 50 ? title.substring(0, 50) + '...' : title}
-            </h1>
-            {description && description !== title && (
-              <p
+              {/* Свечение вокруг пламени */}
+              <div
                 style={{
-                  fontSize: 24,
-                  color: '#64748b',
-                  textAlign: 'center',
-                  margin: 0,
-                  lineHeight: 1.4,
-                  maxHeight: 120,
-                  overflow: 'hidden',
+                  position: 'absolute',
+                  width: 120,
+                  height: 120,
+                  borderRadius: '50%',
+                  background: `radial-gradient(circle, ${colors.glow} 0%, transparent 70%)`,
+                  filter: 'blur(20px)',
+                  marginTop: -20,
+                }}
+              />
+              {/* Пламя с градиентом */}
+              <div
+                style={{
+                  width: 0,
+                  height: 0,
+                  borderLeft: '20px solid transparent',
+                  borderRight: '20px solid transparent',
+                  borderBottom: `50px solid ${colors.flame}`,
+                  marginBottom: -2,
+                  filter: `drop-shadow(0 0 20px ${colors.glow})`,
+                  position: 'relative',
                 }}
               >
-                {description.length > 100 ? description.substring(0, 100) + '...' : description}
-              </p>
-            )}
-            <p
+                {/* Внутреннее пламя */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 10,
+                    left: -8,
+                    width: 0,
+                    height: 0,
+                    borderLeft: '8px solid transparent',
+                    borderRight: '8px solid transparent',
+                    borderBottom: `25px solid ${colors.flame}`,
+                    opacity: 0.8,
+                  }}
+                />
+              </div>
+              {/* Фитиль */}
+              <div
+                style={{
+                  width: 3,
+                  height: 25,
+                  background: 'linear-gradient(to bottom, #475569, #1e293b)',
+                  borderRadius: '2px',
+                }}
+              />
+              {/* Тело свечи с градиентом */}
+              <div
+                style={{
+                  width: 60,
+                  height: 180,
+                  background: 'linear-gradient(to bottom, #ffffff, #f8fafc)',
+                  border: '3px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '30px',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 2px 8px rgba(255, 255, 255, 0.1)',
+                  position: 'relative',
+                }}
+              >
+                {/* Отблеск на свече */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 20,
+                    left: 10,
+                    width: 20,
+                    height: 140,
+                    background: 'linear-gradient(to right, rgba(255, 255, 255, 0.3), transparent)',
+                    borderRadius: '10px',
+                  }}
+                />
+              </div>
+              {/* Тень под свечой */}
+              <div
+                style={{
+                  width: 100,
+                  height: 20,
+                  background: 'radial-gradient(ellipse, rgba(0, 0, 0, 0.3) 0%, transparent 70%)',
+                  borderRadius: '50%',
+                  marginTop: -5,
+                }}
+              />
+            </div>
+
+            {/* Текст с улучшенной типографикой */}
+            <div
               style={{
-                fontSize: 20,
-                color: '#94a3b8',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 16,
                 textAlign: 'center',
-                margin: 0,
-                marginTop: 8,
               }}
             >
-              CandleTime
-            </p>
+              {/* Заголовок */}
+              <h1
+                style={{
+                  fontSize: title.length > 40 ? 48 : title.length > 30 ? 56 : 64,
+                  fontWeight: 800,
+                  color: '#ffffff',
+                  textAlign: 'center',
+                  margin: 0,
+                  lineHeight: 1.1,
+                  textShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
+                  letterSpacing: '-0.02em',
+                  maxWidth: 900,
+                }}
+              >
+                {title.length > 60 ? title.substring(0, 60) + '...' : title}
+              </h1>
+
+              {/* Описание */}
+              {description && description !== title && (
+                <p
+                  style={{
+                    fontSize: 24,
+                    color: '#e2e8f0',
+                    textAlign: 'center',
+                    margin: 0,
+                    lineHeight: 1.5,
+                    maxWidth: 800,
+                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
+                    fontWeight: 400,
+                  }}
+                >
+                  {description.length > 120 ? description.substring(0, 120) + '...' : description}
+                </p>
+              )}
+
+              {/* Бренд */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  marginTop: 8,
+                }}
+              >
+                <div
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: '50%',
+                    background: colors.flame,
+                    boxShadow: `0 0 20px ${colors.glow}`,
+                  }}
+                />
+                <span
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 600,
+                    color: '#cbd5e1',
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  CandleTime
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       ),

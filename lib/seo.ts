@@ -14,12 +14,14 @@ export function generateMetadata({
   image,
   path = '',
   type = 'website',
+  keywords,
 }: {
   title: string;
   description?: string;
   image?: string;
   path?: string;
   type?: 'website' | 'article';
+  keywords?: string[];
 }): Metadata {
   const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
   const url = `${siteUrl}${path}`;
@@ -27,9 +29,14 @@ export function generateMetadata({
   // Для страниц свечей используется DynamicMeta компонент, который устанавливает правильное изображение
   const ogImage = image || `${siteUrl}/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description || defaultDescription)}`;
 
+  // Базовые ключевые слова, если не указаны
+  const defaultKeywords = ['CandleTime', 'символические свечи', 'онлайн свечи', 'виртуальные свечи'];
+  const finalKeywords = keywords ? [...defaultKeywords, ...keywords] : defaultKeywords;
+
   return {
     title: fullTitle,
     description,
+    keywords: finalKeywords,
     metadataBase: new URL(siteUrl),
     alternates: {
       canonical: url,
@@ -227,6 +234,53 @@ export function generateArticleStructuredData({
         url: image,
       },
     }),
+  };
+}
+
+/**
+ * Генерирует структурированные данные FAQPage для страницы FAQ
+ */
+export function generateFAQPageStructuredData(faqItems: Array<{ question: string; answer: string }>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqItems.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
+}
+
+/**
+ * Генерирует структурированные данные HowTo для инструкций
+ */
+export function generateHowToStructuredData({
+  name,
+  description,
+  steps,
+  url,
+}: {
+  name: string;
+  description: string;
+  steps: Array<{ name: string; text: string }>;
+  url: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name,
+    description,
+    step: steps.map((step, index) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: step.name,
+      text: step.text,
+    })),
+    url,
   };
 }
 

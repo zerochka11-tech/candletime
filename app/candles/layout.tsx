@@ -7,6 +7,7 @@ export const metadata: Metadata = generateBaseMetadata({
   title: 'Все свечи',
   description: 'Посмотри все активные символические свечи на CandleTime. Зажжённые свечи для памяти, поддержки, благодарности и спокойствия. Выбери свечу или создай свою.',
   path: '/candles',
+  keywords: ['все свечи', 'активные свечи', 'символические свечи', 'просмотр свечей', 'свечи онлайн'],
 });
 
 export default function CandlesLayout({

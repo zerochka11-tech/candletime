@@ -256,7 +256,10 @@ export default function HomePage() {
           <div className="space-y-2">
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 md:text-2xl">Что это?</h2>
             <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300 md:text-base">
-              CandleTime — спокойный микросервис, который открывается за пару секунд. Можно пользоваться анонимно или с аккаунтом, если нужна история свечей.
+              CandleTime — спокойный микросервис, который открывается за пару секунд. Можно пользоваться анонимно или с аккаунтом, если нужна история свечей.{' '}
+              <Link href="/faq" className="font-medium text-slate-900 dark:text-slate-100 underline hover:text-slate-700 dark:hover:text-slate-300">
+                Узнайте больше в FAQ
+              </Link>.
             </p>
           </div>
 
