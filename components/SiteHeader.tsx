@@ -152,6 +152,12 @@ export function SiteHeader() {
             >
               Свечи
             </Link>
+            <Link
+              href="/faq"
+              className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${isActive('/faq')} ${pathname === '/faq' || pathname.startsWith('/faq/') ? 'bg-slate-100 dark:bg-slate-800 shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm'}`}
+            >
+              FAQ
+            </Link>
 
             {user && (
               <Link
@@ -321,6 +327,25 @@ export function SiteHeader() {
                   <span className="flex-1">Свечи</span>
                   {pathname === '/candles' && (
                     <svg className="h-5 w-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  )}
+                </Link>
+
+                <Link
+                  href="/faq"
+                  onClick={closeMobileMenu}
+                  role="menuitem"
+                  className={`group flex items-center gap-4 rounded-2xl px-5 py-4 text-base font-medium transition-all duration-200 min-h-[56px] active:scale-[0.98] ${
+                    pathname === '/faq' || pathname.startsWith('/faq/')
+                      ? 'bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 text-purple-900 dark:text-purple-100 shadow-md border border-purple-200/50 dark:border-purple-700/50'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:shadow-sm'
+                  }`}
+                >
+                  <span className="text-2xl transition-transform duration-200 group-hover:scale-110">📚</span>
+                  <span className="flex-1">FAQ</span>
+                  {(pathname === '/faq' || pathname.startsWith('/faq/')) && (
+                    <svg className="h-5 w-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   )}

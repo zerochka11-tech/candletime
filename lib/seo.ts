@@ -173,3 +173,60 @@ export function generateCandlesItemList(candles: Array<{ id: string; title: stri
   };
 }
 
+/**
+ * Генерирует структурированные данные Article для статей/FAQ
+ */
+export function generateArticleStructuredData({
+  title,
+  description,
+  content,
+  publishedAt,
+  modifiedAt,
+  url,
+  author,
+  image,
+}: {
+  title: string;
+  description?: string;
+  content: string;
+  publishedAt: string;
+  modifiedAt: string;
+  url: string;
+  author: {
+    name: string;
+    url?: string;
+  };
+  image?: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description: description || title,
+    articleBody: content,
+    datePublished: publishedAt,
+    dateModified: modifiedAt,
+    author: {
+      '@type': 'Person',
+      name: author.name,
+      ...(author.url && { url: author.url }),
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: siteName,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${siteUrl}/favicon.svg`,
+      },
+    },
+    url,
+    inLanguage: 'ru',
+    ...(image && {
+      image: {
+        '@type': 'ImageObject',
+        url: image,
+      },
+    }),
+  };
+}
+

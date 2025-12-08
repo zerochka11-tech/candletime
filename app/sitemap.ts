@@ -37,6 +37,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     },
     {
+      url: `${siteUrl}/faq`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
       url: `${siteUrl}/auth/login`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
@@ -75,7 +81,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
 
-    return [...staticPages, ...candlePages];
+    // Получаем опубликованные статьи
+    const { data: articles, error: articlesError } = await supabase
+      .from('articles')
+      .select('slug, updated_at, published_at')
+      .eq('published', true)
+      .not('published_at', 'is', null)
+      .lte('published_at', new Date().toISOString())
+      .order('published_at', { ascending: false })
+      .limit(500); // Ограничиваем до 500 статей
+
+    const articlePages: MetadataRoute.Sitemap = (articles || []).map((article) => ({
+      url: `${siteUrl}/faq/${article.slug}`,
+      lastModified: article.updated_at ? new Date(article.updated_at) : new Date(article.published_at!),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    }));
+
+    return [...staticPages, ...candlePages, ...articlePages];
   } catch (error) {
     console.error('Error generating sitemap:', error);
     // В случае ошибки возвращаем хотя бы статические страницы
