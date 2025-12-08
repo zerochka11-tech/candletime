@@ -65,33 +65,33 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="mx-auto flex max-w-md flex-col gap-4">
+    <div className="mx-auto flex max-w-md flex-col gap-3 sm:gap-4">
       {/* Маленькая крошка "назад" */}
         <div className="text-xs text-slate-500">
         <Link
           href="/"
-          className="inline-flex items-center gap-1 text-slate-500 hover:text-slate-900"
+          className="inline-flex items-center gap-1 text-slate-500 hover:text-slate-900 min-h-[44px] sm:min-h-0"
         >
           <span aria-hidden="true">←</span>
           На главную
         </Link>
       </div>
 
-      <section className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 shadow-sm md:p-8">
+      <section className="relative overflow-hidden rounded-3xl border border-slate-200/70 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-4 sm:p-6 md:p-8 shadow-sm transition-colors duration-200">
         {/* Декоративный градиент */}
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 dark:from-amber-500/10 dark:to-indigo-500/10" />
         
-        <div className="relative space-y-2">
-          <h1 className="text-xl font-semibold text-slate-900 md:text-2xl">Регистрация</h1>
-          <p className="text-sm text-slate-600 md:text-base">
+        <div className="relative space-y-1.5 sm:space-y-2">
+          <h1 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100 md:text-2xl">Регистрация</h1>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 md:text-base leading-relaxed">
             Создай аккаунт, чтобы сохранять свои свечи и возвращаться к ним в{' '}
-            <span className="font-medium">Мои свечи</span>.
+            <span className="font-medium text-slate-900 dark:text-slate-100">Мои свечи</span>.
           </p>
         </div>
 
-        <form onSubmit={handleSignUp} className="relative mt-5 space-y-4">
+        <form onSubmit={handleSignUp} className="relative mt-4 sm:mt-5 space-y-3 sm:space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-900 md:text-base">
+            <label className="mb-1.5 sm:mb-1 block text-xs sm:text-sm font-medium text-slate-900 dark:text-slate-100 md:text-base">
               Электронная почта
             </label>
             <input
@@ -101,12 +101,12 @@ export default function SignUpPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full rounded-xl border border-slate-200/70 bg-white px-3 py-2.5 text-sm outline-none shadow-sm transition focus:border-slate-500 focus:ring-1 focus:ring-slate-500"
+              className="w-full rounded-xl border border-slate-200/70 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-3 sm:py-2.5 text-sm outline-none shadow-sm transition min-h-[44px] sm:min-h-0 focus:border-slate-500 dark:focus:border-slate-500 focus:ring-1 focus:ring-slate-500 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-900 md:text-base">
+            <label className="mb-1.5 sm:mb-1 block text-xs sm:text-sm font-medium text-slate-900 dark:text-slate-100 md:text-base">
               Пароль
             </label>
             <input
@@ -117,30 +117,30 @@ export default function SignUpPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Придумайте пароль (минимум 6 символов)"
-              className="w-full rounded-xl border border-slate-200/70 bg-white px-3 py-2.5 text-sm outline-none shadow-sm transition focus:border-slate-500 focus:ring-1 focus:ring-slate-500"
+              className="w-full rounded-xl border border-slate-200/70 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-3 sm:py-2.5 text-sm outline-none shadow-sm transition min-h-[44px] sm:min-h-0 focus:border-slate-500 dark:focus:border-slate-500 focus:ring-1 focus:ring-slate-500 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 w-full rounded-full bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-400"
+            className="mt-2 w-full rounded-full bg-slate-900 dark:bg-slate-700 px-4 py-3.5 sm:py-2.5 text-sm font-medium text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 dark:hover:bg-slate-600 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-400 dark:disabled:bg-slate-600 min-h-[48px] sm:min-h-0"
           >
             {loading ? 'Создаём…' : 'Зарегистрироваться'}
           </button>
 
           {message && (
-            <p className="text-xs text-emerald-600">{message}</p>
+            <p className="text-xs text-emerald-600 dark:text-emerald-400">{message}</p>
           )}
           {error && (
-            <p className="text-xs text-red-600">{error}</p>
+            <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
           )}
 
-          <p className="pt-3 text-xs text-slate-600">
+          <p className="pt-2 sm:pt-3 text-xs text-slate-600 dark:text-slate-400">
             Уже есть аккаунт?{' '}
             <Link
               href="/auth/login"
-              className="font-medium text-slate-900 underline-offset-4 hover:underline"
+              className="font-medium text-slate-900 dark:text-slate-100 underline-offset-4 hover:underline"
             >
               Войти
             </Link>

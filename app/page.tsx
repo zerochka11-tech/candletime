@@ -94,87 +94,82 @@ export default function HomePage() {
         {/* Декоративный градиент */}
         <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
         
-        <div className="relative flex flex-col items-center gap-10 p-6 md:flex-row md:items-center md:justify-between md:p-8 lg:p-10">
+        <div className="relative flex flex-col items-center gap-6 p-4 sm:gap-8 sm:p-6 md:flex-row md:items-center md:justify-between md:gap-10 md:p-8 lg:p-10">
           {/* Текст */}
-          <div className="max-w-xl space-y-6">
-            <p className="text-xs font-medium uppercase tracking-[0.25em] text-slate-300">
+          <div className="max-w-xl space-y-4 sm:space-y-5 md:space-y-6">
+            <p className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.25em] text-slate-300">
               CandleTime
             </p>
 
-            <h1 className="text-2xl font-bold leading-tight md:text-3xl lg:text-4xl lg:leading-tight">
+            <h1 className="text-xl sm:text-2xl font-bold leading-tight md:text-3xl lg:text-4xl lg:leading-tight">
               Тихое место для
               <br className="hidden sm:block" /> символических свечей
             </h1>
 
-            <p className="text-sm leading-relaxed text-slate-200 md:text-base">
+            <p className="text-xs sm:text-sm leading-relaxed text-slate-200 md:text-base">
               Зажги свечу, оставь намерение и вернись позже. Без ленты и лайков — только спокойный жест внимания.
             </p>
 
-            <div className="flex flex-wrap gap-2.5 pt-2 sm:gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-2.5 md:gap-3 pt-1 sm:pt-2">
               <Link
                 href="/light"
-                className="group inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2.5 text-xs font-medium text-slate-900 shadow-md transition-all hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-lg sm:gap-2 sm:px-6 sm:py-3 sm:text-sm"
+                className="group inline-flex items-center justify-center gap-1.5 rounded-full bg-white px-4 py-3 sm:py-2.5 text-xs font-medium text-slate-900 shadow-md transition-all hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-lg sm:gap-2 sm:px-6 sm:py-3 sm:text-sm min-h-[44px] sm:min-h-0"
               >
                 <span>🕯️</span>
                 <span className="whitespace-nowrap">Зажечь свечу</span>
               </Link>
               <Link
                 href="/candles"
-                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-slate-500/70 px-4 py-2.5 text-xs font-medium text-slate-50 transition-all hover:-translate-y-0.5 hover:border-slate-200 hover:bg-slate-900/40 sm:gap-2 sm:px-6 sm:py-3 sm:text-sm"
+                className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-slate-500/70 px-4 py-3 sm:py-2.5 text-xs font-medium text-slate-50 transition-all hover:-translate-y-0.5 hover:border-slate-200 hover:bg-slate-900/40 sm:gap-2 sm:px-6 sm:py-3 sm:text-sm min-h-[44px] sm:min-h-0"
               >
                 <span>👁️</span>
                 <span>Посмотреть свечи</span>
               </Link>
             </div>
 
-            <p className="pt-2 text-xs leading-relaxed text-slate-300">
+            <p className="pt-1 sm:pt-2 text-[10px] sm:text-xs leading-relaxed text-slate-300">
               Войдёшь в аккаунт — появится личный кабинет{' '}
               <span className="font-medium text-slate-100">Мои свечи</span> с
               историей именно твоих свечей.
             </p>
           </div>
 
-          {/* Свечка с анимацией */}
+          {/* Свечка */}
           <div className="flex justify-center md:justify-end">
-            <div className="flex flex-col items-center">
-              {/* усиленное свечение */}
-              <div className="h-20 w-20 rounded-full bg-amber-300/60 blur-2xl animate-pulse" />
-              {/* пламя */}
-              <div className="-mt-12 candle-flame flex h-12 w-12 items-center justify-center">
-                <div className="h-10 w-6 rounded-full bg-gradient-to-t from-amber-200 via-amber-100 to-amber-50 shadow-lg" />
+            <div className="flex flex-col items-center scale-90 sm:scale-100">
+              <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-full bg-amber-300/50 blur-2xl animate-pulse" />
+              <div className="-mt-12 sm:-mt-14 candle-flame flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center">
+                <div className="h-10 w-6 sm:h-12 sm:w-7 rounded-full bg-gradient-to-t from-amber-300 via-amber-100 to-amber-50 shadow-lg" />
               </div>
-              {/* тело свечи */}
-              <div className="-mt-1 h-28 w-8 rounded-full bg-slate-100 shadow-inner shadow-slate-900/40" />
-              {/* тень */}
-              <div className="mt-3 h-3 w-28 rounded-full bg-black/40 blur-sm opacity-40" />
+              <div className="-mt-1 h-28 w-8 sm:h-32 sm:w-9 rounded-full bg-slate-50 shadow-inner shadow-slate-900/40" />
             </div>
           </div>
         </div>
       </section>
 
       {/* STATS: 3 блока над "What is this?" */}
-      <section className="grid gap-4 md:grid-cols-3">
+      <section className="grid gap-3 sm:gap-4 md:grid-cols-3">
         {/* Активные свечи */}
-        <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300 bg-white p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 hover:shadow-lg">
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 sm:p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg">
+          <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 dark:from-amber-900/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           <div className="relative">
             <div className="mb-3 flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-100 to-amber-50 text-lg shadow-md transition-transform duration-300 group-hover:scale-110">
+              <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/50 dark:to-amber-800/30 text-base sm:text-lg shadow-md transition-transform duration-300 group-hover:scale-110">
                 🔥
               </div>
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
                 Активные свечи
               </p>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1.5 sm:gap-2">
               {statsLoading ? (
-                <div className="h-8 w-16 animate-pulse rounded bg-slate-200" />
+                <div className="h-7 w-14 sm:h-8 sm:w-16 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
               ) : (
-                <p className="text-3xl font-bold text-slate-900">
+                <p className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">
                   {activeCount ?? 0}
                 </p>
               )}
-              <span className="text-xs text-slate-600">
+              <span className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Сейчас горят на странице Свечи
               </span>
             </div>
@@ -182,26 +177,26 @@ export default function HomePage() {
         </div>
 
         {/* Свечи, зажжённые сегодня */}
-        <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300 bg-white p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 hover:shadow-lg">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 sm:p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg">
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 dark:from-emerald-900/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           <div className="relative">
             <div className="mb-3 flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 to-emerald-50 text-lg shadow-md transition-transform duration-300 group-hover:scale-110">
+              <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900/50 dark:to-emerald-800/30 text-base sm:text-lg shadow-md transition-transform duration-300 group-hover:scale-110">
                 ✨
               </div>
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
                 Сегодня зажгли
               </p>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1.5 sm:gap-2">
               {statsLoading ? (
-                <div className="h-8 w-16 animate-pulse rounded bg-slate-200" />
+                <div className="h-7 w-14 sm:h-8 sm:w-16 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
               ) : (
-                <p className="text-3xl font-bold text-slate-900">
+                <p className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">
                   {todayCount ?? 0}
                 </p>
               )}
-              <span className="text-xs text-slate-600">
+              <span className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 За текущие сутки (по времени сервера)
               </span>
             </div>
@@ -209,41 +204,41 @@ export default function HomePage() {
         </div>
 
         {/* Самая популярная свеча */}
-        <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300 bg-white p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 hover:shadow-lg">
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 sm:p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 dark:from-indigo-900/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           <div className="relative">
             <div className="mb-3 flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-100 to-indigo-50 text-lg shadow-md transition-transform duration-300 group-hover:scale-110">
+              <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-100 to-indigo-50 dark:from-indigo-900/50 dark:to-indigo-800/30 text-base sm:text-lg shadow-md transition-transform duration-300 group-hover:scale-110">
                 {statsLoading
                   ? '🕯️'
                   : popularMeta
                   ? popularMeta.emoji
                   : '🕯️'}
               </div>
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
                 Самая популярная свеча
               </p>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1.5 sm:gap-2">
               {statsLoading ? (
-                <div className="h-8 w-24 animate-pulse rounded bg-slate-200" />
+                <div className="h-7 w-20 sm:h-8 sm:w-24 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
               ) : (
-                <p className="text-3xl font-bold text-slate-900">
+                <p className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-100 break-words">
                   {popularMeta ? popularMeta.label : '—'}
                 </p>
               )}
               {!statsLoading && popularType.count > 0 && (
-                <span className="text-xs text-slate-600">
+                <span className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400">
                   Зажигали {popularType.count} раз
                 </span>
               )}
               {statsLoading && (
-                <span className="text-xs text-slate-600">
+                <span className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400">
                   Считаем статистику
                 </span>
               )}
               {!statsLoading && !popularMeta && (
-                <span className="text-xs text-slate-600">
+                <span className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400">
                   Ещё нет данных
                 </span>
               )}
@@ -253,52 +248,52 @@ export default function HomePage() {
       </section>
 
       {/* WHAT IS THIS */}
-      <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-4 shadow-md sm:p-6 md:p-8">
+      <section className="relative overflow-hidden rounded-3xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-4 shadow-md sm:p-6 md:p-8 transition-colors duration-200">
         {/* Декоративный градиент */}
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 dark:from-amber-500/10 dark:to-indigo-500/10" />
         
         <div className="relative space-y-5">
           <div className="space-y-2">
-            <h2 className="text-xl font-bold text-slate-900 md:text-2xl">Что это?</h2>
-            <p className="text-sm leading-relaxed text-slate-600 md:text-base">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 md:text-2xl">Что это?</h2>
+            <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300 md:text-base">
               CandleTime — спокойный микросервис, который открывается за пару секунд. Можно пользоваться анонимно или с аккаунтом, если нужна история свечей.
             </p>
           </div>
 
-        <ul className="space-y-3 text-sm text-slate-700">
-            <li className="group relative overflow-hidden rounded-2xl border border-slate-300 bg-white p-3 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-lg sm:p-4">
-              <div className="absolute inset-0 bg-gradient-to-br from-sky-50/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              <div className="relative flex gap-3 sm:gap-4">
-                <div className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-100 to-sky-50 text-lg shadow-md transition-transform duration-300 group-hover:scale-110">
+        <ul className="space-y-2.5 sm:space-y-3 text-sm text-slate-700 dark:text-slate-300">
+            <li className="group relative overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 sm:p-4 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-br from-sky-50/50 dark:from-sky-900/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              <div className="relative flex gap-2.5 sm:gap-3 md:gap-4">
+                <div className="mt-0.5 flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-100 to-sky-50 dark:from-sky-900/50 dark:to-sky-800/30 text-base sm:text-lg shadow-md transition-transform duration-300 group-hover:scale-110">
                   🎯
                 </div>
                 <div className="flex-1 min-w-0 space-y-1">
-                  <div className="font-semibold text-slate-900">Личные намерения.</div>
-                  <div className="break-words text-slate-600">Свеча «про себя» — перед важным звонком, стартом проекта или просто чтобы зафиксировать внутреннее состояние.</div>
+                  <div className="font-semibold text-sm sm:text-base text-slate-900 dark:text-slate-100">Личные намерения.</div>
+                  <div className="break-words text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Свеча «про себя» — перед важным звонком, стартом проекта или просто чтобы зафиксировать внутреннее состояние.</div>
                 </div>
               </div>
           </li>
-            <li className="group relative overflow-hidden rounded-2xl border border-slate-300 bg-white p-3 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-lg sm:p-4">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              <div className="relative flex gap-3 sm:gap-4">
-                <div className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 to-emerald-50 text-lg shadow-md transition-transform duration-300 group-hover:scale-110">
+            <li className="group relative overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 sm:p-4 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 dark:from-emerald-900/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              <div className="relative flex gap-2.5 sm:gap-3 md:gap-4">
+                <div className="mt-0.5 flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900/50 dark:to-emerald-800/30 text-base sm:text-lg shadow-md transition-transform duration-300 group-hover:scale-110">
                   🤝
                 </div>
                 <div className="flex-1 min-w-0 space-y-1">
-                  <div className="font-semibold text-slate-900">Поддержка других.</div>
-                  <div className="break-words text-slate-600">Имя друга, коллеги или близкого — цифровой жест «я про тебя помню» вместо длинных сообщений.</div>
+                  <div className="font-semibold text-sm sm:text-base text-slate-900 dark:text-slate-100">Поддержка других.</div>
+                  <div className="break-words text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Имя друга, коллеги или близкого — цифровой жест «я про тебя помню» вместо длинных сообщений.</div>
                 </div>
               </div>
           </li>
-            <li className="group relative overflow-hidden rounded-2xl border border-slate-300 bg-white p-3 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-lg sm:p-4">
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              <div className="relative flex gap-3 sm:gap-4">
-                <div className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-100 to-amber-50 text-lg shadow-md transition-transform duration-300 group-hover:scale-110">
+            <li className="group relative overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 sm:p-4 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 dark:from-amber-900/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              <div className="relative flex gap-2.5 sm:gap-3 md:gap-4">
+                <div className="mt-0.5 flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/50 dark:to-amber-800/30 text-base sm:text-lg shadow-md transition-transform duration-300 group-hover:scale-110">
                   📅
                 </div>
                 <div className="flex-1 min-w-0 space-y-1">
-                  <div className="font-semibold text-slate-900">Даты и события.</div>
-                  <div className="break-words text-slate-600">Годовщины, дедлайны, памятные дни — свечи мягко отмечают момент без соцсетевого шума.</div>
+                  <div className="font-semibold text-sm sm:text-base text-slate-900 dark:text-slate-100">Даты и события.</div>
+                  <div className="break-words text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Годовщины, дедлайны, памятные дни — свечи мягко отмечают момент без соцсетевого шума.</div>
                 </div>
               </div>
           </li>
@@ -307,16 +302,16 @@ export default function HomePage() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/30 to-white p-4 shadow-md sm:p-6 md:p-8">
+      <section className="relative overflow-hidden rounded-3xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/30 to-white dark:from-slate-800 dark:via-slate-800/30 dark:to-slate-800 p-4 shadow-md sm:p-6 md:p-8 transition-colors duration-200">
         {/* Декоративный градиент */}
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-transparent to-rose-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-transparent to-rose-500/5 dark:from-indigo-500/10 dark:to-rose-500/10" />
         
         <div className="relative space-y-6">
           <div className="space-y-2">
-            <h2 className="text-xl font-bold text-slate-900 md:text-2xl">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 md:text-2xl">
               Как это работает
             </h2>
-            <p className="text-sm leading-relaxed text-slate-600 md:text-base">
+            <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300 md:text-base">
               Без регистрации можно зажечь свечу. С аккаунтом — появляется
               личная история свечей.
             </p>
@@ -324,62 +319,62 @@ export default function HomePage() {
 
           <div className="relative grid gap-4 md:gap-6 md:grid-cols-3">
             {/* Декоративная линия между шагами (только на десктопе) */}
-            <div className="absolute left-1/2 top-12 hidden h-0.5 w-[calc(66.666%-2rem)] -translate-x-1/2 bg-gradient-to-r from-transparent via-slate-300 to-transparent md:block" />
+            <div className="absolute left-1/2 top-12 hidden h-0.5 w-[calc(66.666%-2rem)] -translate-x-1/2 bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-600 to-transparent md:block" />
             
-            <div className="group relative space-y-3 rounded-2xl border border-slate-300 bg-white p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 hover:shadow-lg">
-              <div className="absolute inset-0 bg-gradient-to-br from-sky-50/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="group relative space-y-2.5 sm:space-y-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 sm:p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-br from-sky-50/50 dark:from-sky-900/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
               <div className="relative">
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 text-base font-bold text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
+                <div className="mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
+                  <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-700 dark:to-slate-600 text-sm sm:text-base font-bold text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
                     1
                   </div>
-                  <div className="text-3xl transition-transform duration-300 group-hover:scale-110">✍️</div>
+                  <div className="text-2xl sm:text-3xl transition-transform duration-300 group-hover:scale-110">✍️</div>
                 </div>
-                <p className="mb-2 text-base font-semibold text-slate-900">
+                <p className="mb-1.5 sm:mb-2 text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100">
                   Задай намерение
                 </p>
-                <p className="text-sm leading-relaxed text-slate-600">
-                  На странице <span className="font-medium text-slate-900">Зажечь</span> задаёшь
+                <p className="text-xs sm:text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                  На странице <span className="font-medium text-slate-900 dark:text-slate-100">Зажечь</span> задаёшь
                   заголовок, сообщение и, при желании, анонимность.
                 </p>
               </div>
             </div>
 
-            <div className="group relative space-y-3 rounded-2xl border border-slate-300 bg-white p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 hover:shadow-lg">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="group relative space-y-2.5 sm:space-y-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 sm:p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 dark:from-emerald-900/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
               <div className="relative">
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 text-base font-bold text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
+                <div className="mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
+                  <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-700 dark:to-slate-600 text-sm sm:text-base font-bold text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
                     2
                   </div>
-                  <div className="text-3xl transition-transform duration-300 group-hover:scale-110">⏱️</div>
+                  <div className="text-2xl sm:text-3xl transition-transform duration-300 group-hover:scale-110">⏱️</div>
                 </div>
-                <p className="mb-2 text-base font-semibold text-slate-900">
+                <p className="mb-1.5 sm:mb-2 text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100">
                   Выбери длительность
                 </p>
-                <p className="text-sm leading-relaxed text-slate-600">
+                <p className="text-xs sm:text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                   Час, сутки или неделя. Когда время заканчивается, свеча
                   автоматически исчезает из списка активных.
                 </p>
               </div>
             </div>
 
-            <div className="group relative space-y-3 rounded-2xl border border-slate-300 bg-white p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 hover:shadow-lg">
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="group relative space-y-2.5 sm:space-y-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 sm:p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 dark:from-amber-900/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
               <div className="relative">
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 text-base font-bold text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
+                <div className="mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
+                  <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-700 dark:to-slate-600 text-sm sm:text-base font-bold text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
                     3
                   </div>
-                  <div className="text-3xl transition-transform duration-300 group-hover:scale-110">👀</div>
+                  <div className="text-2xl sm:text-3xl transition-transform duration-300 group-hover:scale-110">👀</div>
                 </div>
-                <p className="mb-2 text-base font-semibold text-slate-900">
+                <p className="mb-1.5 sm:mb-2 text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100">
                   Вернись и посмотри
                 </p>
-                <p className="text-sm leading-relaxed text-slate-600">
+                <p className="text-xs sm:text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                   Активные свечи — на странице{' '}
-                  <span className="font-medium text-slate-900">Свечи</span>, свои — в{' '}
-                  <span className="font-medium text-slate-900">Мои свечи</span> после входа.
+                  <span className="font-medium text-slate-900 dark:text-slate-100">Свечи</span>, свои — в{' '}
+                  <span className="font-medium text-slate-900 dark:text-slate-100">Мои свечи</span> после входа.
                 </p>
               </div>
             </div>
@@ -407,17 +402,17 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-2.5 sm:gap-3">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-2.5 md:gap-3">
             <Link
               href="/light"
-              className="group inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-white px-4 py-2.5 text-xs font-semibold text-slate-900 shadow-md transition-all hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-lg sm:gap-2 sm:px-6 sm:py-3 sm:text-sm"
+              className="group inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-white px-4 py-3 sm:py-2.5 text-xs font-semibold text-slate-900 shadow-md transition-all hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-lg sm:gap-2 sm:px-6 sm:py-3 sm:text-sm min-h-[44px] sm:min-h-0"
             >
               <span className="text-base transition-transform duration-300 group-hover:scale-110">🕯️</span>
               <span>Зажечь свечу</span>
             </Link>
             <Link
               href="/auth/login"
-              className="group inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-slate-500/70 bg-slate-900/40 px-4 py-2.5 text-xs font-medium text-slate-50 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-800/60 hover:shadow-lg sm:gap-2 sm:px-6 sm:py-3 sm:text-sm"
+              className="group inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-slate-500/70 bg-slate-900/40 px-4 py-3 sm:py-2.5 text-xs font-medium text-slate-50 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-800/60 hover:shadow-lg sm:gap-2 sm:px-6 sm:py-3 sm:text-sm min-h-[44px] sm:min-h-0"
             >
               <span className="text-base transition-transform duration-300 group-hover:scale-110">🔐</span>
               <span className="hidden sm:inline">Войти и Мои свечи</span>

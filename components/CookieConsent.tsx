@@ -68,16 +68,16 @@ export function CookieConsent() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-700 bg-slate-900 text-white shadow-2xl">
+    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xl transition-colors duration-200">
       <div className="mx-auto max-w-5xl px-4 py-3 sm:px-6 sm:py-4">
         {!showSettings ? (
           // Баннер (компактный)
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-xs leading-relaxed text-slate-100 sm:text-sm">
+            <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-100 sm:text-sm">
               Мы используем cookies для улучшения работы сайта.{' '}
               <Link
                 href="/privacy"
-                className="underline transition-colors hover:text-slate-200"
+                className="underline transition-colors hover:text-slate-900 dark:hover:text-slate-200"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -88,19 +88,19 @@ export function CookieConsent() {
             <div className="flex flex-wrap gap-2 sm:flex-shrink-0">
               <button
                 onClick={handleRejectAll}
-                className="rounded-lg border border-slate-600 bg-transparent px-3 py-1.5 text-xs font-medium text-slate-200 transition-colors hover:bg-slate-800 sm:px-4 sm:py-2 sm:text-sm"
+                className="rounded-lg border border-slate-300 dark:border-slate-600 bg-transparent px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 sm:px-4 sm:py-2 sm:text-sm"
               >
                 Отклонить
               </button>
               <button
                 onClick={() => setShowSettings(true)}
-                className="rounded-lg border border-slate-600 bg-transparent px-3 py-1.5 text-xs font-medium text-slate-200 transition-colors hover:bg-slate-800 sm:px-4 sm:py-2 sm:text-sm"
+                className="rounded-lg border border-slate-300 dark:border-slate-600 bg-transparent px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 sm:px-4 sm:py-2 sm:text-sm"
               >
                 Настроить
               </button>
               <button
                 onClick={handleAcceptAll}
-                className="rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-slate-900 transition-colors hover:bg-slate-100 sm:px-4 sm:py-2 sm:text-sm"
+                className="rounded-lg bg-slate-900 dark:bg-white px-3 py-1.5 text-xs font-medium text-white dark:text-slate-900 transition-colors hover:bg-slate-800 dark:hover:bg-slate-100 sm:px-4 sm:py-2 sm:text-sm"
               >
                 Принять
               </button>
@@ -115,7 +115,7 @@ export function CookieConsent() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium sm:text-base">Необходимые</p>
-                    <p className="text-xs text-slate-300">
+                    <p className="text-xs text-slate-600 dark:text-slate-300">
                       Обязательные для работы сайта
                     </p>
                   </div>
@@ -130,7 +130,7 @@ export function CookieConsent() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium sm:text-base">Аналитика</p>
-                    <p className="text-xs text-slate-300">
+                    <p className="text-xs text-slate-600 dark:text-slate-300">
                       Google Analytics для улучшения сайта
                     </p>
                   </div>
@@ -149,13 +149,13 @@ export function CookieConsent() {
             <div className="flex gap-2">
               <button
                 onClick={() => setShowSettings(false)}
-                className="rounded-lg border border-slate-600 bg-transparent px-3 py-1.5 text-xs font-medium text-slate-200 transition-colors hover:bg-slate-800 sm:px-4 sm:py-2 sm:text-sm"
+                className="rounded-lg border border-slate-300 dark:border-slate-600 bg-transparent px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 sm:px-4 sm:py-2 sm:text-sm"
               >
                 Отмена
               </button>
               <button
                 onClick={handleSave}
-                className="rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-slate-900 transition-colors hover:bg-slate-100 sm:px-4 sm:py-2 sm:text-sm"
+                className="rounded-lg bg-slate-900 dark:bg-white px-3 py-1.5 text-xs font-medium text-white dark:text-slate-900 transition-colors hover:bg-slate-800 dark:hover:bg-slate-100 sm:px-4 sm:py-2 sm:text-sm"
               >
                 Сохранить
               </button>

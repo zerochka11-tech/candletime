@@ -21,37 +21,37 @@ const CANDLE_TYPE_STYLES: Record<
   calm: {
     label: 'Спокойствие',
     emoji: '🕊️',
-    cardBg: 'bg-sky-50',
-    chipBg: 'bg-sky-100',
-    chipText: 'text-sky-800',
+    cardBg: 'bg-sky-50 dark:bg-sky-900/20',
+    chipBg: 'bg-sky-100 dark:bg-sky-800/50',
+    chipText: 'text-sky-800 dark:text-sky-200',
   },
   support: {
     label: 'Поддержка',
     emoji: '🤝',
-    cardBg: 'bg-emerald-50',
-    chipBg: 'bg-emerald-100',
-    chipText: 'text-emerald-800',
+    cardBg: 'bg-emerald-50 dark:bg-emerald-900/20',
+    chipBg: 'bg-emerald-100 dark:bg-emerald-800/50',
+    chipText: 'text-emerald-800 dark:text-emerald-200',
   },
   memory: {
     label: 'Память',
     emoji: '🌙',
-    cardBg: 'bg-indigo-50',
-    chipBg: 'bg-indigo-100',
-    chipText: 'text-indigo-800',
+    cardBg: 'bg-indigo-50 dark:bg-indigo-900/20',
+    chipBg: 'bg-indigo-100 dark:bg-indigo-800/50',
+    chipText: 'text-indigo-800 dark:text-indigo-200',
   },
   gratitude: {
     label: 'Благодарность',
     emoji: '✨',
-    cardBg: 'bg-amber-50',
-    chipBg: 'bg-amber-100',
-    chipText: 'text-amber-800',
+    cardBg: 'bg-amber-50 dark:bg-amber-900/20',
+    chipBg: 'bg-amber-100 dark:bg-amber-800/50',
+    chipText: 'text-amber-800 dark:text-amber-200',
   },
   focus: {
     label: 'Фокус',
     emoji: '🎯',
-    cardBg: 'bg-rose-50',
-    chipBg: 'bg-rose-100',
-    chipText: 'text-rose-800',
+    cardBg: 'bg-rose-50 dark:bg-rose-900/20',
+    chipBg: 'bg-rose-100 dark:bg-rose-800/50',
+    chipText: 'text-rose-800 dark:text-rose-200',
   },
 };
 
@@ -60,9 +60,9 @@ function getCandleTypeMeta(type: string | null) {
     return {
       label: 'Свеча',
       emoji: '🕯️',
-      cardBg: 'bg-slate-50',
-      chipBg: 'bg-slate-100',
-      chipText: 'text-slate-700',
+      cardBg: 'bg-slate-50 dark:bg-slate-800/50',
+      chipBg: 'bg-slate-100 dark:bg-slate-700',
+      chipText: 'text-slate-700 dark:text-slate-300',
     };
   }
   return CANDLE_TYPE_STYLES[type];
@@ -101,12 +101,12 @@ function getStatusLabel(status: CandleStatus) {
 
 function getStatusChipClasses(status: CandleStatus) {
   if (status === 'active') {
-    return 'bg-emerald-100 text-emerald-800';
+    return 'bg-emerald-100 dark:bg-emerald-800/50 text-emerald-800 dark:text-emerald-200';
   }
   if (status === 'extinguished') {
-    return 'bg-rose-100 text-rose-800';
+    return 'bg-rose-100 dark:bg-rose-800/50 text-rose-800 dark:text-rose-200';
   }
-  return 'bg-slate-200 text-slate-700';
+  return 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300';
 }
 
 // Текст внизу карточки
@@ -205,21 +205,21 @@ function DashboardCandleCard({
 
   return (
     <article
-      className={`group relative rounded-2xl border border-slate-300 bg-white p-4 text-sm text-slate-800 shadow-md transition-all duration-300 md:p-5 ${typeMeta.cardBg} hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-lg`}
+      className={`group relative rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 sm:p-4 text-sm text-slate-800 dark:text-slate-200 shadow-md transition-all duration-300 md:p-5 ${typeMeta.cardBg} hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg`}
     >
       {/* Верх: тип, статус, дата */}
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="mb-2.5 sm:mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           <div
-            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium ${typeMeta.chipBg} ${typeMeta.chipText}`}
+            className={`inline-flex items-center gap-1 sm:gap-1.5 rounded-full px-2 sm:px-2.5 py-1 text-[10px] sm:text-[11px] font-medium ${typeMeta.chipBg} ${typeMeta.chipText}`}
           >
-            <span className="text-sm">{typeMeta.emoji}</span>
+            <span className="text-xs sm:text-sm">{typeMeta.emoji}</span>
             <span>{typeMeta.label}</span>
           </div>
 
           <span
             className={
-              'inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-medium ' +
+              'inline-flex items-center rounded-full px-2 sm:px-2.5 py-1 text-[10px] sm:text-[11px] font-medium ' +
               getStatusChipClasses(status)
             }
           >
@@ -227,35 +227,35 @@ function DashboardCandleCard({
           </span>
         </div>
 
-        <span className="text-[11px] text-slate-500">
+        <span className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400">
           {formatDate(created)}
         </span>
       </div>
 
       {/* Текст свечи */}
-      <div className="space-y-1.5">
+      <div className="space-y-1 sm:space-y-1.5">
         <Link
           href={`/candle/${candle.id}`}
-          className="block text-sm font-semibold text-slate-900 transition-colors hover:text-slate-950"
+          className="block text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 transition-colors hover:text-slate-950 dark:hover:text-slate-50 leading-snug"
         >
           {candle.title}
         </Link>
         {candle.message && (
-          <p className="text-sm text-slate-700 line-clamp-2">{candle.message}</p>
+          <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 line-clamp-2 leading-relaxed">{candle.message}</p>
         )}
       </div>
 
       {/* Низ: оставшееся время + действия */}
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-xs text-slate-600">
+      <div className="mt-2.5 sm:mt-3 flex flex-wrap items-center justify-between gap-2">
+        <p className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400">
           {footerText}
         </p>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <button
             type="button"
             onClick={handleShare}
-            className="inline-flex items-center gap-1 rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg"
+            className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 gap-1 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 sm:px-2.5 py-1.5 sm:py-1 text-[11px] font-medium text-slate-700 dark:text-slate-300 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg"
             title="Поделиться"
           >
             <span>📤</span>
@@ -263,7 +263,7 @@ function DashboardCandleCard({
           <button
             type="button"
             onClick={handleCopyLink}
-            className="inline-flex items-center gap-1 rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg"
+            className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 gap-1 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 sm:px-2.5 py-1.5 sm:py-1 text-[11px] font-medium text-slate-700 dark:text-slate-300 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg"
             title="Копировать ссылку"
           >
             <span>{copied ? '✓' : '🔗'}</span>
@@ -273,7 +273,7 @@ function DashboardCandleCard({
               type="button"
               onClick={onExtinguish}
               disabled={isUpdating}
-              className="inline-flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1.5 text-[11px] font-medium text-slate-700 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center justify-center min-h-[44px] sm:min-h-0 gap-1 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-[10px] sm:text-[11px] font-medium text-slate-700 dark:text-slate-300 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
             >
               <span aria-hidden="true">🔥</span>
               <span>{isUpdating ? 'Гасим…' : 'Погасить'}</span>
@@ -374,25 +374,25 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <p className="text-sm text-slate-600">Загружаем твои свечи…</p>
+      <p className="text-sm text-slate-600 dark:text-slate-400">Загружаем твои свечи…</p>
     );
   }
 
   if (noUser) {
     return (
-      <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-4 text-sm text-slate-700 shadow-md sm:p-6 md:p-8">
+      <section className="relative overflow-hidden rounded-3xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-4 text-sm text-slate-700 dark:text-slate-300 shadow-md sm:p-6 md:p-8 transition-colors duration-200">
         {/* Декоративный градиент */}
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 dark:from-amber-500/10 dark:to-indigo-500/10" />
         
         <div className="relative">
-          <h1 className="mb-2 text-xl font-semibold text-slate-900 md:text-2xl">Мои свечи</h1>
-          <p className="mb-4 text-sm text-slate-600 md:text-base">
+          <h1 className="mb-2 text-xl font-semibold text-slate-900 dark:text-slate-100 md:text-2xl">Мои свечи</h1>
+          <p className="mb-4 text-sm text-slate-600 dark:text-slate-400 md:text-base">
             Личный кабинет доступен после входа в аккаунт. Здесь будут храниться
             все свечи, которые ты зажигал(а).
           </p>
           <Link
             href="/auth/login"
-            className="inline-flex items-center justify-center rounded-full bg-slate-900 px-6 py-2.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg"
+            className="inline-flex items-center justify-center rounded-full bg-slate-900 dark:bg-slate-700 px-6 py-2.5 text-sm font-medium text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-800 dark:hover:bg-slate-600 hover:shadow-lg"
           >
             Войти и открыть Мои свечи
           </Link>
@@ -436,36 +436,36 @@ export default function DashboardPage() {
       {/* Заголовок + CTA */}
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="space-y-1">
-          <h1 className="text-2xl font-semibold text-slate-900 md:text-3xl">Мои свечи</h1>
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 md:text-3xl">Мои свечи</h1>
           {userEmail && (
-            <p className="text-sm text-slate-600 md:text-base">
-              Вошли как <span className="font-medium text-slate-900">{userEmail}</span>
+            <p className="text-sm text-slate-600 dark:text-slate-400 md:text-base">
+              Вошли как <span className="font-medium text-slate-900 dark:text-slate-100">{userEmail}</span>
             </p>
           )}
         </div>
 
         <Link
           href="/light"
-          className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2.5 text-xs font-medium text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg md:text-sm"
+          className="inline-flex items-center justify-center rounded-full bg-slate-900 dark:bg-slate-700 px-4 py-2.5 text-xs font-medium text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-800 dark:hover:bg-slate-600 hover:shadow-lg md:text-sm"
         >
           Зажечь новую свечу
         </Link>
       </div>
 
       {/* Контент */}
-      <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-4 shadow-md sm:p-6 md:p-8">
+      <section className="relative overflow-hidden rounded-3xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-4 shadow-md sm:p-6 md:p-8 transition-colors duration-200">
         {/* Декоративный градиент */}
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 dark:from-amber-500/10 dark:to-indigo-500/10" />
         <div className="relative">
           {!hasCandles ? (
-            <p className="text-sm text-slate-600 md:text-base">
+            <p className="text-sm text-slate-600 dark:text-slate-400 md:text-base">
               У тебя пока нет свечей за последние 30 дней. Зажги первую на странице{' '}
-              <span className="font-medium">Зажечь</span>.
+              <span className="font-medium text-slate-900 dark:text-slate-100">Зажечь</span>.
             </p>
           ) : (
             <>
               {/* Подзаголовок */}
-              <div className="mb-4 text-xs text-slate-600 md:text-sm">
+              <div className="mb-4 text-xs text-slate-600 dark:text-slate-400 md:text-sm">
                 <span>
                   История хранится за последние 30 дней. Активные свечи можно
                   досрочно погасить — они исчезнут из общего списка, но останутся
@@ -474,7 +474,7 @@ export default function DashboardPage() {
               </div>
 
             {/* Фильтры */}
-            <div className="mb-4 flex flex-wrap items-center gap-1.5 rounded-full border border-slate-300 bg-white p-1 text-[10px] shadow-md sm:gap-2 sm:p-1.5 sm:text-[11px]">
+            <div className="mb-4 flex flex-wrap items-center gap-1.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-1 text-[10px] shadow-md sm:gap-2 sm:p-1.5 sm:text-[11px] transition-colors duration-200">
               <FilterChip
                 label="Все"
                 active={filter === 'all'}
@@ -590,12 +590,12 @@ function FilterChip({
       className={
         'inline-flex items-center gap-1 rounded-full px-3 py-1.5 font-medium transition-all duration-300 ' +
         (active
-          ? 'bg-slate-900 text-white shadow-md'
-          : 'bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 hover:shadow-sm')
+          ? 'bg-slate-900 dark:bg-slate-700 text-white shadow-md'
+          : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 hover:text-slate-900 dark:hover:text-slate-100 hover:shadow-sm')
       }
     >
       <span>{label}</span>
-      <span className="text-[10px] text-slate-400">({count})</span>
+      <span className="text-[10px] text-slate-400 dark:text-slate-500">({count})</span>
     </button>
   );
 }

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 type UserInfo = {
   email: string | null;
@@ -79,14 +80,14 @@ export function SiteHeader() {
 
   const isActive = (href: string) =>
     pathname === href
-      ? 'text-slate-900'
-      : 'text-slate-700 hover:text-slate-900';
+      ? 'text-slate-900 dark:text-slate-100'
+      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100';
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-300 bg-white/95 backdrop-blur-md shadow-sm">
+    <header className="sticky top-0 z-30 border-b border-slate-300 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm transition-colors duration-200">
       <div className="relative">
         {/* Декоративный градиент */}
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/3 via-transparent to-indigo-500/3" />
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/3 via-transparent to-indigo-500/3 dark:from-amber-500/5 dark:to-indigo-500/5" />
         
         <nav className="relative mx-auto flex max-w-5xl items-center justify-between gap-2 px-3 py-3 sm:gap-4 sm:px-4">
           {/* Логотип / название */}
@@ -97,7 +98,7 @@ export function SiteHeader() {
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-slate-900 to-slate-800 text-xs shadow-md transition-transform duration-300 group-hover:scale-110">
               <span className="h-3 w-2 rounded-full bg-amber-300 shadow-sm" />
             </span>
-            <span className="text-sm font-semibold tracking-tight text-slate-900 md:text-base">
+            <span className="text-sm font-semibold tracking-tight text-slate-900 dark:text-slate-100 md:text-base">
               CandleTime
             </span>
           </Link>
@@ -106,13 +107,13 @@ export function SiteHeader() {
           <div className="flex items-center gap-1 text-xs sm:gap-2 md:gap-3 md:text-sm">
             <Link
               href="/light"
-              className={`whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-medium transition-all duration-300 sm:px-3 sm:text-xs ${isActive('/light')} ${pathname === '/light' ? 'bg-slate-100 shadow-sm' : 'hover:bg-slate-50 hover:shadow-sm'}`}
+              className={`whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-medium transition-all duration-300 sm:px-3 sm:text-xs ${isActive('/light')} ${pathname === '/light' ? 'bg-slate-100 dark:bg-slate-800 shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm'}`}
             >
               Зажечь
             </Link>
             <Link
               href="/candles"
-              className={`whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-medium transition-all duration-300 sm:px-3 sm:text-xs ${isActive('/candles')} ${pathname === '/candles' ? 'bg-slate-100 shadow-sm' : 'hover:bg-slate-50 hover:shadow-sm'}`}
+              className={`whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-medium transition-all duration-300 sm:px-3 sm:text-xs ${isActive('/candles')} ${pathname === '/candles' ? 'bg-slate-100 dark:bg-slate-800 shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm'}`}
             >
               Свечи
             </Link>
@@ -122,26 +123,29 @@ export function SiteHeader() {
                 href="/dashboard"
                 className={`whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-medium transition-all duration-300 sm:px-3 sm:text-xs ${isActive(
                   '/dashboard'
-                )} ${pathname === '/dashboard' ? 'bg-slate-100 shadow-sm' : 'hover:bg-slate-50 hover:shadow-sm'}`}
+                )} ${pathname === '/dashboard' ? 'bg-slate-100 dark:bg-slate-800 shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm'}`}
               >
                 Мои свечи
               </Link>
             )}
 
+            {/* Переключатель темы */}
+            <ThemeToggle />
+
             {/* Правая часть: логин / пользователь */}
             {loading ? (
-              <div className="ml-1 h-7 w-20 rounded-full bg-slate-100 animate-pulse" />
+              <div className="ml-1 h-7 w-20 rounded-full bg-slate-100 dark:bg-slate-800 animate-pulse" />
             ) : user ? (
               <div className="ml-1 flex items-center gap-2">
                 {user.email && (
-                  <span className="hidden max-w-[160px] truncate text-[11px] text-slate-500 md:inline md:text-xs">
+                  <span className="hidden max-w-[160px] truncate text-[11px] text-slate-500 dark:text-slate-400 md:inline md:text-xs">
                     {user.email}
                   </span>
                 )}
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="rounded-full border border-slate-300 bg-white px-3.5 py-1.5 text-[11px] font-medium text-slate-800 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg"
+                  className="rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-1.5 text-[11px] font-medium text-slate-800 dark:text-slate-200 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg"
                 >
                   Выйти
                 </button>
@@ -150,7 +154,7 @@ export function SiteHeader() {
               <Link
                 href="/auth/login"
                 title="Войти в аккаунт или зарегистрироваться"
-                className="ml-1 whitespace-nowrap rounded-full border border-slate-300 bg-white px-3 py-1.5 text-[11px] font-medium text-slate-800 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-lg sm:px-3.5"
+                className="ml-1 whitespace-nowrap rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-[11px] font-medium text-slate-800 dark:text-slate-200 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg sm:px-3.5"
               >
                 <span className="hidden sm:inline">Войти / Регистрация</span>
                 <span className="sm:hidden">Войти</span>
@@ -162,7 +166,7 @@ export function SiteHeader() {
         {/* Небольшой notification-чип под хедером */}
         {authNotice && (
           <div className="pointer-events-none absolute inset-x-0 top-full flex justify-center">
-            <div className="pointer-events-auto mt-1 rounded-full bg-gradient-to-br from-slate-900 to-slate-800 px-3 py-1.5 text-[11px] font-medium text-slate-50 shadow-md">
+            <div className="pointer-events-auto mt-1 rounded-full bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 px-3 py-1.5 text-[11px] font-medium text-slate-50 dark:text-slate-100 shadow-md">
               {authNotice}
             </div>
           </div>

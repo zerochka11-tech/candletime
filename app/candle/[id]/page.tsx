@@ -230,31 +230,31 @@ export default function CandlePage() {
   // Skeleton loading
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-4 w-24 animate-pulse rounded bg-slate-200" />
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-          <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="h-4 w-20 sm:w-24 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
+        <div className="rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 sm:p-6 shadow-sm md:p-8 transition-colors duration-200">
+          <div className="space-y-4 sm:space-y-6">
             <div className="flex items-center justify-between">
               <div className="flex gap-2">
-                <div className="h-7 w-20 animate-pulse rounded-full bg-slate-200" />
-                <div className="h-7 w-16 animate-pulse rounded-full bg-slate-200" />
+                <div className="h-6 w-16 sm:h-7 sm:w-20 animate-pulse rounded-full bg-slate-200 dark:bg-slate-700" />
+                <div className="h-6 w-12 sm:h-7 sm:w-16 animate-pulse rounded-full bg-slate-200 dark:bg-slate-700" />
               </div>
-              <div className="h-4 w-16 animate-pulse rounded bg-slate-200" />
+              <div className="h-3 w-12 sm:h-4 sm:w-16 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
             </div>
-            <div className="h-8 w-3/4 animate-pulse rounded bg-slate-200" />
+            <div className="h-7 w-3/4 sm:h-8 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
             <div className="space-y-2">
-              <div className="h-4 w-full animate-pulse rounded bg-slate-200" />
-              <div className="h-4 w-5/6 animate-pulse rounded bg-slate-200" />
+              <div className="h-4 w-full animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
+              <div className="h-4 w-5/6 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
             </div>
-            <div className="space-y-2 rounded-xl bg-slate-50 p-4">
-              <div className="h-4 w-full animate-pulse rounded bg-slate-200" />
-              <div className="h-4 w-full animate-pulse rounded bg-slate-200" />
-              <div className="h-4 w-2/3 animate-pulse rounded bg-slate-200" />
+            <div className="space-y-2 rounded-xl bg-slate-50 dark:bg-slate-700/50 p-3 sm:p-4">
+              <div className="h-4 w-full animate-pulse rounded bg-slate-200 dark:bg-slate-600" />
+              <div className="h-4 w-full animate-pulse rounded bg-slate-200 dark:bg-slate-600" />
+              <div className="h-4 w-2/3 animate-pulse rounded bg-slate-200 dark:bg-slate-600" />
             </div>
-            <div className="flex gap-3">
-              <div className="h-10 w-32 animate-pulse rounded-full bg-slate-200" />
-              <div className="h-10 w-40 animate-pulse rounded-full bg-slate-200" />
-              <div className="h-10 w-44 animate-pulse rounded-full bg-slate-200" />
+            <div className="flex flex-wrap gap-2 sm:gap-3">
+              <div className="h-10 w-28 sm:w-32 animate-pulse rounded-full bg-slate-200 dark:bg-slate-700" />
+              <div className="h-10 w-36 sm:w-40 animate-pulse rounded-full bg-slate-200 dark:bg-slate-700" />
+              <div className="h-10 w-40 sm:w-44 animate-pulse rounded-full bg-slate-200 dark:bg-slate-700" />
             </div>
           </div>
         </div>
@@ -264,20 +264,20 @@ export default function CandlePage() {
 
   if (error || !candle) {
     return (
-      <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-gradient-to-br from-white via-slate-50/50 to-white p-6 text-center shadow-sm md:p-8">
+      <div className="relative overflow-hidden rounded-3xl border border-slate-200/70 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-4 sm:p-6 text-center shadow-sm md:p-8 transition-colors duration-200">
         {/* Декоративный градиент */}
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 dark:from-amber-500/10 dark:to-indigo-500/10" />
         
         <div className="relative">
-          <h1 className="mb-2 text-xl font-semibold text-slate-900 md:text-2xl">
+          <h1 className="mb-2 text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100 md:text-2xl">
             Свеча не найдена
           </h1>
-          <p className="mb-4 text-sm text-slate-600 md:text-base">
+          <p className="mb-4 text-xs sm:text-sm text-slate-600 dark:text-slate-400 md:text-base">
             {error || 'Эта свеча не существует или была удалена.'}
           </p>
           <Link
             href="/candles"
-            className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-md"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 dark:bg-slate-700 px-6 py-3 sm:py-2.5 text-sm font-medium text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 dark:hover:bg-slate-600 hover:shadow-md min-h-[44px] sm:min-h-0"
           >
             Посмотреть все свечи
           </Link>
@@ -302,7 +302,7 @@ export default function CandlePage() {
       <div className="flex items-center justify-between">
         <Link
           href="/candles"
-          className="inline-flex items-center gap-1 text-xs text-slate-500 transition hover:text-slate-900"
+          className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 transition hover:text-slate-900 dark:hover:text-slate-100 min-h-[44px] sm:min-h-0"
         >
           <span>←</span>
           <span>Назад к свечам</span>
@@ -311,83 +311,83 @@ export default function CandlePage() {
 
       {/* Карточка свечи */}
       <section
-        className={`relative overflow-hidden rounded-3xl border border-slate-300 bg-white p-4 shadow-md sm:p-6 md:p-8 ${typeMeta.cardBg}`}
+        className={`relative overflow-hidden rounded-3xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 shadow-md sm:p-6 md:p-8 transition-colors duration-200 ${typeMeta.cardBg}`}
       >
         {/* Декоративный градиент */}
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 dark:from-amber-500/10 dark:to-indigo-500/10" />
         
-        <div className="relative space-y-6">
+        <div className="relative space-y-4 sm:space-y-5 md:space-y-6">
           {/* Верх: тип, статус, дата */}
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
               <div
-                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium ${typeMeta.chipBg} ${typeMeta.chipText}`}
+                className={`inline-flex items-center gap-1 sm:gap-1.5 rounded-full px-2.5 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-medium ${typeMeta.chipBg} ${typeMeta.chipText}`}
               >
-                <span className="text-base">{typeMeta.emoji}</span>
+                <span className="text-sm sm:text-base">{typeMeta.emoji}</span>
                 <span>{typeMeta.label}</span>
               </div>
 
               {isActive && (
-                <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-medium text-emerald-800">
+                <span className="inline-flex items-center rounded-full bg-emerald-100 dark:bg-emerald-800/50 px-2.5 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-medium text-emerald-800 dark:text-emerald-200">
                   Активна
                 </span>
               )}
               {status === 'expired' && (
-                <span className="inline-flex items-center rounded-full bg-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700">
+                <span className="inline-flex items-center rounded-full bg-slate-200 dark:bg-slate-700 px-2.5 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-medium text-slate-700 dark:text-slate-300">
                   Погасла
                 </span>
               )}
               {status === 'extinguished' && (
-                <span className="inline-flex items-center rounded-full bg-rose-100 px-3 py-1.5 text-xs font-medium text-rose-800">
+                <span className="inline-flex items-center rounded-full bg-rose-100 dark:bg-rose-800/50 px-2.5 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-medium text-rose-800 dark:text-rose-200">
                   Погашена вручную
                 </span>
               )}
             </div>
 
-            <span className="text-xs text-slate-500">
+            <span className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
               {formatDate(created)}
             </span>
           </div>
 
           {/* Заголовок */}
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 md:text-3xl">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 md:text-3xl leading-tight">
               {candle.is_anonymous ? 'Анонимная свеча' : candle.title}
             </h1>
           </div>
 
           {/* Сообщение */}
           {candle.message && (
-            <div className="rounded-xl bg-white/60 p-4">
-              <p className="text-base leading-relaxed text-slate-700 md:text-lg">
+            <div className="rounded-xl bg-white/60 dark:bg-slate-700/30 p-3 sm:p-4">
+              <p className="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300 md:text-lg">
                 {candle.message}
               </p>
             </div>
           )}
 
           {/* Информация о времени (компактная версия) */}
-          <div className="flex flex-wrap items-center gap-2 rounded-xl bg-white/60 px-3 py-2.5 text-[10px] sm:gap-3 sm:px-4 sm:py-3 sm:text-xs">
-            <div className="flex items-center gap-1.5">
-              <span className="text-slate-500">Зажжена:</span>
-              <span className="font-medium text-slate-700">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 md:gap-3 rounded-xl bg-white/60 dark:bg-slate-700/30 px-3 py-2.5 text-[10px] sm:px-4 sm:py-3 sm:text-xs">
+            <div className="flex items-center gap-1 sm:gap-1.5">
+              <span className="text-slate-500 dark:text-slate-400">Зажжена:</span>
+              <span className="font-medium text-slate-700 dark:text-slate-300">
                 {formatDate(created)}
               </span>
             </div>
-            <span className="text-slate-300">•</span>
-            <div className="flex items-center gap-1.5">
-              <span className="text-slate-500">
+            <span className="text-slate-300 dark:text-slate-600">•</span>
+            <div className="flex items-center gap-1 sm:gap-1.5">
+              <span className="text-slate-500 dark:text-slate-400">
                 {isActive ? 'Погаснет:' : 'Погасла:'}
               </span>
-              <span className="font-medium text-slate-700">
+              <span className="font-medium text-slate-700 dark:text-slate-300">
                 {formatDate(expires)}
               </span>
             </div>
             {isActive && (
               <>
-                <span className="text-slate-300">•</span>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-slate-500">Осталось:</span>
-                  <span className="font-semibold text-slate-900">
+                <span className="text-slate-300 dark:text-slate-600">•</span>
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <span className="text-slate-500 dark:text-slate-400">Осталось:</span>
+                  <span className="font-semibold text-slate-900 dark:text-slate-100">
                     {remainingText}
                   </span>
                 </div>
@@ -400,7 +400,7 @@ export default function CandlePage() {
             <button
               type="button"
               onClick={handleShare}
-              className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md sm:gap-2 sm:px-4 sm:text-sm"
+              className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-slate-300 bg-white px-3 py-2.5 sm:py-2 text-xs font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md sm:gap-2 sm:px-4 sm:text-sm min-h-[44px] sm:min-h-0"
             >
               <span>📤</span>
               <span>Поделиться</span>
@@ -408,7 +408,7 @@ export default function CandlePage() {
             <button
               type="button"
               onClick={handleCopyLink}
-              className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md sm:gap-2 sm:px-4 sm:text-sm"
+              className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-slate-300 bg-white px-3 py-2.5 sm:py-2 text-xs font-medium text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md sm:gap-2 sm:px-4 sm:text-sm min-h-[44px] sm:min-h-0"
             >
               <span>{copied ? '✓' : '🔗'}</span>
               <span className="hidden sm:inline">{copied ? 'Скопировано!' : 'Копировать ссылку'}</span>
@@ -416,7 +416,7 @@ export default function CandlePage() {
             </button>
             <Link
               href="/light"
-              className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-slate-900 px-3 py-2 text-xs font-medium text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-md sm:gap-2 sm:px-4 sm:text-sm"
+              className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-slate-900 px-3 py-2.5 sm:py-2 text-xs font-medium text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-md sm:gap-2 sm:px-4 sm:text-sm min-h-[44px] sm:min-h-0"
             >
               <span>🕯️</span>
               <span className="hidden sm:inline">Зажечь свою свечу</span>

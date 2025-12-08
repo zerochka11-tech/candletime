@@ -4,6 +4,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { Analytics } from '@/components/Analytics';
 import { CookieConsent } from '@/components/CookieConsent';
+import { ThemeScript } from '@/components/ThemeScript';
 import { generateMetadata as generateBaseMetadata, generateOrganizationStructuredData } from '@/lib/seo';
 
 const baseMetadata = generateBaseMetadata({
@@ -35,18 +36,19 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <head>
+        <ThemeScript />
         <meta name="google-site-verification" content="3vjdPzwkJwKsBjdNwjtKg2-qf31TK6Ymv7RMkjp0kTQ" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationData) }}
         />
       </head>
-      <body className="flex min-h-screen flex-col overflow-x-hidden bg-slate-50 text-slate-1850">
+      <body className="flex min-h-screen flex-col overflow-x-hidden bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-200">
         <Analytics />
         <SiteHeader />
 
         {/* КОНТЕНТ */}
-        <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-8 md:py-10">
+        <main className="flex-1 mx-auto w-full max-w-5xl px-3 sm:px-4 py-6 sm:py-8 md:py-10">
           {children}
         </main>
         <SiteFooter />
