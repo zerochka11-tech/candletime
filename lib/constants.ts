@@ -84,3 +84,4 @@ export const DEFAULT_CANDLE_TYPE_STYLE: CandleTypeStyle = {
   chipText: 'text-slate-700 dark:text-slate-300',
 };
 
+

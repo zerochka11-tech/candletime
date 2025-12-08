@@ -10,7 +10,7 @@ export function ThemeToggle() {
   // Предотвращаем мигание при загрузке
   if (!mounted) {
     return (
-      <div className="h-7 w-7 rounded-full bg-slate-100 dark:bg-slate-800 animate-pulse" />
+      <div className="h-8 w-8 md:h-7 md:w-7 rounded-full bg-slate-100 dark:bg-slate-800 animate-pulse" />
     );
   }
 
@@ -32,13 +32,13 @@ export function ThemeToggle() {
       <button
         type="button"
         onClick={toggleTheme}
-        className="flex h-7 w-7 items-center justify-center rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 shadow-sm transition-all duration-200 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-md"
+        className="flex h-8 w-8 md:h-7 md:w-7 items-center justify-center rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg"
         aria-label={resolvedTheme === 'dark' ? 'Переключить на светлую тему' : 'Переключить на темную тему'}
         title={resolvedTheme === 'dark' ? 'Светлая тема' : 'Темная тема'}
       >
         {resolvedTheme === 'dark' ? (
           <svg
-            className="h-4 w-4"
+            className="h-4 w-4 md:h-4 md:w-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -53,7 +53,7 @@ export function ThemeToggle() {
           </svg>
         ) : (
           <svg
-            className="h-4 w-4"
+            className="h-4 w-4 md:h-4 md:w-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

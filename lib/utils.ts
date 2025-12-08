@@ -78,3 +78,4 @@ export function formatRemainingTime(expires: Date | string): string {
   return `Осталось ~${days.toFixed(1)} дн`;
 }
 
+
