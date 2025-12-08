@@ -17,6 +17,7 @@ export function SiteHeader() {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [authNotice, setAuthNotice] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     let timeoutId: any;
@@ -66,18 +67,6 @@ export function SiteHeader() {
     };
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut();
-      // На всякий случай мгновенно обнуляем локальный стейт
-      setUser(null);
-    } catch (e) {
-      console.error('logout error', e);
-    } finally {
-      router.push('/auth/login');
-    }
-  };
-
   const isActive = (href: string) =>
     pathname === href
       ? 'text-slate-900 dark:text-slate-100'
@@ -93,7 +82,8 @@ export function SiteHeader() {
           {/* Логотип / название */}
           <Link 
             href="/" 
-            className="group flex items-center gap-2 transition-transform hover:-translate-y-0.5"
+            className="group flex items-center gap-2 transition-transform hover:-translate-y-0.5 flex-shrink-0"
+            onClick={() => setMobileMenuOpen(false)}
           >
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-slate-900 to-slate-800 text-xs shadow-md transition-transform duration-300 group-hover:scale-110">
               <span className="h-3 w-2 rounded-full bg-amber-300 shadow-sm" />
@@ -103,17 +93,17 @@ export function SiteHeader() {
             </span>
           </Link>
 
-          {/* Навигация */}
-          <div className="flex items-center gap-1 text-xs sm:gap-2 md:gap-3 md:text-sm">
+          {/* Десктопная навигация */}
+          <div className="hidden md:flex items-center gap-2 lg:gap-3 text-sm">
             <Link
               href="/light"
-              className={`whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-medium transition-all duration-300 sm:px-3 sm:text-xs ${isActive('/light')} ${pathname === '/light' ? 'bg-slate-100 dark:bg-slate-800 shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm'}`}
+              className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${isActive('/light')} ${pathname === '/light' ? 'bg-slate-100 dark:bg-slate-800 shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm'}`}
             >
               Зажечь
             </Link>
             <Link
               href="/candles"
-              className={`whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-medium transition-all duration-300 sm:px-3 sm:text-xs ${isActive('/candles')} ${pathname === '/candles' ? 'bg-slate-100 dark:bg-slate-800 shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm'}`}
+              className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${isActive('/candles')} ${pathname === '/candles' ? 'bg-slate-100 dark:bg-slate-800 shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm'}`}
             >
               Свечи
             </Link>
@@ -121,7 +111,7 @@ export function SiteHeader() {
             {user && (
               <Link
                 href="/dashboard"
-                className={`whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-medium transition-all duration-300 sm:px-3 sm:text-xs ${isActive(
+                className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${isActive(
                   '/dashboard'
                 )} ${pathname === '/dashboard' ? 'bg-slate-100 dark:bg-slate-800 shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm'}`}
               >
@@ -134,34 +124,113 @@ export function SiteHeader() {
 
             {/* Правая часть: логин / пользователь */}
             {loading ? (
-              <div className="ml-1 h-7 w-20 rounded-full bg-slate-100 dark:bg-slate-800 animate-pulse" />
+              <div className="ml-1 h-7 w-24 rounded-full bg-slate-100 dark:bg-slate-800 animate-pulse" />
             ) : user ? (
-              <div className="ml-1 flex items-center gap-2">
-                {user.email && (
-                  <span className="hidden max-w-[160px] truncate text-[11px] text-slate-500 dark:text-slate-400 md:inline md:text-xs">
-                    {user.email}
-                  </span>
-                )}
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-1.5 text-[11px] font-medium text-slate-800 dark:text-slate-200 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg"
-                >
-                  Выйти
-                </button>
-              </div>
+              <Link
+                href="/profile"
+                title="Мой профиль"
+                className={`ml-1 whitespace-nowrap rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-1.5 text-xs font-medium text-slate-800 dark:text-slate-200 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg ${pathname === '/profile' ? 'bg-slate-100 dark:bg-slate-800 shadow-sm' : ''}`}
+              >
+                Мой профиль
+              </Link>
             ) : (
               <Link
                 href="/auth/login"
                 title="Войти в аккаунт или зарегистрироваться"
-                className="ml-1 whitespace-nowrap rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-[11px] font-medium text-slate-800 dark:text-slate-200 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg sm:px-3.5"
+                className="ml-1 whitespace-nowrap rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-1.5 text-xs font-medium text-slate-800 dark:text-slate-200 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg"
               >
-                <span className="hidden sm:inline">Войти / Регистрация</span>
-                <span className="sm:hidden">Войти</span>
+                Войти / Регистрация
               </Link>
             )}
           </div>
+
+          {/* Мобильная навигация: кнопка бургер-меню + профиль/вход */}
+          <div className="flex md:hidden items-center gap-1.5">
+            {/* Переключатель темы (всегда видим) */}
+            <ThemeToggle />
+
+            {/* Кнопка профиля/входа (всегда видима) */}
+            {loading ? (
+              <div className="h-7 w-16 rounded-full bg-slate-100 dark:bg-slate-800 animate-pulse" />
+            ) : user ? (
+              <Link
+                href="/profile"
+                title="Мой профиль"
+                className={`whitespace-nowrap rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-[11px] font-medium text-slate-800 dark:text-slate-200 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg min-w-[36px] min-h-[32px] flex items-center justify-center ${pathname === '/profile' ? 'bg-slate-100 dark:bg-slate-800 shadow-sm' : ''}`}
+              >
+                👤
+              </Link>
+            ) : (
+              <Link
+                href="/auth/login"
+                title="Войти"
+                className="whitespace-nowrap rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-[11px] font-medium text-slate-800 dark:text-slate-200 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg min-w-[36px] min-h-[32px] flex items-center justify-center"
+              >
+                Войти
+              </Link>
+            )}
+
+            {/* Кнопка бургер-меню */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg"
+              aria-label="Меню"
+              aria-expanded={mobileMenuOpen}
+            >
+              {mobileMenuOpen ? (
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
         </nav>
+
+        {/* Мобильное меню (выпадающее) */}
+        {mobileMenuOpen && (
+          <>
+            {/* Overlay для закрытия меню при клике вне его */}
+            <div
+              className="fixed inset-0 z-20 bg-black/20 backdrop-blur-sm md:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <div className="absolute left-0 right-0 top-full z-30 md:hidden border-t border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-lg">
+              <div className="mx-auto max-w-5xl px-3 py-3 space-y-1.5">
+                <Link
+                  href="/light"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300 min-h-[44px] ${isActive('/light')} ${pathname === '/light' ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                >
+                  <span className="text-base">🕯️</span>
+                  <span>Зажечь</span>
+                </Link>
+                <Link
+                  href="/candles"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300 min-h-[44px] ${isActive('/candles')} ${pathname === '/candles' ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                >
+                  <span className="text-base">👁️</span>
+                  <span>Свечи</span>
+                </Link>
+                {user && (
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300 min-h-[44px] ${isActive('/dashboard')} ${pathname === '/dashboard' ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                  >
+                    <span className="text-base">📋</span>
+                    <span>Мои свечи</span>
+                  </Link>
+                )}
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Небольшой notification-чип под хедером */}
         {authNotice && (
