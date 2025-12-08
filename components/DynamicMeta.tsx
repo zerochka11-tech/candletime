@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { generateCandleStructuredData } from '@/lib/seo';
+import { CandleBreadcrumbList } from './StructuredDataList';
 
 type Candle = {
   id: string;
@@ -44,9 +45,18 @@ export function DynamicMeta({ candle }: { candle: Candle | null }) {
     updateMetaTag('og:description', description, 'property');
     updateMetaTag('og:url', url, 'property');
     updateMetaTag('og:type', 'article', 'property');
+    
+    // Динамическое OG изображение для свечи
+    const ogImageUrl = `${siteUrl}/og/candle?id=${candle.id}`;
+    updateMetaTag('og:image', ogImageUrl, 'property');
+    updateMetaTag('og:image:width', '1200', 'property');
+    updateMetaTag('og:image:height', '630', 'property');
+    updateMetaTag('og:image:alt', title, 'property');
+    
     updateMetaTag('twitter:title', title);
     updateMetaTag('twitter:description', description);
     updateMetaTag('twitter:card', 'summary_large_image');
+    updateMetaTag('twitter:image', ogImageUrl);
 
     // Canonical URL
     let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
@@ -76,6 +86,10 @@ export function DynamicMeta({ candle }: { candle: Candle | null }) {
     script.textContent = JSON.stringify(structuredData);
   }, [candle]);
 
-  return null;
+  if (!candle) return null;
+
+  const candleTitle = candle.is_anonymous ? 'Анонимная свеча' : candle.title;
+
+  return <CandleBreadcrumbList candleTitle={candleTitle} />;
 }
 

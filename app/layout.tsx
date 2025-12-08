@@ -8,7 +8,7 @@ import { generateMetadata as generateBaseMetadata, generateOrganizationStructure
 
 const baseMetadata = generateBaseMetadata({
   title: 'CandleTime',
-  description: 'Тихое место, чтобы зажечь символическую свечу онлайн. Без ленты и лайков — только спокойный жест внимания.',
+  description: 'Зажги символическую свечу онлайн. Тихое место для внимания и памяти без ленты и лайков. Создай свою свечу или посмотри другие.',
   path: '/',
 });
 

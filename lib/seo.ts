@@ -23,7 +23,9 @@ export function generateMetadata({
 }): Metadata {
   const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
   const url = `${siteUrl}${path}`;
-  const ogImage = image || `${siteUrl}/og-image.png`;
+  // Используем динамическую генерацию OG изображений
+  // Для страниц свечей используется DynamicMeta компонент, который устанавливает правильное изображение
+  const ogImage = image || `${siteUrl}/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description || defaultDescription)}`;
 
   return {
     title: fullTitle,
@@ -129,6 +131,45 @@ export function generateOrganizationStructuredData() {
     url: siteUrl,
     description: defaultDescription,
     logo: `${siteUrl}/favicon.svg`,
+  };
+}
+
+/**
+ * Генерирует структурированные данные BreadcrumbList для навигации
+ */
+export function generateBreadcrumbList(items: { name: string; url: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}
+
+/**
+ * Генерирует структурированные данные ItemList для страницы со списком свечей
+ */
+export function generateCandlesItemList(candles: Array<{ id: string; title: string }>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Активные символические свечи',
+    description: 'Список всех активных символических свечей на CandleTime',
+    numberOfItems: candles.length,
+    itemListElement: candles.map((candle, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'CreativeWork',
+        '@id': `${siteUrl}/candle/${candle.id}`,
+        name: candle.title,
+        url: `${siteUrl}/candle/${candle.id}`,
+      },
+    })),
   };
 }
 

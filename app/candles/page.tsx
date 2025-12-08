@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
+import { CandlesItemList } from '@/components/StructuredDataList';
 
 type Candle = {
   id: string;
@@ -164,15 +165,17 @@ export default function CandlesPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 md:gap-8">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold text-slate-900 md:text-3xl">
-          Активные свечи
-        </h1>
-        <p className="text-sm text-slate-600 md:text-base">
-          Свечи, которые всё ещё горят. Сейчас их: <span className="font-medium text-slate-900">{candles.length}</span>
-        </p>
-      </header>
+    <>
+      <CandlesItemList candles={candles.map(c => ({ id: c.id, title: c.is_anonymous ? 'Анонимная свеча' : c.title }))} />
+      <div className="flex flex-col gap-6 md:gap-8">
+        <header className="space-y-1">
+          <h1 className="text-2xl font-semibold text-slate-900 md:text-3xl">
+            Активные свечи
+          </h1>
+          <p className="text-sm text-slate-600 md:text-base">
+            Свечи, которые всё ещё горят. Сейчас их: <span className="font-medium text-slate-900">{candles.length}</span>
+          </p>
+        </header>
 
       <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-gradient-to-br from-white via-slate-50/50 to-white p-4 shadow-md sm:p-6 md:p-8">
         {/* Декоративный градиент */}
@@ -233,6 +236,7 @@ export default function CandlesPage() {
           })}
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

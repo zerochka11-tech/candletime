@@ -12,7 +12,7 @@ export async function generateMetadata({
   // Динамические мета-теги будут добавлены через компонент DynamicMeta
   return generateBaseMetadata({
     title: 'Свеча',
-    description: 'Просмотр символической свечи на CandleTime',
+    description: 'Просмотр символической свечи на CandleTime. Посмотри послание, поделись ссылкой или зажги свою свечу для памяти, поддержки, благодарности или спокойствия.',
     path: `/candle/${id}`,
     type: 'article',
   });
