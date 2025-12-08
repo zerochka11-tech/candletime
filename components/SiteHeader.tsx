@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -18,6 +18,50 @@ export function SiteHeader() {
   const [loading, setLoading] = useState(true);
   const [authNotice, setAuthNotice] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Функция закрытия меню
+  const closeMobileMenu = useCallback(() => {
+    setMobileMenuOpen(false);
+  }, []);
+
+  // Закрытие меню при изменении пути
+  useEffect(() => {
+    closeMobileMenu();
+  }, [pathname, closeMobileMenu]);
+
+  // Закрытие меню при изменении размера экрана (если стало больше md)
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        closeMobileMenu();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [closeMobileMenu]);
+
+  // Закрытие меню при нажатии Escape
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && mobileMenuOpen) {
+        closeMobileMenu();
+      }
+    };
+
+    if (mobileMenuOpen) {
+      document.addEventListener('keydown', handleEscape);
+      // Блокируем скролл body при открытом меню
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen, closeMobileMenu]);
 
   useEffect(() => {
     let timeoutId: any;
@@ -73,17 +117,18 @@ export function SiteHeader() {
       : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100';
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-300 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm transition-colors duration-200">
-      <div className="relative">
-        {/* Декоративный градиент */}
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/3 via-transparent to-indigo-500/3 dark:from-amber-500/5 dark:to-indigo-500/5" />
-        
-        <nav className="relative mx-auto flex max-w-5xl items-center justify-between gap-2 px-3 py-3 sm:gap-4 sm:px-4">
+    <>
+      <header className="sticky top-0 z-30 border-b border-slate-300 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm transition-colors duration-200">
+        <div className="relative">
+          {/* Декоративный градиент */}
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-500/3 via-transparent to-indigo-500/3 dark:from-amber-500/5 dark:to-indigo-500/5" />
+          
+          <nav className="relative mx-auto flex max-w-5xl items-center justify-between gap-2 px-3 py-3 sm:gap-4 sm:px-4">
           {/* Логотип / название */}
           <Link 
             href="/" 
             className="group flex items-center gap-2 transition-transform hover:-translate-y-0.5 flex-shrink-0"
-            onClick={() => setMobileMenuOpen(false)}
+            onClick={closeMobileMenu}
           >
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-slate-900 to-slate-800 text-xs shadow-md transition-transform duration-300 group-hover:scale-110">
               <span className="h-3 w-2 rounded-full bg-amber-300 shadow-sm" />
@@ -173,10 +218,11 @@ export function SiteHeader() {
             {/* Кнопка бургер-меню */}
             <button
               type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
               className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg"
-              aria-label="Меню"
+              aria-label={mobileMenuOpen ? 'Закрыть меню' : 'Открыть меню'}
               aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-menu"
             >
               {mobileMenuOpen ? (
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -191,56 +237,120 @@ export function SiteHeader() {
           </div>
         </nav>
 
-        {/* Мобильное меню (выпадающее) */}
-        {mobileMenuOpen && (
-          <>
-            {/* Overlay для закрытия меню при клике вне его */}
+          {/* Небольшой notification-чип под хедером */}
+          {authNotice && (
+            <div className="pointer-events-none absolute inset-x-0 top-full flex justify-center">
+              <div className="pointer-events-auto mt-1 rounded-full bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 px-3 py-1.5 text-[11px] font-medium text-slate-50 dark:text-slate-100 shadow-md">
+                {authNotice}
+              </div>
+            </div>
+          )}
+        </div>
+      </header>
+
+      {/* Мобильное меню (полноэкранное) - вне header для правильного z-index */}
+      <div
+        className={`fixed inset-0 z-50 md:hidden bg-white dark:bg-slate-900 transition-all duration-300 ease-in-out ${
+          mobileMenuOpen
+            ? 'opacity-100 translate-y-0 pointer-events-auto'
+            : 'opacity-0 translate-y-full pointer-events-none'
+        }`}
+        aria-hidden={!mobileMenuOpen}
+      >
             <div
-              className="fixed inset-0 z-20 bg-black/20 backdrop-blur-sm md:hidden"
-              onClick={() => setMobileMenuOpen(false)}
-            />
-            <div className="absolute left-0 right-0 top-full z-30 md:hidden border-t border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-lg">
-              <div className="mx-auto max-w-5xl px-3 py-3 space-y-1.5">
+              id="mobile-menu"
+              className="flex flex-col h-full w-full"
+              role="menu"
+              aria-label="Мобильное меню"
+            >
+            {/* Заголовок с крестиком */}
+            <div className="flex items-center justify-between px-4 py-4 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-slate-900 to-slate-800 text-xs shadow-md">
+                  <span className="h-3 w-2 rounded-full bg-amber-300 shadow-sm" />
+                </span>
+                <span className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+                  CandleTime
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={closeMobileMenu}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all duration-200 hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95"
+                aria-label="Закрыть меню"
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Контент меню с прокруткой */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="mx-auto max-w-5xl px-4 py-6 space-y-2">
                 <Link
                   href="/light"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300 min-h-[44px] ${isActive('/light')} ${pathname === '/light' ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                  onClick={closeMobileMenu}
+                  role="menuitem"
+                  className={`group flex items-center gap-4 rounded-2xl px-5 py-4 text-base font-medium transition-all duration-200 min-h-[56px] active:scale-[0.98] ${
+                    pathname === '/light'
+                      ? 'bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-900 dark:text-amber-100 shadow-md border border-amber-200/50 dark:border-amber-700/50'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:shadow-sm'
+                  }`}
                 >
-                  <span className="text-base">🕯️</span>
-                  <span>Зажечь</span>
+                  <span className="text-2xl transition-transform duration-200 group-hover:scale-110">🕯️</span>
+                  <span className="flex-1">Зажечь</span>
+                  {pathname === '/light' && (
+                    <svg className="h-5 w-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  )}
                 </Link>
+
                 <Link
                   href="/candles"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300 min-h-[44px] ${isActive('/candles')} ${pathname === '/candles' ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                  onClick={closeMobileMenu}
+                  role="menuitem"
+                  className={`group flex items-center gap-4 rounded-2xl px-5 py-4 text-base font-medium transition-all duration-200 min-h-[56px] active:scale-[0.98] ${
+                    pathname === '/candles'
+                      ? 'bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 text-indigo-900 dark:text-indigo-100 shadow-md border border-indigo-200/50 dark:border-indigo-700/50'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:shadow-sm'
+                  }`}
                 >
-                  <span className="text-base">👁️</span>
-                  <span>Свечи</span>
+                  <span className="text-2xl transition-transform duration-200 group-hover:scale-110">👁️</span>
+                  <span className="flex-1">Свечи</span>
+                  {pathname === '/candles' && (
+                    <svg className="h-5 w-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  )}
                 </Link>
+
                 {user && (
                   <Link
                     href="/dashboard"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300 min-h-[44px] ${isActive('/dashboard')} ${pathname === '/dashboard' ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+                    onClick={closeMobileMenu}
+                    role="menuitem"
+                    className={`group flex items-center gap-4 rounded-2xl px-5 py-4 text-base font-medium transition-all duration-200 min-h-[56px] active:scale-[0.98] ${
+                      pathname === '/dashboard'
+                        ? 'bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 text-emerald-900 dark:text-emerald-100 shadow-md border border-emerald-200/50 dark:border-emerald-700/50'
+                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:shadow-sm'
+                    }`}
                   >
-                    <span className="text-base">📋</span>
-                    <span>Мои свечи</span>
+                    <span className="text-2xl transition-transform duration-200 group-hover:scale-110">📋</span>
+                    <span className="flex-1">Мои свечи</span>
+                    {pathname === '/dashboard' && (
+                      <svg className="h-5 w-5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    )}
                   </Link>
                 )}
+
               </div>
             </div>
-          </>
-        )}
-
-        {/* Небольшой notification-чип под хедером */}
-        {authNotice && (
-          <div className="pointer-events-none absolute inset-x-0 top-full flex justify-center">
-            <div className="pointer-events-auto mt-1 rounded-full bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 px-3 py-1.5 text-[11px] font-medium text-slate-50 dark:text-slate-100 shadow-md">
-              {authNotice}
-            </div>
           </div>
-        )}
-      </div>
-    </header>
-  );
-}
+        </div>
+      </>
+    );
+  }
