@@ -11,7 +11,7 @@ INSERT INTO articles (
   title,
   slug,
   excerpt,
-  content,
+  content, -- Контент в формате Markdown
   category_id,
   published,
   published_at,

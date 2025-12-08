@@ -5,6 +5,8 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { generateArticleStructuredData } from '@/lib/seo';
+import { MarkdownContent } from '@/components/MarkdownContent';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 type Article = {
   id: string;
@@ -194,10 +196,31 @@ export default function ArticlePage() {
     );
   }
 
+  // Формируем хлебные крошки
+  const breadcrumbItems = [
+    { name: 'Главная', url: '/' },
+    { name: 'FAQ и Статьи', url: '/faq' },
+  ];
+
+  if (article.category) {
+    breadcrumbItems.push({
+      name: article.category.name,
+      url: `/faq?category=${article.category.slug}`,
+    });
+  }
+
+  breadcrumbItems.push({
+    name: article.title,
+    url: `/faq/${article.slug}`,
+  });
+
   return (
     <article className="mx-auto w-full max-w-4xl">
+      {/* Хлебные крошки */}
+      <Breadcrumbs items={breadcrumbItems} />
+
       {/* Заголовок */}
-      <header className="mb-8">
+      <header className="mb-8 pb-8 border-b-2 border-slate-200 dark:border-slate-800">
         {article.category && (
           <Link
             href={`/faq?category=${article.category.slug}`}
@@ -220,11 +243,10 @@ export default function ArticlePage() {
         </div>
       </header>
 
-      {/* Контент */}
-      <div
-        className="prose prose-slate max-w-none dark:prose-invert prose-headings:font-bold prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-a:text-slate-900 dark:prose-a:text-slate-100 prose-strong:text-slate-900 dark:prose-strong:text-slate-100"
-        dangerouslySetInnerHTML={{ __html: article.content }}
-      />
+      {/* Контент статьи */}
+      <div className="mt-8">
+        <MarkdownContent content={article.content} articleTitle={article.title} />
+      </div>
 
       {/* Ключевые слова (если есть) */}
       {article.seo_keywords && article.seo_keywords.length > 0 && (
