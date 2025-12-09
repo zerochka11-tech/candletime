@@ -34,7 +34,7 @@ async function checkAdminAuth(request: NextRequest) {
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { error: authError } = await checkAdminAuth(request);
@@ -42,7 +42,7 @@ export async function POST(
       return NextResponse.json({ error: authError }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const { approve, published_at } = body;
 
