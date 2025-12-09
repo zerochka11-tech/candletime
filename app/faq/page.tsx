@@ -33,7 +33,6 @@ const ARTICLES_PER_PAGE = 12;
 
 export default function FAQPage() {
   const [articles, setArticles] = useState<Article[]>([]);
-  const [allArticles, setAllArticles] = useState<Article[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -41,6 +40,10 @@ export default function FAQPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, searchQuery, sortBy]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -53,66 +56,88 @@ export default function FAQPage() {
 
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, selectedCategory]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedCategory, searchQuery, sortBy]);
-
-  useEffect(() => {
-    applySortingAndPagination();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allArticles, sortBy, currentPage]);
+  }, [searchQuery, selectedCategory, sortBy, currentPage]);
 
   const loadData = async () => {
     try {
       setLoading(true);
 
-      // Загружаем категории
-      const { data: categoriesData } = await supabase
-        .from('article_categories')
-        .select('id, name, slug')
-        .order('name');
+      // Вычисляем диапазон для пагинации
+      const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
+      const endIndex = startIndex + ARTICLES_PER_PAGE - 1;
 
-      if (categoriesData) {
-        setCategories(categoriesData);
+      // Определяем параметры сортировки для сервера
+      let orderColumn = 'published_at';
+      let ascending = false;
+      
+      switch (sortBy) {
+        case 'date-asc':
+          orderColumn = 'published_at';
+          ascending = true;
+          break;
+        case 'date-desc':
+          orderColumn = 'published_at';
+          ascending = false;
+          break;
+        case 'popularity':
+          orderColumn = 'views_count';
+          ascending = false;
+          break;
+        case 'reading-time':
+          orderColumn = 'reading_time';
+          ascending = true;
+          break;
       }
 
-      // Загружаем статьи
-      let query = supabase
-        .from('articles')
-        .select(`
-          id,
-          title,
-          slug,
-          excerpt,
-          published_at,
-          views_count,
-          reading_time,
-          featured_image_url,
-          article_categories (
-            id,
-            name,
-            slug
-          )
-        `)
-        .eq('published', true)
-        .not('published_at', 'is', null)
-        .lte('published_at', new Date().toISOString());
+      // Параллельная загрузка категорий и статей
+      const [categoriesResult, articlesResult] = await Promise.all([
+        supabase
+          .from('article_categories')
+          .select('id, name, slug')
+          .order('name'),
+        (() => {
+          let query = supabase
+            .from('articles')
+            .select(`
+              id,
+              title,
+              slug,
+              excerpt,
+              published_at,
+              views_count,
+              reading_time,
+              featured_image_url,
+              article_categories (
+                id,
+                name,
+                slug
+              )
+            `, { count: 'exact' })
+            .eq('published', true)
+            .not('published_at', 'is', null)
+            .lte('published_at', new Date().toISOString())
+            .order(orderColumn, { ascending })
+            .range(startIndex, endIndex);
 
-      if (selectedCategory) {
-        query = query.eq('category_id', selectedCategory);
+          if (selectedCategory) {
+            query = query.eq('category_id', selectedCategory);
+          }
+
+          return query;
+        })()
+      ]);
+
+      if (categoriesResult.data) {
+        setCategories(categoriesResult.data);
       }
 
-      const { data: articlesData, error } = await query;
-
-      if (error) {
-        console.error('Error loading articles:', error);
+      if (articlesResult.error) {
+        console.error('Error loading articles:', articlesResult.error);
         return;
       }
 
-      if (articlesData) {
-        const formattedArticles = articlesData.map((article: any) => ({
+      if (articlesResult.data) {
+        const formattedArticles = articlesResult.data.map((article: any) => ({
           id: article.id,
           title: article.title,
           slug: article.slug,
@@ -124,8 +149,8 @@ export default function FAQPage() {
           featured_image_url: article.featured_image_url,
         }));
 
-        setAllArticles(formattedArticles);
-        setTotalCount(formattedArticles.length);
+        setArticles(formattedArticles);
+        setTotalCount(articlesResult.count || 0);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -143,41 +168,83 @@ export default function FAQPage() {
     try {
       setLoading(true);
 
-      let query = supabase
-        .from('articles')
-        .select(`
-          id,
-          title,
-          slug,
-          excerpt,
-          published_at,
-          views_count,
-          reading_time,
-          featured_image_url,
-          article_categories (
-            id,
-            name,
-            slug
-          )
-        `)
-        .eq('published', true)
-        .not('published_at', 'is', null)
-        .lte('published_at', new Date().toISOString())
-        .or(`title.ilike.%${searchQuery}%,excerpt.ilike.%${searchQuery}%`);
+      // Вычисляем диапазон для пагинации
+      const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
+      const endIndex = startIndex + ARTICLES_PER_PAGE - 1;
 
-      if (selectedCategory) {
-        query = query.eq('category_id', selectedCategory);
+      // Определяем параметры сортировки для сервера
+      let orderColumn = 'published_at';
+      let ascending = false;
+      
+      switch (sortBy) {
+        case 'date-asc':
+          orderColumn = 'published_at';
+          ascending = true;
+          break;
+        case 'date-desc':
+          orderColumn = 'published_at';
+          ascending = false;
+          break;
+        case 'popularity':
+          orderColumn = 'views_count';
+          ascending = false;
+          break;
+        case 'reading-time':
+          orderColumn = 'reading_time';
+          ascending = true;
+          break;
       }
 
-      const { data: articlesData, error } = await query;
+      // Параллельная загрузка категорий и результатов поиска
+      const [categoriesResult, articlesResult] = await Promise.all([
+        supabase
+          .from('article_categories')
+          .select('id, name, slug')
+          .order('name'),
+        (() => {
+          let query = supabase
+            .from('articles')
+            .select(`
+              id,
+              title,
+              slug,
+              excerpt,
+              published_at,
+              views_count,
+              reading_time,
+              featured_image_url,
+              article_categories (
+                id,
+                name,
+                slug
+              )
+            `, { count: 'exact' })
+            .eq('published', true)
+            .not('published_at', 'is', null)
+            .lte('published_at', new Date().toISOString())
+            .or(`title.ilike.%${searchQuery}%,excerpt.ilike.%${searchQuery}%`)
+            .order(orderColumn, { ascending })
+            .range(startIndex, endIndex);
 
-      if (error) {
-        console.error('Error searching articles:', error);
+          if (selectedCategory) {
+            query = query.eq('category_id', selectedCategory);
+          }
+
+          return query;
+        })()
+      ]);
+
+      if (categoriesResult.data) {
+        setCategories(categoriesResult.data);
+      }
+
+      if (articlesResult.error) {
+        console.error('Error searching articles:', articlesResult.error);
         return;
       }
 
-      if (articlesData) {
-        const formattedArticles = articlesData.map((article: any) => ({
+      if (articlesResult.data) {
+        const formattedArticles = articlesResult.data.map((article: any) => ({
           id: article.id,
           title: article.title,
           slug: article.slug,
@@ -189,8 +256,8 @@ export default function FAQPage() {
           featured_image_url: article.featured_image_url,
         }));
 
-        setAllArticles(formattedArticles);
-        setTotalCount(formattedArticles.length);
+        setArticles(formattedArticles);
+        setTotalCount(articlesResult.count || 0);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -199,43 +266,6 @@ export default function FAQPage() {
     }
   };
 
-  const applySortingAndPagination = () => {
-    let sorted = [...allArticles];
-
-    // Применяем сортировку
-    switch (sortBy) {
-      case 'date-asc':
-        sorted.sort((a, b) => {
-          const dateA = a.published_at ? new Date(a.published_at).getTime() : 0;
-          const dateB = b.published_at ? new Date(b.published_at).getTime() : 0;
-          return dateA - dateB;
-        });
-        break;
-      case 'date-desc':
-        sorted.sort((a, b) => {
-          const dateA = a.published_at ? new Date(a.published_at).getTime() : 0;
-          const dateB = b.published_at ? new Date(b.published_at).getTime() : 0;
-          return dateB - dateA;
-        });
-        break;
-      case 'popularity':
-        sorted.sort((a, b) => b.views_count - a.views_count);
-        break;
-      case 'reading-time':
-        sorted.sort((a, b) => {
-          const timeA = a.reading_time || 0;
-          const timeB = b.reading_time || 0;
-          return timeA - timeB;
-        });
-        break;
-    }
-
-    // Применяем пагинацию
-    const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
-    const endIndex = startIndex + ARTICLES_PER_PAGE;
-    setArticles(sorted.slice(startIndex, endIndex));
-    setTotalCount(sorted.length);
-  };
 
   const highlightText = (text: string, query: string): string => {
     if (!query.trim() || !text) return text;

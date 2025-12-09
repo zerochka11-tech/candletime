@@ -65,14 +65,17 @@ export default function ArticlePage() {
 
   useEffect(() => {
     if (article) {
-      // Увеличиваем счетчик просмотров
-      incrementViews();
-      // Добавляем структурированные данные
+      // Добавляем структурированные данные (синхронно)
       addStructuredData();
-      // Загружаем похожие статьи
-      loadRelatedArticles();
-      // Загружаем навигацию
-      loadNavigation();
+      // Параллельная загрузка похожих статей и навигации
+      Promise.all([
+        loadRelatedArticles(),
+        loadNavigation()
+      ]).catch((error) => {
+        console.error('Error loading related data:', error);
+      });
+      // Увеличиваем счетчик просмотров в фоне (не блокирует)
+      incrementViews();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [article]);
@@ -141,14 +144,17 @@ export default function ArticlePage() {
   const incrementViews = async () => {
     if (!article) return;
 
-    try {
-      await supabase.rpc('increment_article_views', {
-        article_uuid: article.id,
-      });
-    } catch (error) {
-      // Игнорируем ошибки при увеличении счетчика
-      console.error('Error incrementing views:', error);
-    }
+    // Выполняем в фоне, не блокируем рендер
+    setTimeout(async () => {
+      try {
+        await supabase.rpc('increment_article_views', {
+          article_uuid: article.id,
+        });
+      } catch (error) {
+        // Игнорируем ошибки при увеличении счетчика
+        console.error('Error incrementing views:', error);
+      }
+    }, 100);
   };
 
   const addStructuredData = () => {
@@ -205,28 +211,40 @@ export default function ArticlePage() {
   };
 
   const loadNavigation = async () => {
-    if (!article?.category) return;
+    if (!article?.category || !article.published_at) return;
 
     try {
-      const { data: articles } = await supabase
-        .from('articles')
-        .select('id, title, slug')
-        .eq('category_id', article.category.id)
-        .eq('published', true)
-        .not('published_at', 'is', null)
-        .lte('published_at', new Date().toISOString())
-        .order('published_at', { ascending: false });
+      // Оптимизированная навигация: два отдельных запроса вместо загрузки всех статей
+      const [prevResult, nextResult] = await Promise.all([
+        // Предыдущая статья (более старая по дате публикации)
+        supabase
+          .from('articles')
+          .select('id, title, slug')
+          .eq('category_id', article.category.id)
+          .eq('published', true)
+          .not('published_at', 'is', null)
+          .lt('published_at', article.published_at)
+          .order('published_at', { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+        
+        // Следующая статья (более новая по дате публикации)
+        supabase
+          .from('articles')
+          .select('id, title, slug')
+          .eq('category_id', article.category.id)
+          .eq('published', true)
+          .not('published_at', 'is', null)
+          .gt('published_at', article.published_at)
+          .order('published_at', { ascending: true })
+          .limit(1)
+          .maybeSingle()
+      ]);
 
-      if (articles) {
-        const currentIndex = articles.findIndex((a) => a.id === article.id);
-        const prev = currentIndex > 0 ? (articles[currentIndex - 1] as NavigationArticle) : null;
-        const next =
-          currentIndex < articles.length - 1 && currentIndex >= 0
-            ? (articles[currentIndex + 1] as NavigationArticle)
-            : null;
-
-        setNavigation({ prev, next });
-      }
+      setNavigation({
+        prev: prevResult.data || null,
+        next: nextResult.data || null,
+      });
     } catch (error) {
       console.error('Error loading navigation:', error);
     }

@@ -28,6 +28,8 @@ type FileArticle = {
   path: string;
 };
 
+const ARTICLES_PER_PAGE = 50;
+
 export default function AdminArticlesPage() {
   const router = useRouter();
   const [articles, setArticles] = useState<Article[]>([]);
@@ -36,6 +38,10 @@ export default function AdminArticlesPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [importing, setImporting] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [publishedCount, setPublishedCount] = useState(0);
+  const [draftCount, setDraftCount] = useState(0);
 
   useEffect(() => {
     checkAccess();
@@ -45,8 +51,14 @@ export default function AdminArticlesPage() {
     if (isAdmin) {
       loadArticles();
       loadFileArticles();
+      loadStats();
     }
-  }, [isAdmin, filter]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdmin, filter, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter]);
 
   const checkAccess = async () => {
     const { isAdmin: admin, error } = await checkAdminAccess();
@@ -57,12 +69,59 @@ export default function AdminArticlesPage() {
     setIsAdmin(true);
   };
 
+  const loadStats = async () => {
+    try {
+      // Параллельная загрузка статистики
+      const [allResult, publishedResult, draftResult] = await Promise.all([
+        supabase
+          .from('articles')
+          .select('id', { count: 'exact', head: true }),
+        supabase
+          .from('articles')
+          .select('id', { count: 'exact', head: true })
+          .eq('published', true),
+        supabase
+          .from('articles')
+          .select('id', { count: 'exact', head: true })
+          .eq('published', false)
+      ]);
+
+      setTotalCount(allResult.count || 0);
+      setPublishedCount(publishedResult.count || 0);
+      setDraftCount(draftResult.count || 0);
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  };
+
   const loadArticles = async () => {
     try {
+      setLoading(true);
+      
+      // Вычисляем диапазон для пагинации
+      const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
+      const endIndex = startIndex + ARTICLES_PER_PAGE - 1;
+
+      // Загружаем только нужные поля (БЕЗ content!)
       let query = supabase
         .from('articles')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select(`
+          id,
+          title,
+          slug,
+          excerpt,
+          published,
+          published_at,
+          created_at,
+          updated_at,
+          views_count,
+          reading_time,
+          seo_title,
+          seo_description,
+          author_id
+        `, { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(startIndex, endIndex);
 
       if (filter === 'published') {
         query = query.eq('published', true);
@@ -70,7 +129,7 @@ export default function AdminArticlesPage() {
         query = query.eq('published', false);
       }
 
-      const { data, error } = await query;
+      const { data, error, count } = await query;
 
       if (error) {
         console.error('Error loading articles:', error);
@@ -78,6 +137,14 @@ export default function AdminArticlesPage() {
       }
 
       setArticles(data || []);
+      // Обновляем totalCount в зависимости от фильтра
+      if (filter === 'all') {
+        setTotalCount(count || 0);
+      } else if (filter === 'published') {
+        setTotalCount(count || publishedCount);
+      } else if (filter === 'draft') {
+        setTotalCount(count || draftCount);
+      }
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -126,7 +193,7 @@ export default function AdminArticlesPage() {
         alert(
           `Статья "${file.slug}" успешно ${result.action === 'created' ? 'создана' : 'обновлена'}!`
         );
-        loadArticles();
+        await Promise.all([loadArticles(), loadStats()]);
       } else {
         alert(`Ошибка: ${result.error}`);
       }
@@ -165,7 +232,7 @@ export default function AdminArticlesPage() {
       const result = await response.json();
 
       if (response.ok) {
-        loadArticles();
+        await Promise.all([loadArticles(), loadStats()]);
       } else {
         alert(`Ошибка: ${result.error}`);
       }
@@ -202,9 +269,6 @@ export default function AdminArticlesPage() {
     );
   }
 
-  const publishedCount = articles.filter((a) => a.published).length;
-  const draftCount = articles.filter((a) => !a.published).length;
-
   return (
     <div className="mx-auto w-full max-w-7xl">
       {/* Статистика */}
@@ -212,7 +276,7 @@ export default function AdminArticlesPage() {
         <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-800">
           <div className="text-sm text-slate-600 dark:text-slate-400">Всего статей</div>
           <div className="mt-1 text-2xl font-bold text-slate-900 dark:text-slate-100">
-            {articles.length}
+            {totalCount}
           </div>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-800">
@@ -239,7 +303,7 @@ export default function AdminArticlesPage() {
               : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
           }`}
         >
-          Все ({articles.length})
+          Все ({totalCount})
         </button>
         <button
           onClick={() => setFilter('published')}
@@ -373,6 +437,85 @@ export default function AdminArticlesPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Пагинация */}
+      {!loading && totalCount > ARTICLES_PER_PAGE && (
+        <div className="mt-6 flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-800">
+          <div className="text-sm text-slate-600 dark:text-slate-400">
+            Показано{' '}
+            <span className="font-medium text-slate-900 dark:text-slate-100">
+              {Math.min((currentPage - 1) * ARTICLES_PER_PAGE + 1, totalCount)}
+            </span>
+            {' - '}
+            <span className="font-medium text-slate-900 dark:text-slate-100">
+              {Math.min(currentPage * ARTICLES_PER_PAGE, totalCount)}
+            </span>
+            {' из '}
+            <span className="font-medium text-slate-900 dark:text-slate-100">{totalCount}</span>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+              type="button"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Предыдущая
+            </button>
+
+            <div className="flex items-center gap-1">
+              {Array.from({ length: Math.ceil(totalCount / ARTICLES_PER_PAGE) }, (_, i) => i + 1)
+                .filter((page) => {
+                  const totalPages = Math.ceil(totalCount / ARTICLES_PER_PAGE);
+                  return (
+                    page === 1 ||
+                    page === totalPages ||
+                    (page >= currentPage - 1 && page <= currentPage + 1)
+                  );
+                })
+                .map((page, index, array) => {
+                  const prevPage = array[index - 1];
+                  const showEllipsis = prevPage && page - prevPage > 1;
+
+                  return (
+                    <div key={page} className="flex items-center gap-1">
+                      {showEllipsis && (
+                        <span className="px-2 text-xs text-slate-500 dark:text-slate-400">...</span>
+                      )}
+                      <button
+                        onClick={() => setCurrentPage(page)}
+                        className={`inline-flex h-8 w-8 items-center justify-center rounded-full text-xs font-medium transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:scale-95 ${
+                          currentPage === page
+                            ? 'bg-slate-900 text-white shadow-sm dark:bg-slate-100 dark:text-slate-900'
+                            : 'border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-600'
+                        }`}
+                        type="button"
+                      >
+                        {page}
+                      </button>
+                    </div>
+                  );
+                })}
+            </div>
+
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(Math.ceil(totalCount / ARTICLES_PER_PAGE), p + 1))}
+              disabled={currentPage >= Math.ceil(totalCount / ARTICLES_PER_PAGE)}
+              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+              type="button"
+            >
+              Следующая
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </div>
       )}
     </div>

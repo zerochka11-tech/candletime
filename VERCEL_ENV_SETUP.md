@@ -31,6 +31,16 @@
    - **Value:** твой Supabase anon public key
    - **Environment:** выбери все (Production, Preview, Development)
 
+   **Переменная 3 (для админ-панели):**
+   - **Key:** `NEXT_PUBLIC_ADMIN_EMAILS`
+   - **Value:** твой email администратора (например: `admin@example.com`)
+   - **Environment:** выбери все (Production, Preview, Development)
+
+   **Переменная 4 (для API админ-панели):**
+   - **Key:** `SUPABASE_SERVICE_ROLE_KEY`
+   - **Value:** твой Supabase service_role key (⚠️ НЕ anon key!)
+   - **Environment:** выбери все (Production, Preview, Development)
+
 4. Нажми **Save** для каждой переменной
 
 ### Шаг 3: Перезапусти деплой
@@ -65,6 +75,8 @@
 2. Должны быть видны:
    - ✅ `NEXT_PUBLIC_SUPABASE_URL`
    - ✅ `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - ✅ `NEXT_PUBLIC_ADMIN_EMAILS` (для админ-панели)
+   - ✅ `SUPABASE_SERVICE_ROLE_KEY` (для API админ-панели)
 
 ---
 
