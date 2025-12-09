@@ -34,7 +34,7 @@ export default function RootLayout({
   const organizationData = generateOrganizationStructuredData();
 
   return (
-    <html lang="ru">
+    <html lang="ru" suppressHydrationWarning>
       <head>
         <ThemeScript />
         <meta name="google-site-verification" content="3vjdPzwkJwKsBjdNwjtKg2-qf31TK6Ymv7RMkjp0kTQ" />

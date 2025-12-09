@@ -1,9 +1,22 @@
 'use client';
 
-import { WorldMap } from '@/components/map/WorldMap';
+import dynamic from 'next/dynamic';
 
-// Отключаем статическую генерацию, так как карта требует клиентского рендеринга
-export const dynamic = 'force-dynamic';
+// Динамический импорт с отключением SSR, так как Leaflet использует window
+const WorldMap = dynamic(
+  () => import('@/components/map/WorldMap').then((mod) => ({ default: mod.WorldMap })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[600px] w-full rounded-2xl border border-slate-300 dark:border-slate-700 shadow-lg flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+        <div className="text-center space-y-2">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-600 dark:border-slate-400 mx-auto"></div>
+          <p className="text-sm text-slate-600 dark:text-slate-400">Загрузка карты...</p>
+        </div>
+      </div>
+    ),
+  }
+);
 
 export default function MapPage() {
   return (

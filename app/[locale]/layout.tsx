@@ -67,7 +67,7 @@ export default async function LocaleLayout({
   const organizationData = generateOrganizationStructuredData();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <ThemeScript />
         <meta name="google-site-verification" content="3vjdPzwkJwKsBjdNwjtKg2-qf31TK6Ymv7RMkjp0kTQ" />
