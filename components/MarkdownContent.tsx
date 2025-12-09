@@ -46,13 +46,13 @@ export function MarkdownContent({ content, articleTitle }: MarkdownContentProps)
       prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-slate-900 dark:prose-headings:text-slate-100 prose-headings:break-words
       prose-h2:text-xl sm:prose-h2:text-2xl md:prose-h2:text-3xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:leading-tight
       prose-h3:text-lg sm:prose-h3:text-xl md:prose-h3:text-2xl prose-h3:mt-6 prose-h3:mb-3 prose-h3:leading-tight
-      prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-p:leading-[1.65] prose-p:text-[16px] sm:prose-p:text-[18px] md:prose-p:text-[19px] prose-p:mb-4 prose-p:break-words prose-p:font-normal prose-p:first:mt-0
+      prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-p:leading-[1.65] prose-p:text-base sm:prose-p:text-lg prose-p:mb-4 prose-p:break-words prose-p:font-normal prose-p:first:mt-0
       prose-a:text-slate-900 dark:prose-a:text-slate-100 prose-a:font-medium prose-a:underline prose-a:decoration-2 prose-a:underline-offset-2 prose-a:decoration-amber-500 hover:prose-a:decoration-amber-600 prose-a:break-words
       prose-strong:text-slate-900 dark:prose-strong:text-slate-100 prose-strong:font-semibold
-      prose-ul:my-4 prose-ol:my-4 prose-li:my-2 prose-li:leading-[1.65] prose-li:break-words prose-li:text-[16px] sm:prose-li:text-[18px] md:prose-li:text-[19px]
+      prose-ul:my-4 prose-ol:my-4 prose-li:my-2 prose-li:leading-[1.65] prose-li:break-words prose-li:text-base sm:prose-li:text-lg
       prose-hr:my-8 prose-hr:border-slate-200 dark:prose-hr:border-slate-700
-      prose-blockquote:border-l-4 prose-blockquote:border-amber-500 prose-blockquote:bg-amber-50/30 dark:prose-blockquote:bg-amber-900/10 prose-blockquote:py-3 prose-blockquote:px-4 sm:prose-blockquote:px-6 prose-blockquote:my-6 prose-blockquote:rounded-r-lg prose-blockquote:break-words prose-blockquote:text-[16px] sm:prose-blockquote:text-[18px] prose-blockquote:leading-[1.65] prose-blockquote:italic
-      prose-code:text-slate-900 dark:prose-code:text-slate-100 prose-code:text-sm sm:prose-code:text-[15px] prose-code:break-all
+      prose-blockquote:border-l-4 prose-blockquote:border-amber-500 prose-blockquote:bg-amber-50/30 dark:prose-blockquote:bg-amber-900/10 prose-blockquote:py-3 prose-blockquote:px-4 sm:prose-blockquote:px-6 prose-blockquote:my-6 prose-blockquote:rounded-r-lg prose-blockquote:break-words prose-blockquote:text-base sm:prose-blockquote:text-lg prose-blockquote:leading-[1.65] prose-blockquote:italic
+      prose-code:text-slate-900 dark:prose-code:text-slate-100 prose-code:text-sm sm:prose-code:text-base prose-code:break-all
       prose-pre:bg-slate-900 dark:prose-pre:bg-slate-950 prose-pre:rounded-xl prose-pre:my-6 prose-pre:overflow-x-auto prose-pre:max-w-full
       prose-table:w-full prose-table:overflow-x-auto prose-table:block prose-table:max-w-full prose-table:my-6
       prose-img:max-w-full prose-img:h-auto prose-img:rounded-lg prose-img:my-6">
@@ -126,17 +126,17 @@ export function MarkdownContent({ content, articleTitle }: MarkdownContentProps)
           // Улучшенное отображение заголовков
           // Преобразуем h1 в h2, так как h1 уже используется на странице для SEO
           h1: ({ children, ...props }) => (
-            <h2 className="mb-4 mt-8 text-3xl font-bold text-slate-900 dark:text-slate-100 first:mt-0" {...props}>
+            <h2 className="mb-4 mt-8 text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100 first:mt-0" {...props}>
               {children}
             </h2>
           ),
           h2: ({ children, ...props }) => (
-            <h2 className="mb-3 mt-6 text-2xl font-bold text-slate-900 dark:text-slate-100 first:mt-0" {...props}>
+            <h2 className="mb-3 mt-6 text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 first:mt-0" {...props}>
               {children}
             </h2>
           ),
           h3: ({ children, ...props }) => (
-            <h3 className="mb-2 mt-4 text-xl font-semibold text-slate-900 dark:text-slate-100 first:mt-0" {...props}>
+            <h3 className="mb-2 mt-4 text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100 first:mt-0" {...props}>
               {children}
             </h3>
           ),

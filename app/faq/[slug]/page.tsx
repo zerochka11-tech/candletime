@@ -242,15 +242,15 @@ export default function ArticlePage() {
 
   if (loading) {
     return (
-      <div className="flex flex-col gap-6 sm:gap-8 w-full overflow-x-hidden">
-        <div className="w-full max-w-3xl mx-auto animate-pulse">
-          <div className="h-8 w-3/4 rounded bg-slate-200 dark:bg-slate-700 mb-4" />
-          <div className="h-4 w-full rounded bg-slate-200 dark:bg-slate-700 mb-2" />
-          <div className="h-4 w-2/3 rounded bg-slate-200 dark:bg-slate-700 mb-6" />
+      <div className="flex flex-col gap-3 sm:gap-4 w-full overflow-x-hidden">
+        <div className="w-full animate-pulse">
+          <div className="h-8 w-3/4 rounded-2xl bg-slate-200 dark:bg-slate-700 mb-3 sm:mb-4" />
+          <div className="h-4 w-full rounded-2xl bg-slate-200 dark:bg-slate-700 mb-2" />
+          <div className="h-4 w-2/3 rounded-2xl bg-slate-200 dark:bg-slate-700 mb-3 sm:mb-4" />
           <div className="space-y-3">
-            <div className="h-4 w-full rounded bg-slate-200 dark:bg-slate-700" />
-            <div className="h-4 w-full rounded bg-slate-200 dark:bg-slate-700" />
-            <div className="h-4 w-5/6 rounded bg-slate-200 dark:bg-slate-700" />
+            <div className="h-4 w-full rounded-2xl bg-slate-200 dark:bg-slate-700" />
+            <div className="h-4 w-full rounded-2xl bg-slate-200 dark:bg-slate-700" />
+            <div className="h-4 w-5/6 rounded-2xl bg-slate-200 dark:bg-slate-700" />
           </div>
         </div>
       </div>
@@ -259,26 +259,31 @@ export default function ArticlePage() {
 
   if (notFound || !article) {
     return (
-      <div className="flex flex-col gap-6 sm:gap-8 w-full overflow-x-hidden">
-        <section className="w-full max-w-3xl mx-auto p-8 sm:p-12 text-center">
-          <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-3xl">
-            🔍
+      <div className="flex flex-col gap-3 sm:gap-4 w-full overflow-x-hidden">
+        <section className="relative overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-6 sm:p-8 md:p-10 text-center shadow-md transition-colors duration-200">
+          {/* Декоративный градиент */}
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 dark:from-amber-500/10 dark:to-indigo-500/10" />
+          
+          <div className="relative">
+            <div className="mb-3 sm:mb-4 inline-flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-gradient-to-br from-slate-100 to-slate-50 dark:from-slate-700 dark:to-slate-800 text-xl sm:text-2xl md:text-3xl shadow-sm">
+              🔍
+            </div>
+            <h1 className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-semibold text-slate-900 dark:text-slate-100 break-words">
+              Статья не найдена
+            </h1>
+            <p className="mb-4 sm:mb-6 text-sm sm:text-base text-slate-600 dark:text-slate-400 break-words">
+              Запрашиваемая статья не существует или еще не опубликована.
+            </p>
+            <Link
+              href="/faq"
+              className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 dark:bg-slate-100 px-6 py-3 text-sm font-medium text-white dark:text-slate-900 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-800 dark:hover:bg-slate-200 hover:shadow-lg active:scale-[0.98] touch-manipulation"
+            >
+              <svg className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              <span className="whitespace-nowrap">Вернуться к списку статей</span>
+            </Link>
           </div>
-          <h1 className="mb-4 text-2xl sm:text-3xl font-semibold text-slate-900 dark:text-slate-100 break-words">
-            Статья не найдена
-          </h1>
-          <p className="mb-6 text-base sm:text-lg text-slate-600 dark:text-slate-400 break-words">
-            Запрашиваемая статья не существует или еще не опубликована.
-          </p>
-          <Link
-            href="/faq"
-            className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
-          >
-            <svg className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span className="whitespace-nowrap">Вернуться к списку статей</span>
-          </Link>
         </section>
       </div>
     );
@@ -307,14 +312,14 @@ export default function ArticlePage() {
       {/* Прогресс-бар чтения */}
       <ReadingProgress />
 
-      <div className="flex flex-col gap-6 sm:gap-8 md:gap-10 w-full overflow-x-hidden">
+      <div className="flex flex-col gap-3 sm:gap-4 w-full overflow-x-hidden">
         {/* Хлебные крошки */}
         <div className="w-full overflow-x-auto">
           <Breadcrumbs items={breadcrumbItems} />
         </div>
 
         {/* Заголовок и метаданные */}
-        <header className="flex flex-col gap-4 sm:gap-5 w-full">
+        <header className="flex flex-col gap-3 sm:gap-4 w-full">
           <div className="flex flex-col gap-3 w-full">
             <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 sm:text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight break-words">
               {article.title}
@@ -352,7 +357,7 @@ export default function ArticlePage() {
         </header>
 
         {/* Разделитель */}
-        <div className="w-full border-b-2 border-slate-300 dark:border-slate-600 mt-2"></div>
+        <div className="w-full border-b border-slate-300 dark:border-slate-600 mt-2"></div>
 
         {/* Контент статьи */}
         <article className="w-full overflow-x-hidden -mt-1">
@@ -363,12 +368,12 @@ export default function ArticlePage() {
 
         {/* Теги */}
         {article.seo_keywords && article.seo_keywords.length > 0 && (
-          <div className="w-full pt-6 border-t border-slate-200 dark:border-slate-700 overflow-x-hidden">
-            <div className="flex flex-wrap gap-2">
+          <div className="w-full pt-3 sm:pt-4 border-t border-slate-300 dark:border-slate-700 overflow-x-hidden">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {article.seo_keywords.map((keyword, index) => (
                 <span
                   key={index}
-                  className="inline-flex items-center rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300 break-words"
+                  className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 shadow-sm dark:bg-slate-700 dark:text-slate-300 break-words"
                 >
                   {keyword}
                 </span>
@@ -379,25 +384,37 @@ export default function ArticlePage() {
 
         {/* Похожие статьи */}
         {relatedArticles.length > 0 && (
-          <div className="w-full pt-8 border-t border-slate-200 dark:border-slate-700 overflow-x-hidden">
-            <h3 className="mb-6 text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100">
+          <div className="w-full pt-3 sm:pt-4 border-t border-slate-300 dark:border-slate-700 overflow-x-hidden">
+            <h3 className="mb-3 sm:mb-4 text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100">
               Похожие статьи
             </h3>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
               {relatedArticles.map((related) => (
                 <Link
                   key={related.id}
                   href={`/faq/${related.slug}`}
-                  className="group flex flex-col gap-2 rounded-lg border border-slate-200 bg-white p-4 transition-all hover:border-slate-300 hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 overflow-hidden"
+                  className="group relative overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-3 sm:p-4 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg active:scale-[0.98] touch-manipulation"
                 >
-                  <h4 className="text-sm sm:text-base font-medium text-slate-900 group-hover:text-amber-600 dark:text-slate-100 dark:group-hover:text-amber-400 line-clamp-2 break-words">
-                    {related.title}
-                  </h4>
-                  {related.excerpt && (
-                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-2 break-words">
-                      {related.excerpt}
-                    </p>
-                  )}
+                  {/* Декоративный градиент */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-amber-500/10 dark:to-indigo-500/10" />
+                  
+                  <div className="relative flex flex-col gap-2">
+                    <h4 className="text-sm sm:text-base font-semibold text-slate-900 group-hover:text-slate-700 dark:text-slate-100 dark:group-hover:text-slate-300 line-clamp-2 break-words transition-colors">
+                      {related.title}
+                    </h4>
+                    {related.excerpt && (
+                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-2 break-words">
+                        {related.excerpt}
+                      </p>
+                    )}
+                  </div>
+                  
+                  {/* Индикатор перехода */}
+                  <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-slate-600 opacity-0 shadow-sm transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0.5 dark:bg-slate-700 dark:text-slate-400">
+                    <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </Link>
               ))}
             </div>
@@ -405,25 +422,30 @@ export default function ArticlePage() {
         )}
 
         {/* Навигация */}
-        <div className="w-full pt-8 border-t border-slate-200 dark:border-slate-700 overflow-x-hidden">
+        <div className="w-full pt-3 sm:pt-4 border-t border-slate-300 dark:border-slate-700 overflow-x-hidden">
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-stretch">
             {navigation.prev ? (
               <Link
                 href={`/faq/${navigation.prev.slug}`}
-                className="group flex items-center gap-2 sm:gap-3 rounded-lg border border-slate-200 bg-white p-3 sm:p-4 transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 sm:flex-1 min-w-0"
+                className="group relative overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-3 sm:p-4 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg active:scale-[0.98] touch-manipulation sm:flex-1 min-w-0"
               >
-                <svg
-                  className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 text-slate-400 transition-transform group-hover:-translate-x-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                <div className="min-w-0 flex-1 overflow-hidden">
-                  <div className="text-xs text-slate-500 dark:text-slate-400 mb-1 whitespace-nowrap">Предыдущая статья</div>
-                  <div className="text-xs sm:text-sm font-medium text-slate-900 dark:text-slate-100 truncate break-words">
-                    {navigation.prev.title}
+                {/* Декоративный градиент */}
+                <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-amber-500/10 dark:to-indigo-500/10" />
+                
+                <div className="relative flex items-center gap-2 sm:gap-3">
+                  <svg
+                    className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 text-slate-400 transition-transform group-hover:-translate-x-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  <div className="min-w-0 flex-1 overflow-hidden">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mb-1 whitespace-nowrap">Предыдущая статья</div>
+                    <div className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 truncate break-words">
+                      {navigation.prev.title}
+                    </div>
                   </div>
                 </div>
               </Link>
@@ -433,7 +455,7 @@ export default function ArticlePage() {
 
             <Link
               href="/faq"
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-xs sm:text-sm font-medium text-slate-700 transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 sm:mx-4 whitespace-nowrap"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 px-4 py-3 text-xs sm:text-sm font-medium text-slate-700 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg dark:text-slate-300 sm:mx-4 whitespace-nowrap active:scale-[0.98] touch-manipulation"
             >
               Все статьи
             </Link>
@@ -441,22 +463,27 @@ export default function ArticlePage() {
             {navigation.next ? (
               <Link
                 href={`/faq/${navigation.next.slug}`}
-                className="group flex items-center gap-2 sm:gap-3 rounded-lg border border-slate-200 bg-white p-3 sm:p-4 transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 sm:flex-1 min-w-0"
+                className="group relative overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-3 sm:p-4 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg active:scale-[0.98] touch-manipulation sm:flex-1 min-w-0"
               >
-                <div className="min-w-0 flex-1 text-right overflow-hidden">
-                  <div className="text-xs text-slate-500 dark:text-slate-400 mb-1 whitespace-nowrap">Следующая статья</div>
-                  <div className="text-xs sm:text-sm font-medium text-slate-900 dark:text-slate-100 truncate break-words">
-                    {navigation.next.title}
+                {/* Декоративный градиент */}
+                <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-amber-500/10 dark:to-indigo-500/10" />
+                
+                <div className="relative flex items-center gap-2 sm:gap-3 text-right">
+                  <div className="min-w-0 flex-1 text-right overflow-hidden">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mb-1 whitespace-nowrap">Следующая статья</div>
+                    <div className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 truncate break-words">
+                      {navigation.next.title}
+                    </div>
                   </div>
+                  <svg
+                    className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 text-slate-400 transition-transform group-hover:translate-x-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </div>
-                <svg
-                  className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 text-slate-400 transition-transform group-hover:translate-x-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
               </Link>
             ) : (
               <div className="hidden sm:block flex-1" />
