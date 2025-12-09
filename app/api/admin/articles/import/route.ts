@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
       // Если нет H1, используем slug как title
       title = slug
         .split('-')
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
     }
 
