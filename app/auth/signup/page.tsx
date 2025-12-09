@@ -37,9 +37,15 @@ export default function SignUpPage() {
         return;
       }
 
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
+      const redirectTo = `${siteUrl}/auth/confirm`;
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: redirectTo,
+        },
       });
 
       if (error) {
@@ -48,13 +54,20 @@ export default function SignUpPage() {
         return;
       }
 
-      // Логика как раньше: просто показываем сообщение, без жёсткого редиректа
-      if (data?.user) {
+      // Проверяем, требуется ли подтверждение email
+      if (data?.user && !data?.session) {
+        // Email требует подтверждения
         setMessage(
-          'Аккаунт создан. Если требуется подтверждение, проверь почту.'
+          `✅ Аккаунт создан!\n\n📧 Мы отправили письмо с подтверждением на ${email}.\n\nПроверь почту и перейди по ссылке для активации аккаунта.`
         );
+      } else if (data?.user && data?.session) {
+        // Email подтвержден автоматически (если отключено в настройках)
+        setMessage('✅ Аккаунт успешно создан!');
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 1500);
       } else {
-        setMessage('Если требуется подтверждение, проверь почту.');
+        setMessage('Проверь почту для подтверждения email.');
       }
     } catch (err) {
       console.error(err);
@@ -130,7 +143,17 @@ export default function SignUpPage() {
           </button>
 
           {message && (
-            <p className="text-xs text-emerald-600 dark:text-emerald-400">{message}</p>
+            <div className="rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-3">
+              <p className="text-xs text-emerald-700 dark:text-emerald-300 whitespace-pre-line">{message}</p>
+              {message.includes('письмо') && (
+                <Link
+                  href="/auth/resend-confirmation"
+                  className="mt-2 inline-block text-xs font-medium text-emerald-700 dark:text-emerald-300 underline-offset-4 hover:underline"
+                >
+                  Не получил письмо? Отправить повторно
+                </Link>
+              )}
+            </div>
           )}
           {error && (
             <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
