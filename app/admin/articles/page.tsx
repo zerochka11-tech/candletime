@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { checkAdminAccess, getAuthToken } from '@/lib/admin';
+import ConfirmDialog from '@/components/admin/ConfirmDialog';
 
 type Article = {
   id: string;
@@ -41,6 +42,8 @@ export default function AdminArticlesPage() {
   const [totalCount, setTotalCount] = useState(0);
   const [publishedCount, setPublishedCount] = useState(0);
   const [draftCount, setDraftCount] = useState(0);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; title: string } | null>(null);
 
   // Проверка доступа теперь происходит на сервере через AdminGuard
   // Просто загружаем данные сразу
@@ -231,6 +234,39 @@ export default function AdminArticlesPage() {
     }
   };
 
+  const handleDelete = async (article: Article) => {
+    setDeleteConfirm({ id: article.id, title: article.title });
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteConfirm) return;
+
+    setDeleting(deleteConfirm.id);
+    try {
+      const token = await getAuthToken();
+      const response = await fetch(`/api/admin/articles/${deleteConfirm.id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        await Promise.all([loadArticles(), loadStats()]);
+        alert('Статья успешно удалена');
+      } else {
+        alert(`Ошибка: ${result.error || 'Не удалось удалить статью'}`);
+      }
+    } catch (error: any) {
+      alert(`Ошибка: ${error.message}`);
+    } finally {
+      setDeleting(null);
+      setDeleteConfirm(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="mx-auto w-full max-w-7xl">
@@ -251,6 +287,17 @@ export default function AdminArticlesPage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl">
+      {/* Заголовок с кнопкой создания */}
+      <div className="mb-6 flex items-center justify-between">
+        <div></div>
+        <Link
+          href="/admin/articles/new"
+          className="rounded-full bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700"
+        >
+          + Создать статью
+        </Link>
+      </div>
+
       {/* Статистика */}
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-800">
@@ -413,6 +460,13 @@ export default function AdminArticlesPage() {
                       Опубликовать
                     </button>
                   )}
+                  <button
+                    onClick={() => handleDelete(article)}
+                    disabled={deleting === article.id}
+                    className="rounded-full bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {deleting === article.id ? 'Удаление...' : 'Удалить'}
+                  </button>
                 </div>
               </div>
             </div>
@@ -497,6 +551,20 @@ export default function AdminArticlesPage() {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Диалог подтверждения удаления */}
+      {deleteConfirm && (
+        <ConfirmDialog
+          open={!!deleteConfirm}
+          title="Удалить статью?"
+          message={`Вы уверены, что хотите удалить статью "${deleteConfirm.title}"? Это действие нельзя отменить.`}
+          confirmText="Удалить"
+          cancelText="Отмена"
+          confirmVariant="danger"
+          onConfirm={confirmDelete}
+          onCancel={() => setDeleteConfirm(null)}
+        />
       )}
     </div>
   );

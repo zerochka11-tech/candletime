@@ -6,6 +6,14 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { getAuthToken } from '@/lib/admin';
 import { MarkdownContent } from '@/components/MarkdownContent';
+import ConfirmDialog from '@/components/admin/ConfirmDialog';
+import MarkdownEditor from '@/components/admin/MarkdownEditor';
+
+type Category = {
+  id: string;
+  name: string;
+  slug: string;
+};
 
 type Article = {
   id: string;
@@ -32,21 +40,51 @@ export default function AdminArticlePage() {
   const id = params.id as string;
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [editing, setEditing] = useState(false);
+  const [editingMain, setEditingMain] = useState(false);
+  const [editingContent, setEditingContent] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [formData, setFormData] = useState({
     seo_title: '',
     seo_description: '',
     seo_keywords: '',
     excerpt: '',
+    title: '',
+    slug: '',
+    content: '',
+    category_id: '',
+    featured_image_url: '',
   });
 
   // Проверка доступа теперь происходит на сервере через AdminGuard в layout
   useEffect(() => {
     if (id) {
       loadArticle();
+      loadCategories();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  const loadCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('article_categories')
+        .select('id, name, slug')
+        .order('name');
+
+      if (error) {
+        console.error('Error loading categories:', error);
+        return;
+      }
+
+      setCategories(data || []);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   const loadArticle = async () => {
     try {
@@ -67,6 +105,11 @@ export default function AdminArticlePage() {
         seo_description: data.seo_description || '',
         seo_keywords: (data.seo_keywords || []).join(', '),
         excerpt: data.excerpt || '',
+        title: data.title || '',
+        slug: data.slug || '',
+        content: data.content || '',
+        category_id: data.category_id || '',
+        featured_image_url: data.featured_image_url || '',
       });
     } catch (error) {
       console.error('Error:', error);
@@ -105,6 +148,141 @@ export default function AdminArticlePage() {
       loadArticle();
     } catch (error: any) {
       alert(`Ошибка: ${error.message}`);
+    }
+  };
+
+  const calculateReadingTime = (content: string): number => {
+    const wordCount = content.split(/\s+/).filter((word) => word.length > 0).length;
+    return Math.max(1, Math.ceil(wordCount / 200));
+  };
+
+  const handleSaveMain = async () => {
+    if (!article) return;
+
+    if (!formData.title.trim()) {
+      alert('Название статьи не может быть пустым');
+      return;
+    }
+
+    if (!formData.slug.trim()) {
+      alert('Slug не может быть пустым');
+      return;
+    }
+
+    // Валидация slug (только латиница, цифры, дефисы)
+    const slugRegex = /^[a-z0-9-]+$/;
+    if (!slugRegex.test(formData.slug)) {
+      alert('Slug может содержать только латинские буквы, цифры и дефисы');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const token = await getAuthToken();
+      const readingTime = calculateReadingTime(formData.content || article.content);
+
+      const response = await fetch(`/api/admin/articles/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: formData.title.trim(),
+          slug: formData.slug.trim(),
+          excerpt: formData.excerpt.trim() || null,
+          category_id: formData.category_id || null,
+          featured_image_url: formData.featured_image_url.trim() || null,
+          reading_time: readingTime,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert('Изменения сохранены!');
+        setEditingMain(false);
+        loadArticle();
+        // Если slug изменился, обновим URL
+        if (result.article?.slug && result.article.slug !== article.slug) {
+          router.push(`/admin/articles/${id}`);
+        }
+      } else {
+        alert(`Ошибка: ${result.error || 'Не удалось сохранить изменения'}`);
+      }
+    } catch (error: any) {
+      alert(`Ошибка: ${error.message}`);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveContent = async () => {
+    if (!article) return;
+
+    if (!formData.content.trim()) {
+      alert('Контент статьи не может быть пустым');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const token = await getAuthToken();
+      const readingTime = calculateReadingTime(formData.content);
+
+      const response = await fetch(`/api/admin/articles/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          content: formData.content.trim(),
+          reading_time: readingTime,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert('Контент сохранен!');
+        setEditingContent(false);
+        loadArticle();
+      } else {
+        alert(`Ошибка: ${result.error || 'Не удалось сохранить контент'}`);
+      }
+    } catch (error: any) {
+      alert(`Ошибка: ${error.message}`);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!article) return;
+
+    setDeleting(true);
+    try {
+      const token = await getAuthToken();
+      const response = await fetch(`/api/admin/articles/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert('Статья успешно удалена');
+        router.push('/admin/articles');
+      } else {
+        alert(`Ошибка: ${result.error || 'Не удалось удалить статью'}`);
+        setDeleting(false);
+      }
+    } catch (error: any) {
+      alert(`Ошибка: ${error.message}`);
+      setDeleting(false);
     }
   };
 
@@ -198,9 +376,32 @@ export default function AdminArticlePage() {
               </span>
             )}
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            {article.title}
-          </h1>
+          {editingMain ? (
+            <div className="space-y-2">
+              <input
+                type="text"
+                value={formData.title}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-2xl font-bold text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                placeholder="Название статьи"
+              />
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                {article.title}
+              </h1>
+              <button
+                onClick={() => setEditingMain(true)}
+                className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+                title="Редактировать название и slug"
+              >
+                ✏️
+              </button>
+            </div>
+          )}
         </div>
         <div className="flex gap-2">
           {article.published ? (
@@ -227,6 +428,13 @@ export default function AdminArticlePage() {
               Просмотр на сайте
             </Link>
           )}
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            disabled={deleting}
+            className="rounded-full bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {deleting ? 'Удаление...' : 'Удалить'}
+          </button>
         </div>
       </div>
 
@@ -234,15 +442,167 @@ export default function AdminArticlePage() {
         {/* Основной контент */}
         <div className="lg:col-span-2">
           <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-800">
-            <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">
-              Предпросмотр статьи
-            </h2>
-            <MarkdownContent content={article.content} articleTitle={article.title} />
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                {editingContent ? 'Редактирование контента' : 'Предпросмотр статьи'}
+              </h2>
+              {!editingContent && (
+                <button
+                  onClick={() => setEditingContent(true)}
+                  className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600"
+                >
+                  ✏️ Редактировать контент
+                </button>
+              )}
+            </div>
+            {editingContent ? (
+              <div className="space-y-4">
+                <MarkdownEditor
+                  value={formData.content}
+                  onChange={(value) => setFormData({ ...formData, content: value })}
+                  articleTitle={formData.title || article.title}
+                />
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleSaveContent}
+                    disabled={saving}
+                    className="flex-1 rounded-full bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {saving ? 'Сохранение...' : 'Сохранить контент'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setEditingContent(false);
+                      setFormData({ ...formData, content: article.content });
+                    }}
+                    className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                  >
+                    Отмена
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <MarkdownContent content={article.content} articleTitle={article.title} />
+            )}
           </div>
         </div>
 
         {/* Метаданные и редактирование */}
         <div className="space-y-6">
+          {/* Редактирование основных полей */}
+          {editingMain && (
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-800">
+              <h3 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">
+                Редактирование
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    Название статьи
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) =>
+                      setFormData({ ...formData, title: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    placeholder="Название статьи"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    Slug (URL)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.slug}
+                    onChange={(e) =>
+                      setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })
+                    }
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-mono text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    placeholder="slug-статьи"
+                  />
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    Только латинские буквы, цифры и дефисы
+                  </p>
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    Краткое описание (Excerpt)
+                  </label>
+                  <textarea
+                    value={formData.excerpt}
+                    onChange={(e) =>
+                      setFormData({ ...formData, excerpt: e.target.value })
+                    }
+                    rows={3}
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    placeholder="Краткое описание для превью"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    Категория
+                  </label>
+                  <select
+                    value={formData.category_id}
+                    onChange={(e) =>
+                      setFormData({ ...formData, category_id: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                  >
+                    <option value="">Без категории</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    Featured Image URL
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.featured_image_url}
+                    onChange={(e) =>
+                      setFormData({ ...formData, featured_image_url: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleSaveMain}
+                    disabled={saving}
+                    className="flex-1 rounded-full bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {saving ? 'Сохранение...' : 'Сохранить'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setEditingMain(false);
+                      setFormData({
+                        ...formData,
+                        title: article.title,
+                        slug: article.slug,
+                        excerpt: article.excerpt || '',
+                        category_id: article.category_id || '',
+                        featured_image_url: article.featured_image_url || '',
+                      });
+                    }}
+                    className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                  >
+                    Отмена
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Статистика */}
           <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-800">
             <h3 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">
@@ -279,6 +639,29 @@ export default function AdminArticlePage() {
                   {article.slug}
                 </span>
               </div>
+              {article.category_id && (
+                <div>
+                  <span className="text-slate-600 dark:text-slate-400">Категория:</span>{' '}
+                  <span className="font-medium text-slate-900 dark:text-slate-100">
+                    {categories.find((c) => c.id === article.category_id)?.name || '—'}
+                  </span>
+                </div>
+              )}
+              {article.featured_image_url && (
+                <div>
+                  <span className="text-slate-600 dark:text-slate-400">Изображение:</span>
+                  <div className="mt-1">
+                    <a
+                      href={article.featured_image_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-blue-600 hover:underline dark:text-blue-400 break-all"
+                    >
+                      {article.featured_image_url}
+                    </a>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -420,6 +803,18 @@ export default function AdminArticlePage() {
           </div>
         </div>
       </div>
+
+      {/* Диалог подтверждения удаления */}
+      <ConfirmDialog
+        open={showDeleteConfirm}
+        title="Удалить статью?"
+        message={`Вы уверены, что хотите удалить статью "${article.title}"? Это действие нельзя отменить.`}
+        confirmText="Удалить"
+        cancelText="Отмена"
+        confirmVariant="danger"
+        onConfirm={handleDelete}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
     </div>
   );
 }
