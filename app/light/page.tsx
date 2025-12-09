@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
+import { LocationSelector } from '@/components/geographic/LocationSelector';
 
 // Типы свечей
 const CANDLE_TYPES = [
@@ -485,6 +486,15 @@ type Draft = {
   message: string;
   duration: string;
   isAnonymous: boolean;
+  location?: {
+    display_name: string;
+    latitude: number;
+    longitude: number;
+    country?: string;
+    city?: string;
+    region?: string;
+  } | null;
+  showOnMap?: boolean;
 };
 
 export default function LightCandlePage() {
@@ -502,6 +512,15 @@ export default function LightCandlePage() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [hasDraft, setHasDraft] = useState(false);
   const [createdCandleId, setCreatedCandleId] = useState<string | null>(null);
+  const [location, setLocation] = useState<{
+    display_name: string;
+    latitude: number;
+    longitude: number;
+    country?: string;
+    city?: string;
+    region?: string;
+  } | null>(null);
+  const [showOnMap, setShowOnMap] = useState(true);
 
   // Загрузка черновика при монтировании
   useEffect(() => {
@@ -522,6 +541,12 @@ export default function LightCandlePage() {
         setMessage(draft.message);
         setDuration(draft.duration);
         setIsAnonymous(draft.isAnonymous);
+        if (draft.location) {
+          setLocation(draft.location);
+        }
+        if (draft.showOnMap !== undefined) {
+          setShowOnMap(draft.showOnMap);
+        }
         setHasDraft(true);
       } catch (e) {
         console.error('Failed to load draft:', e);
@@ -539,6 +564,8 @@ export default function LightCandlePage() {
       message,
       duration,
       isAnonymous,
+      location,
+      showOnMap,
     };
 
     // Сохраняем только если есть хотя бы название или сообщение
@@ -549,7 +576,7 @@ export default function LightCandlePage() {
       localStorage.removeItem(DRAFT_STORAGE_KEY);
       setHasDraft(false);
     }
-  }, [selectedTemplate, isCustom, selectedType, title, message, duration, isAnonymous]);
+  }, [selectedTemplate, isCustom, selectedType, title, message, duration, isAnonymous, location, showOnMap]);
 
   // Применение шаблона
   const applyTemplate = (template: typeof CANDLE_TEMPLATES[number]) => {
@@ -583,6 +610,8 @@ export default function LightCandlePage() {
     setSelectedType('calm');
     setSelectedTemplate(null);
     setIsCustom(false);
+    setLocation(null);
+    setShowOnMap(true);
     setHasDraft(false);
   };
 
@@ -620,18 +649,42 @@ export default function LightCandlePage() {
         createdAt.getTime() + durationHours * 60 * 60 * 1000
       );
 
+      // Подготовка данных для вставки
+      const insertData: any = {
+        title: title.trim(),
+        message: message.trim() || null,
+        is_anonymous: isAnonymous,
+        duration_hours: durationHours,
+        expires_at: expiresAt.toISOString(),
+        status: 'active',
+        user_id: user ? user.id : null,
+        candle_type: selectedType,
+      };
+
+      // Добавляем геоданные, если они есть
+      if (location) {
+        insertData.location_latitude = location.latitude;
+        insertData.location_longitude = location.longitude;
+        insertData.location_country = location.country || null;
+        insertData.location_city = location.city || null;
+        insertData.location_region = location.region || null;
+        insertData.location_address = location.display_name;
+        insertData.location_show_on_map = showOnMap;
+        // Определяем тип локации
+        if (location.city && location.country) {
+          insertData.location_type = 'city';
+        } else if (location.country) {
+          insertData.location_type = 'country';
+        } else {
+          insertData.location_type = 'precise';
+        }
+      } else {
+        insertData.location_type = 'none';
+      }
+
       const { data, error } = await supabase
         .from('candles')
-        .insert({
-          title: title.trim(),
-          message: message.trim() || null,
-          is_anonymous: isAnonymous,
-          duration_hours: durationHours,
-          expires_at: expiresAt.toISOString(),
-          status: 'active',
-          user_id: user ? user.id : null,
-          candle_type: selectedType,
-        })
+        .insert(insertData)
         .select('id')
         .single();
 
@@ -918,6 +971,14 @@ export default function LightCandlePage() {
                 )}
               </div>
             </div>
+
+            {/* Выбор места */}
+            <LocationSelector
+              onLocationSelect={setLocation}
+              initialLocation={location || undefined}
+              showOnMap={showOnMap}
+              onShowOnMapChange={setShowOnMap}
+            />
 
             {/* Длительность + анонимность */}
             <div className="grid gap-4 md:grid-cols-[minmax(0,0.7fr)_minmax(0,0.3fr)] md:items-end">

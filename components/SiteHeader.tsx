@@ -53,13 +53,18 @@ export function SiteHeader() {
       document.addEventListener('keydown', handleEscape);
       // Блокируем скролл body при открытом меню
       document.body.style.overflow = 'hidden';
+      // Добавляем класс для отключения взаимодействия с картой
+      document.body.classList.add('mobile-menu-open');
     } else {
       document.body.style.overflow = '';
+      // Удаляем класс при закрытии меню
+      document.body.classList.remove('mobile-menu-open');
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = '';
+      document.body.classList.remove('mobile-menu-open');
     };
   }, [mobileMenuOpen, closeMobileMenu]);
 
@@ -157,6 +162,12 @@ export function SiteHeader() {
               className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${isActive('/faq')} ${pathname === '/faq' || pathname.startsWith('/faq/') ? 'bg-slate-100 dark:bg-slate-800 shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm'}`}
             >
               FAQ
+            </Link>
+            <Link
+              href="/map"
+              className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${isActive('/map')} ${pathname === '/map' ? 'bg-slate-100 dark:bg-slate-800 shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-sm'}`}
+            >
+              Карта
             </Link>
 
             {user && (
@@ -256,7 +267,7 @@ export function SiteHeader() {
 
       {/* Мобильное меню (полноэкранное) - вне header для правильного z-index */}
       <div
-        className={`fixed inset-0 z-50 md:hidden bg-white dark:bg-slate-900 transition-all duration-300 ease-in-out ${
+        className={`fixed inset-0 z-[9999] md:hidden bg-white dark:bg-slate-900 transition-all duration-300 ease-in-out ${
           mobileMenuOpen
             ? 'opacity-100 translate-y-0 pointer-events-auto'
             : 'opacity-0 translate-y-full pointer-events-none'
@@ -346,6 +357,25 @@ export function SiteHeader() {
                   <span className="flex-1">FAQ</span>
                   {(pathname === '/faq' || pathname.startsWith('/faq/')) && (
                     <svg className="h-5 w-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  )}
+                </Link>
+
+                <Link
+                  href="/map"
+                  onClick={closeMobileMenu}
+                  role="menuitem"
+                  className={`group flex items-center gap-4 rounded-2xl px-5 py-4 text-base font-medium transition-all duration-200 min-h-[56px] active:scale-[0.98] ${
+                    pathname === '/map'
+                      ? 'bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 text-blue-900 dark:text-blue-100 shadow-md border border-blue-200/50 dark:border-blue-700/50'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:shadow-sm'
+                  }`}
+                >
+                  <span className="text-2xl transition-transform duration-200 group-hover:scale-110">🌍</span>
+                  <span className="flex-1">Карта</span>
+                  {pathname === '/map' && (
+                    <svg className="h-5 w-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   )}

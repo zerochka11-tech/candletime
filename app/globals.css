@@ -30,5 +30,75 @@ body {
   transform-origin: center bottom;
 }
 
+/* Leaflet стили для popup */
+.leaflet-popup-content-wrapper {
+  @apply bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700;
+}
+
+.leaflet-popup-content {
+  @apply text-slate-900 dark:text-slate-100;
+  margin: 0;
+}
+
+.leaflet-popup-tip {
+  @apply bg-white dark:bg-slate-800;
+}
+
+/* Стили для маркеров свечей */
+.candle-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Ограничение z-index для Leaflet, чтобы не конфликтовал с мобильным меню */
+.leaflet-container {
+  z-index: 0 !important;
+}
+
+.leaflet-pane {
+  z-index: 1 !important;
+}
+
+.leaflet-map-pane {
+  z-index: 1 !important;
+}
+
+.leaflet-tile-pane {
+  z-index: 2 !important;
+}
+
+.leaflet-overlay-pane {
+  z-index: 3 !important;
+}
+
+.leaflet-shadow-pane {
+  z-index: 4 !important;
+}
+
+.leaflet-marker-pane {
+  z-index: 5 !important;
+}
+
+.leaflet-tooltip-pane {
+  z-index: 6 !important;
+}
+
+.leaflet-popup-pane {
+  z-index: 7 !important;
+}
+
+.leaflet-control {
+  z-index: 8 !important;
+}
+
+/* Отключение взаимодействия с картой, когда мобильное меню открыто */
+body.mobile-menu-open .leaflet-container {
+  pointer-events: none !important;
+}
+
+body.mobile-menu-open .leaflet-control-container {
+  pointer-events: none !important;
+}
+
 
 

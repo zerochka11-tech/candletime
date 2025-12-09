@@ -284,3 +284,33 @@ export function generateHowToStructuredData({
   };
 }
 
+/**
+ * Генерирует структурированные данные для интерактивной карты
+ */
+export function generateMapStructuredData({
+  name,
+  description,
+  url,
+  numberOfItems,
+}: {
+  name: string;
+  description: string;
+  url: string;
+  numberOfItems?: number;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name,
+    description,
+    url,
+    inLanguage: 'ru',
+    mainEntity: {
+      '@type': 'ItemList',
+      name: 'Свечи на карте',
+      description: 'Интерактивная карта с расположением символических свечей',
+      ...(numberOfItems !== undefined && { numberOfItems }),
+    },
+  };
+}
+
