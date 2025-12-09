@@ -3,18 +3,21 @@ import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 import path from 'path';
 
-// Создаем клиент с service role ключом для обхода RLS
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  throw new Error('Missing Supabase environment variables');
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Missing Supabase environment variables');
+  }
+
+  return createClient(supabaseUrl, supabaseServiceKey);
 }
-
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
 // Проверка прав администратора
 async function checkAdminAuth(request: NextRequest) {
+  const supabaseAdmin = getSupabaseAdmin();
+  
   const authHeader = request.headers.get('authorization');
   if (!authHeader) {
     return { error: 'Unauthorized', user: null };
@@ -105,6 +108,8 @@ export async function POST(request: NextRequest) {
     const wordCount = articleContent.split(/\s+/).length;
     const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
+    const supabaseAdmin = getSupabaseAdmin();
+    
     // Проверяем, существует ли уже статья
     const { data: existing } = await supabaseAdmin
       .from('articles')
