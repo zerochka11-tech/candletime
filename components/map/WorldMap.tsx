@@ -33,15 +33,20 @@ interface Candle {
 export function WorldMap() {
   const [candles, setCandles] = useState<Candle[]>([]);
   const [loading, setLoading] = useState(true);
-  const [mapTheme, setMapTheme] = useState<'light' | 'dark'>(getMapTheme());
+  // Инициализируем тему только на клиенте
+  const [mapTheme, setMapTheme] = useState<'light' | 'dark'>('light');
   const [panelVisible, setPanelVisible] = useState(true);
   const [filters, setFilters] = useState({
     type: 'all' as string,
     status: 'active' as 'active' | 'all',
   });
 
-  // Отслеживаем изменение темы
+  // Инициализируем тему и отслеживаем изменение темы только на клиенте
   useEffect(() => {
+    // Устанавливаем начальную тему
+    setMapTheme(getMapTheme());
+
+    // Отслеживаем изменение темы
     const observer = new MutationObserver(() => {
       setMapTheme(getMapTheme());
     });

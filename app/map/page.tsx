@@ -2,6 +2,9 @@
 
 import { WorldMap } from '@/components/map/WorldMap';
 
+// Отключаем статическую генерацию, так как карта требует клиентского рендеринга
+export const dynamic = 'force-dynamic';
+
 export default function MapPage() {
   return (
     <div className="flex flex-col gap-6 md:gap-8">
