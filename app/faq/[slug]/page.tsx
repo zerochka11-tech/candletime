@@ -7,6 +7,8 @@ import { supabase } from '@/lib/supabaseClient';
 import { generateArticleStructuredData } from '@/lib/seo';
 import { MarkdownContent } from '@/components/MarkdownContent';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { ReadingProgress } from '@/components/ReadingProgress';
+import { ShareButtons } from '@/components/ShareButtons';
 
 type Article = {
   id: string;
@@ -28,17 +30,37 @@ type Article = {
   seo_keywords: string[] | null;
 };
 
+type RelatedArticle = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  published_at: string | null;
+};
+
+type NavigationArticle = {
+  id: string;
+  title: string;
+  slug: string;
+};
+
 export default function ArticlePage() {
   const params = useParams();
   const slug = params.slug as string;
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [relatedArticles, setRelatedArticles] = useState<RelatedArticle[]>([]);
+  const [navigation, setNavigation] = useState<{
+    prev: NavigationArticle | null;
+    next: NavigationArticle | null;
+  }>({ prev: null, next: null });
 
   useEffect(() => {
     if (slug) {
       loadArticle();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   useEffect(() => {
@@ -47,7 +69,12 @@ export default function ArticlePage() {
       incrementViews();
       // Добавляем структурированные данные
       addStructuredData();
+      // Загружаем похожие статьи
+      loadRelatedArticles();
+      // Загружаем навигацию
+      loadNavigation();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [article]);
 
   const loadArticle = async () => {
@@ -154,6 +181,57 @@ export default function ArticlePage() {
     document.head.appendChild(script);
   };
 
+  const loadRelatedArticles = async () => {
+    if (!article?.category) return;
+
+    try {
+      const { data } = await supabase
+        .from('articles')
+        .select('id, title, slug, excerpt, published_at')
+        .eq('category_id', article.category.id)
+        .neq('id', article.id)
+        .eq('published', true)
+        .not('published_at', 'is', null)
+        .lte('published_at', new Date().toISOString())
+        .order('published_at', { ascending: false })
+        .limit(3);
+
+      if (data) {
+        setRelatedArticles(data as RelatedArticle[]);
+      }
+    } catch (error) {
+      console.error('Error loading related articles:', error);
+    }
+  };
+
+  const loadNavigation = async () => {
+    if (!article?.category) return;
+
+    try {
+      const { data: articles } = await supabase
+        .from('articles')
+        .select('id, title, slug')
+        .eq('category_id', article.category.id)
+        .eq('published', true)
+        .not('published_at', 'is', null)
+        .lte('published_at', new Date().toISOString())
+        .order('published_at', { ascending: false });
+
+      if (articles) {
+        const currentIndex = articles.findIndex((a) => a.id === article.id);
+        const prev = currentIndex > 0 ? (articles[currentIndex - 1] as NavigationArticle) : null;
+        const next =
+          currentIndex < articles.length - 1 && currentIndex >= 0
+            ? (articles[currentIndex + 1] as NavigationArticle)
+            : null;
+
+        setNavigation({ prev, next });
+      }
+    } catch (error) {
+      console.error('Error loading navigation:', error);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
       year: 'numeric',
@@ -164,12 +242,16 @@ export default function ArticlePage() {
 
   if (loading) {
     return (
-      <div className="mx-auto w-full max-w-4xl">
-        <div className="animate-pulse space-y-6">
-          <div className="h-10 w-3/4 rounded bg-slate-200 dark:bg-slate-700" />
-          <div className="h-4 w-full rounded bg-slate-200 dark:bg-slate-700" />
-          <div className="h-4 w-2/3 rounded bg-slate-200 dark:bg-slate-700" />
-          <div className="h-64 w-full rounded bg-slate-200 dark:bg-slate-700" />
+      <div className="flex flex-col gap-6 sm:gap-8 w-full overflow-x-hidden">
+        <div className="w-full max-w-3xl mx-auto animate-pulse">
+          <div className="h-8 w-3/4 rounded bg-slate-200 dark:bg-slate-700 mb-4" />
+          <div className="h-4 w-full rounded bg-slate-200 dark:bg-slate-700 mb-2" />
+          <div className="h-4 w-2/3 rounded bg-slate-200 dark:bg-slate-700 mb-6" />
+          <div className="space-y-3">
+            <div className="h-4 w-full rounded bg-slate-200 dark:bg-slate-700" />
+            <div className="h-4 w-full rounded bg-slate-200 dark:bg-slate-700" />
+            <div className="h-4 w-5/6 rounded bg-slate-200 dark:bg-slate-700" />
+          </div>
         </div>
       </div>
     );
@@ -177,21 +259,27 @@ export default function ArticlePage() {
 
   if (notFound || !article) {
     return (
-      <div className="mx-auto w-full max-w-4xl">
-        <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center dark:border-slate-800 dark:bg-slate-800">
-          <h1 className="mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100">
+      <div className="flex flex-col gap-6 sm:gap-8 w-full overflow-x-hidden">
+        <section className="w-full max-w-3xl mx-auto p-8 sm:p-12 text-center">
+          <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-3xl">
+            🔍
+          </div>
+          <h1 className="mb-4 text-2xl sm:text-3xl font-semibold text-slate-900 dark:text-slate-100 break-words">
             Статья не найдена
           </h1>
-          <p className="mb-6 text-slate-600 dark:text-slate-400">
+          <p className="mb-6 text-base sm:text-lg text-slate-600 dark:text-slate-400 break-words">
             Запрашиваемая статья не существует или еще не опубликована.
           </p>
           <Link
             href="/faq"
-            className="inline-block rounded-full bg-slate-900 px-6 py-3 text-white transition-colors hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
+            className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
           >
-            Вернуться к списку статей
+            <svg className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span className="whitespace-nowrap">Вернуться к списку статей</span>
           </Link>
-        </div>
+        </section>
       </div>
     );
   }
@@ -215,66 +303,168 @@ export default function ArticlePage() {
   });
 
   return (
-    <article className="mx-auto w-full max-w-4xl">
-      {/* Хлебные крошки */}
-      <Breadcrumbs items={breadcrumbItems} />
+    <>
+      {/* Прогресс-бар чтения */}
+      <ReadingProgress />
 
-      {/* Заголовок */}
-      <header className="mb-8 pb-8 border-b-2 border-slate-200 dark:border-slate-800">
-        {article.category && (
-          <Link
-            href={`/faq?category=${article.category.slug}`}
-            className="mb-4 inline-block rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
-          >
-            {article.category.name}
-          </Link>
+      <div className="flex flex-col gap-6 sm:gap-8 md:gap-10 w-full overflow-x-hidden">
+        {/* Хлебные крошки */}
+        <div className="w-full overflow-x-auto">
+          <Breadcrumbs items={breadcrumbItems} />
+        </div>
+
+        {/* Заголовок и метаданные */}
+        <header className="flex flex-col gap-4 sm:gap-5 w-full">
+          <div className="flex flex-col gap-3 w-full">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 sm:text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight break-words">
+              {article.title}
+            </h1>
+            {article.excerpt && (
+              <p className="text-base text-slate-600 dark:text-slate-400 sm:text-lg md:text-xl leading-relaxed break-words">
+                {article.excerpt}
+              </p>
+            )}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 w-full">
+            {article.published_at && (
+              <span className="whitespace-nowrap">{formatDate(article.published_at)}</span>
+            )}
+            {article.reading_time && (
+              <span className="whitespace-nowrap">{article.reading_time} мин чтения</span>
+            )}
+            <span className="whitespace-nowrap">{article.views_count} просмотров</span>
+            {article.updated_at && article.updated_at !== article.published_at && (
+              <span className="text-amber-600 dark:text-amber-400 whitespace-nowrap">
+                Обновлено {formatDate(article.updated_at)}
+              </span>
+            )}
+          </div>
+
+          {/* Кнопки поделиться */}
+          <div className="pt-3 w-full overflow-x-auto">
+            <ShareButtons
+              title={article.title}
+              url={`/faq/${article.slug}`}
+              description={article.excerpt || undefined}
+            />
+          </div>
+        </header>
+
+        {/* Разделитель */}
+        <div className="w-full border-b-2 border-slate-300 dark:border-slate-600 mt-2"></div>
+
+        {/* Контент статьи */}
+        <article className="w-full overflow-x-hidden -mt-1">
+          <div className="prose prose-lg prose-slate max-w-none dark:prose-invert w-full">
+            <MarkdownContent content={article.content} articleTitle={article.title} />
+          </div>
+        </article>
+
+        {/* Теги */}
+        {article.seo_keywords && article.seo_keywords.length > 0 && (
+          <div className="w-full pt-6 border-t border-slate-200 dark:border-slate-700 overflow-x-hidden">
+            <div className="flex flex-wrap gap-2">
+              {article.seo_keywords.map((keyword, index) => (
+                <span
+                  key={index}
+                  className="inline-flex items-center rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300 break-words"
+                >
+                  {keyword}
+                </span>
+              ))}
+            </div>
+          </div>
         )}
-        <h1 className="mb-4 text-3xl font-bold text-slate-900 dark:text-slate-100 sm:text-4xl">
-          {article.title}
-        </h1>
-        <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 dark:text-slate-500">
-          {article.published_at && (
-            <span>📅 {formatDate(article.published_at)}</span>
-          )}
-          {article.reading_time && (
-            <span>⏱️ {article.reading_time} мин чтения</span>
-          )}
-          <span>👁️ {article.views_count} просмотров</span>
-        </div>
-      </header>
 
-      {/* Контент статьи */}
-      <div className="mt-8">
-        <MarkdownContent content={article.content} articleTitle={article.title} />
-      </div>
+        {/* Похожие статьи */}
+        {relatedArticles.length > 0 && (
+          <div className="w-full pt-8 border-t border-slate-200 dark:border-slate-700 overflow-x-hidden">
+            <h3 className="mb-6 text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100">
+              Похожие статьи
+            </h3>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {relatedArticles.map((related) => (
+                <Link
+                  key={related.id}
+                  href={`/faq/${related.slug}`}
+                  className="group flex flex-col gap-2 rounded-lg border border-slate-200 bg-white p-4 transition-all hover:border-slate-300 hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 overflow-hidden"
+                >
+                  <h4 className="text-sm sm:text-base font-medium text-slate-900 group-hover:text-amber-600 dark:text-slate-100 dark:group-hover:text-amber-400 line-clamp-2 break-words">
+                    {related.title}
+                  </h4>
+                  {related.excerpt && (
+                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-2 break-words">
+                      {related.excerpt}
+                    </p>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
-      {/* Ключевые слова (если есть) */}
-      {article.seo_keywords && article.seo_keywords.length > 0 && (
-        <div className="mt-8 flex flex-wrap gap-2">
-          <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-            Теги:
-          </span>
-          {article.seo_keywords.map((keyword, index) => (
-            <span
-              key={index}
-              className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+        {/* Навигация */}
+        <div className="w-full pt-8 border-t border-slate-200 dark:border-slate-700 overflow-x-hidden">
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-stretch">
+            {navigation.prev ? (
+              <Link
+                href={`/faq/${navigation.prev.slug}`}
+                className="group flex items-center gap-2 sm:gap-3 rounded-lg border border-slate-200 bg-white p-3 sm:p-4 transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 sm:flex-1 min-w-0"
+              >
+                <svg
+                  className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 text-slate-400 transition-transform group-hover:-translate-x-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                <div className="min-w-0 flex-1 overflow-hidden">
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mb-1 whitespace-nowrap">Предыдущая статья</div>
+                  <div className="text-xs sm:text-sm font-medium text-slate-900 dark:text-slate-100 truncate break-words">
+                    {navigation.prev.title}
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              <div className="hidden sm:block flex-1" />
+            )}
+
+            <Link
+              href="/faq"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-xs sm:text-sm font-medium text-slate-700 transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 sm:mx-4 whitespace-nowrap"
             >
-              {keyword}
-            </span>
-          ))}
-        </div>
-      )}
+              Все статьи
+            </Link>
 
-      {/* Навигация */}
-      <div className="mt-12 flex justify-between border-t border-slate-200 pt-8 dark:border-slate-800">
-        <Link
-          href="/faq"
-          className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
-        >
-          ← Все статьи
-        </Link>
+            {navigation.next ? (
+              <Link
+                href={`/faq/${navigation.next.slug}`}
+                className="group flex items-center gap-2 sm:gap-3 rounded-lg border border-slate-200 bg-white p-3 sm:p-4 transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 sm:flex-1 min-w-0"
+              >
+                <div className="min-w-0 flex-1 text-right overflow-hidden">
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mb-1 whitespace-nowrap">Следующая статья</div>
+                  <div className="text-xs sm:text-sm font-medium text-slate-900 dark:text-slate-100 truncate break-words">
+                    {navigation.next.title}
+                  </div>
+                </div>
+                <svg
+                  className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 text-slate-400 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            ) : (
+              <div className="hidden sm:block flex-1" />
+            )}
+          </div>
+        </div>
       </div>
-    </article>
+    </>
   );
 }
 

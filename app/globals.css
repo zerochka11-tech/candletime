@@ -100,5 +100,40 @@ body.mobile-menu-open .leaflet-control-container {
   pointer-events: none !important;
 }
 
+/* Reading Mode стили */
+.reading-mode header,
+.reading-mode footer,
+.reading-mode .breadcrumbs,
+.reading-mode .reading-mode-toggle {
+  display: none !important;
+}
+
+.reading-mode main {
+  max-width: 800px !important;
+  margin: 0 auto !important;
+}
+
+.reading-mode article {
+  max-width: 65ch !important;
+  margin: 0 auto !important;
+}
+
+/* Печать */
+@media print {
+  .site-header,
+  .site-footer,
+  .breadcrumbs,
+  .share-buttons,
+  .reading-progress,
+  .table-of-contents,
+  .reading-mode-toggle {
+    display: none !important;
+  }
+
+  article {
+    max-width: 100% !important;
+  }
+}
+
 
 

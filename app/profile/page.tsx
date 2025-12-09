@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
+import { checkAdminAccess } from '@/lib/admin';
 
 type UserStats = {
   totalCandles: number;
@@ -20,6 +21,7 @@ export default function ProfilePage() {
   } | null>(null);
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -68,6 +70,10 @@ export default function ProfilePage() {
           activeCandles: activeResult.count ?? 0,
           candlesLast30Days: recentResult.count ?? 0,
         });
+
+        // Проверяем права администратора
+        const { isAdmin: admin } = await checkAdminAccess();
+        setIsAdmin(admin);
       } catch (error) {
         console.error('Error loading profile:', error);
       } finally {
@@ -226,6 +232,39 @@ export default function ProfilePage() {
                 </span>
               </div>
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* Админ-панель (только для админов) */}
+      {isAdmin && (
+        <section className="relative overflow-hidden rounded-3xl border-2 border-amber-300 dark:border-amber-700 bg-gradient-to-br from-amber-50 via-white to-white dark:from-amber-900/20 dark:via-slate-800/50 dark:to-slate-800 p-4 shadow-md sm:p-6 md:p-8 transition-colors duration-200">
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 dark:from-amber-500/10 dark:to-indigo-500/10" />
+          
+          <div className="relative space-y-3 sm:space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/50 dark:to-amber-800/30 text-xl shadow-sm">
+                🔐
+              </div>
+              <div>
+                <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100 md:text-2xl">
+                  Админ-панель
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                  Управление контентом и статьями
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/admin/articles"
+              className="group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border-2 border-amber-400 dark:border-amber-600 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-800/20 px-4 sm:px-6 py-3 sm:py-3.5 text-sm font-semibold text-amber-900 dark:text-amber-100 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-500 dark:hover:border-amber-500 hover:from-amber-200 hover:to-amber-100 dark:hover:from-amber-900/50 dark:hover:to-amber-800/30 hover:shadow-lg min-h-[48px] sm:min-h-0 w-full sm:w-auto"
+            >
+              <span>📝</span>
+              <span>Управление статьями</span>
+              <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
           </div>
         </section>
       )}

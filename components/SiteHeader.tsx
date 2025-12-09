@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { checkAdminAccess } from '@/lib/admin';
 
 type UserInfo = {
   email: string | null;
@@ -16,6 +17,7 @@ export function SiteHeader() {
 
   const [user, setUser] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [authNotice, setAuthNotice] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -95,17 +97,28 @@ export function SiteHeader() {
 
     loadUser();
 
+    // Проверка прав администратора
+    const checkAdmin = async () => {
+      const { isAdmin: admin } = await checkAdminAccess();
+      setIsAdmin(admin);
+    };
+    checkAdmin();
+
     // Подписка на изменения авторизации — мгновенно обновляем UI
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN') {
         setUser({ email: session?.user.email ?? null });
         showNotice('Вы вошли в аккаунт');
+        // Проверяем права после входа
+        const { isAdmin: admin } = await checkAdminAccess();
+        setIsAdmin(admin);
       }
 
       if (event === 'SIGNED_OUT') {
         setUser(null);
+        setIsAdmin(false);
         showNotice('Вы вышли из аккаунта');
       }
     });
@@ -396,6 +409,27 @@ export function SiteHeader() {
                     <span className="flex-1">Мои свечи</span>
                     {pathname === '/dashboard' && (
                       <svg className="h-5 w-5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    )}
+                  </Link>
+                )}
+
+                {isAdmin && (
+                  <Link
+                    href="/admin/articles"
+                    onClick={closeMobileMenu}
+                    role="menuitem"
+                    className={`group flex items-center gap-4 rounded-2xl px-5 py-4 text-base font-medium transition-all duration-200 min-h-[56px] active:scale-[0.98] ${
+                      pathname.startsWith('/admin')
+                        ? 'bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-900 dark:text-amber-100 shadow-md border border-amber-200/50 dark:border-amber-700/50'
+                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:shadow-sm'
+                    }`}
+                  >
+                    <span className="text-2xl transition-transform duration-200 group-hover:scale-110">🔐</span>
+                    <span className="flex-1">Админ-панель</span>
+                    {pathname.startsWith('/admin') && (
+                      <svg className="h-5 w-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     )}

@@ -21,7 +21,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
 
   return (
     <nav
-      className="mb-6 flex flex-wrap items-center gap-1.5 text-sm"
+      className="breadcrumbs mb-6 flex flex-wrap items-center gap-1.5 text-sm"
       aria-label="Хлебные крошки"
     >
       {items.map((item, index) => {

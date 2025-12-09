@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
+import { checkAdminAccess } from '@/lib/admin';
 
 type Candle = {
   id: string;
@@ -293,6 +294,7 @@ export default function DashboardPage() {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [filter, setFilter] = useState<Filter>('all');
   const [page, setPage] = useState(1);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -305,6 +307,10 @@ export default function DashboardPage() {
       }
 
       setUserEmail(authData.user.email ?? null);
+
+      // Проверяем права администратора
+      const { isAdmin: admin } = await checkAdminAccess();
+      setIsAdmin(admin);
 
       // История только за последние 30 дней
       const thirtyDaysAgo = new Date(
@@ -444,12 +450,23 @@ export default function DashboardPage() {
           )}
         </div>
 
-        <Link
-          href="/light"
-          className="inline-flex items-center justify-center rounded-full bg-slate-900 dark:bg-slate-700 px-4 py-2.5 text-xs font-medium text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-800 dark:hover:bg-slate-600 hover:shadow-lg md:text-sm"
-        >
-          Зажечь новую свечу
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          {isAdmin && (
+            <Link
+              href="/admin/articles"
+              className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-amber-400 dark:border-amber-600 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-800/20 px-4 py-2.5 text-xs font-semibold text-amber-900 dark:text-amber-100 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-500 dark:hover:border-amber-500 hover:from-amber-200 hover:to-amber-100 dark:hover:from-amber-900/50 dark:hover:to-amber-800/30 hover:shadow-lg md:text-sm"
+            >
+              <span>🔐</span>
+              <span>Админ-панель</span>
+            </Link>
+          )}
+          <Link
+            href="/light"
+            className="inline-flex items-center justify-center rounded-full bg-slate-900 dark:bg-slate-700 px-4 py-2.5 text-xs font-medium text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-800 dark:hover:bg-slate-600 hover:shadow-lg md:text-sm"
+          >
+            Зажечь новую свечу
+          </Link>
+        </div>
       </div>
 
       {/* Контент */}
