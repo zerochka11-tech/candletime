@@ -472,6 +472,33 @@ const CANDLE_TEMPLATES = [
     duration: '1',
     emoji: '💪',
   },
+  {
+    id: 'merge-request',
+    name: 'За успешный MR',
+    type: 'gratitude' as CandleTypeId,
+    title: 'За успешный merge request',
+    message: 'MR принят без комментариев. Идеально!',
+    duration: '24',
+    emoji: '🔀',
+  },
+  {
+    id: 'sprint-done',
+    name: 'За завершение спринта',
+    type: 'gratitude' as CandleTypeId,
+    title: 'За завершение спринта',
+    message: 'Спринт завершен. Все задачи закрыты. Отдыхай!',
+    duration: '168',
+    emoji: '🏁',
+  },
+  {
+    id: 'hard-task',
+    name: 'За решение сложной задачи',
+    type: 'focus' as CandleTypeId,
+    title: 'За решение сложной задачи',
+    message: 'Решил сложную задачу. Мозг работает!',
+    duration: '24',
+    emoji: '🧩',
+  },
 ] as const;
 
 // Ключ для localStorage
