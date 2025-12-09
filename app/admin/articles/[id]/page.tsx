@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
-import { checkAdminAccess, getAuthToken } from '@/lib/admin';
+import { getAuthToken } from '@/lib/admin';
 import { MarkdownContent } from '@/components/MarkdownContent';
 
 type Article = {
@@ -32,7 +32,6 @@ export default function AdminArticlePage() {
   const id = params.id as string;
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
     seo_title: '',
@@ -41,24 +40,13 @@ export default function AdminArticlePage() {
     excerpt: '',
   });
 
+  // Проверка доступа теперь происходит на сервере через AdminGuard в layout
   useEffect(() => {
-    checkAccess();
-  }, []);
-
-  useEffect(() => {
-    if (isAdmin && id) {
+    if (id) {
       loadArticle();
     }
-  }, [isAdmin, id]);
-
-  const checkAccess = async () => {
-    const { isAdmin: admin, error } = await checkAdminAccess();
-    if (!admin) {
-      router.push('/auth/login?redirect=/admin/articles');
-      return;
-    }
-    setIsAdmin(true);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const loadArticle = async () => {
     try {
@@ -158,16 +146,6 @@ export default function AdminArticlePage() {
       alert(`Ошибка: ${error.message}`);
     }
   };
-
-  if (!isAdmin) {
-    return (
-      <div className="mx-auto w-full max-w-4xl">
-        <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center dark:border-slate-800 dark:bg-slate-800">
-          <p className="text-slate-600 dark:text-slate-400">Проверка доступа...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (loading) {
     return (

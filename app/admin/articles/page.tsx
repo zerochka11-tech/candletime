@@ -35,7 +35,6 @@ export default function AdminArticlesPage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [fileArticles, setFileArticles] = useState<FileArticle[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [importing, setImporting] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,31 +42,22 @@ export default function AdminArticlesPage() {
   const [publishedCount, setPublishedCount] = useState(0);
   const [draftCount, setDraftCount] = useState(0);
 
+  // Проверка доступа теперь происходит на сервере через AdminGuard
+  // Просто загружаем данные сразу
   useEffect(() => {
-    checkAccess();
-  }, []);
-
-  useEffect(() => {
-    if (isAdmin) {
-      loadArticles();
-      loadFileArticles();
-      loadStats();
-    }
+    loadArticles();
+    loadFileArticles();
+    loadStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAdmin, filter, currentPage]);
+  }, [filter, currentPage]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [filter]);
 
-  const checkAccess = async () => {
-    const { isAdmin: admin, error } = await checkAdminAccess();
-    if (!admin) {
-      router.push('/auth/login?redirect=/admin/articles');
-      return;
-    }
-    setIsAdmin(true);
-  };
+  // Проверка доступа перенесена на сервер (AdminGuard)
+  // Оставляем функцию для совместимости, но она больше не используется
+  // (можно удалить в будущем после тестирования)
 
   const loadStats = async () => {
     try {
@@ -240,16 +230,6 @@ export default function AdminArticlesPage() {
       alert(`Ошибка: ${error.message}`);
     }
   };
-
-  if (!isAdmin) {
-    return (
-      <div className="mx-auto w-full max-w-4xl">
-        <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center dark:border-slate-800 dark:bg-slate-800">
-          <p className="text-slate-600 dark:text-slate-400">Проверка доступа...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (loading) {
     return (

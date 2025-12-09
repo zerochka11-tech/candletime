@@ -1,13 +1,15 @@
 'use client';
 
-import { FormEvent, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { FormEvent, useEffect, useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { checkAdminAccess } from '@/lib/admin';
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get('redirect') || '/dashboard';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,21 +17,27 @@ export default function LoginPage() {
   const [errorText, setErrorText] = useState<string | null>(null);
   const [showAdminChoice, setShowAdminChoice] = useState(false);
 
-  // Если уже залогинен — уводим в кабинет
+  // Если уже залогинен — уводим в нужное место
   useEffect(() => {
     const checkUser = async () => {
       const { data, error } = await supabase.auth.getUser();
       if (!error && data.user) {
         const { isAdmin } = await checkAdminAccess();
         if (isAdmin) {
-          setShowAdminChoice(true);
+          // Если есть redirect на админ-панель - сразу туда
+          if (redirectPath.startsWith('/admin')) {
+            router.replace(redirectPath);
+          } else {
+            setShowAdminChoice(true);
+          }
         } else {
-          router.replace('/dashboard');
+          router.replace(redirectPath);
         }
       }
     };
     checkUser();
-  }, [router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -61,11 +69,16 @@ export default function LoginPage() {
       const { isAdmin } = await checkAdminAccess();
       
       if (isAdmin) {
-        // Показываем выбор для админа
-        setShowAdminChoice(true);
+        // Если есть redirect на админ-панель - сразу туда
+        if (redirectPath.startsWith('/admin')) {
+          router.replace(redirectPath);
+        } else {
+          // Показываем выбор для админа
+          setShowAdminChoice(true);
+        }
       } else {
         // Обычный редирект
-        router.push('/dashboard');
+        router.replace(redirectPath);
       }
     } catch (err) {
       console.error(err);
@@ -107,7 +120,7 @@ export default function LoginPage() {
 
             <div className="grid gap-3 sm:gap-4">
               <Link
-                href="/admin/articles"
+                href={redirectPath.startsWith('/admin') ? redirectPath : '/admin/articles'}
                 className="group relative overflow-hidden rounded-2xl border-2 border-amber-300 dark:border-amber-700 bg-gradient-to-br from-amber-50 to-white dark:from-amber-900/30 dark:to-slate-800 p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-amber-400 dark:hover:border-amber-600 hover:shadow-lg"
               >
                 <div className="flex items-center gap-4">
@@ -237,5 +250,21 @@ export default function LoginPage() {
         </form>
       </section>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="mx-auto flex max-w-md flex-col gap-3 sm:gap-4">
+        <div className="rounded-3xl border border-slate-200/70 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 sm:p-6 md:p-8">
+          <div className="h-6 w-32 rounded bg-slate-200 dark:bg-slate-700 mb-4 animate-pulse" />
+          <div className="h-10 w-full rounded bg-slate-200 dark:bg-slate-700 mb-3 animate-pulse" />
+          <div className="h-10 w-full rounded bg-slate-200 dark:bg-slate-700 animate-pulse" />
+        </div>
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 }
