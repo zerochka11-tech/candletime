@@ -62,6 +62,14 @@ export default function FAQPage() {
     try {
       setLoading(true);
 
+      // Проверяем сессию пользователя для диагностики
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        console.log('[FAQ] Loading articles for user:', user.email);
+      } else {
+        console.log('[FAQ] Loading articles for anonymous user');
+      }
+
       // Вычисляем диапазон для пагинации
       const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
       const endIndex = startIndex + ARTICLES_PER_PAGE - 1;
@@ -132,10 +140,20 @@ export default function FAQPage() {
       }
 
       if (articlesResult.error) {
-        console.error('Error loading articles:', articlesResult.error);
+        console.error('[FAQ] Error loading articles:', {
+          error: articlesResult.error,
+          message: articlesResult.error.message,
+          details: articlesResult.error.details,
+          hint: articlesResult.error.hint,
+          code: articlesResult.error.code,
+        });
+        // Устанавливаем пустые данные вместо возврата, чтобы UI обновился
+        setArticles([]);
+        setTotalCount(0);
         return;
       }
 
+      // Обрабатываем случай, когда data может быть null или undefined
       if (articlesResult.data) {
         const formattedArticles = articlesResult.data.map((article: any) => ({
           id: article.id,
@@ -151,9 +169,18 @@ export default function FAQPage() {
 
         setArticles(formattedArticles);
         setTotalCount(articlesResult.count || 0);
+        console.log(`[FAQ] Loaded ${formattedArticles.length} articles (total: ${articlesResult.count || 0})`);
+      } else {
+        // Если data === null или undefined, устанавливаем пустые данные
+        console.warn('[FAQ] articlesResult.data is null or undefined');
+        setArticles([]);
+        setTotalCount(0);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('[FAQ] Error loading articles:', error);
+      // При любой ошибке устанавливаем пустые данные
+      setArticles([]);
+      setTotalCount(0);
     } finally {
       setLoading(false);
     }
@@ -239,10 +266,20 @@ export default function FAQPage() {
       }
 
       if (articlesResult.error) {
-        console.error('Error searching articles:', articlesResult.error);
+        console.error('[FAQ] Error searching articles:', {
+          error: articlesResult.error,
+          message: articlesResult.error.message,
+          details: articlesResult.error.details,
+          hint: articlesResult.error.hint,
+          code: articlesResult.error.code,
+        });
+        // Устанавливаем пустые данные вместо возврата, чтобы UI обновился
+        setArticles([]);
+        setTotalCount(0);
         return;
       }
 
+      // Обрабатываем случай, когда data может быть null или undefined
       if (articlesResult.data) {
         const formattedArticles = articlesResult.data.map((article: any) => ({
           id: article.id,
@@ -258,9 +295,18 @@ export default function FAQPage() {
 
         setArticles(formattedArticles);
         setTotalCount(articlesResult.count || 0);
+        console.log(`[FAQ] Search found ${formattedArticles.length} articles (total: ${articlesResult.count || 0})`);
+      } else {
+        // Если data === null или undefined, устанавливаем пустые данные
+        console.warn('[FAQ] articlesResult.data is null or undefined (search)');
+        setArticles([]);
+        setTotalCount(0);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('[FAQ] Error searching articles:', error);
+      // При любой ошибке устанавливаем пустые данные
+      setArticles([]);
+      setTotalCount(0);
     } finally {
       setLoading(false);
     }
