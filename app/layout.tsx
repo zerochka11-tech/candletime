@@ -39,6 +39,7 @@ export default function RootLayout({
       <head>
         <ThemeScript />
         <meta name="google-site-verification" content="3vjdPzwkJwKsBjdNwjtKg2-qf31TK6Ymv7RMkjp0kTQ" />
+        <meta name="yandex-verification" content="c1fb551ad90d3556" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationData) }}
