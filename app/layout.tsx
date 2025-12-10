@@ -8,7 +8,7 @@ import { ThemeScript } from '@/components/ThemeScript';
 import { generateMetadata as generateBaseMetadata, generateOrganizationStructuredData } from '@/lib/seo';
 
 const baseMetadata = generateBaseMetadata({
-  title: 'CandleTime',
+  title: 'CandleTime - Зажги символическую свечу онлайн',
   description: 'Зажги символическую свечу онлайн. Тихое место для внимания и памяти без ленты и лайков. Создай свою свечу или посмотри другие.',
   path: '/',
 });
