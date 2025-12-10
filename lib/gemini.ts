@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 /**
  * Получить клиент Gemini API
@@ -14,7 +14,7 @@ export function getGeminiClient() {
     throw new Error(errorMessage);
   }
 
-  return new GoogleGenAI({ apiKey });
+  return new GoogleGenerativeAI(apiKey);
 }
 
 /**
@@ -251,14 +251,15 @@ export async function generateArticle(params: {
   const model = models[currentModelIndex];
 
   try {
-    const response = await client.models.generateContent({
-      model,
-      contents: prompt,
-    });
-
+    // Получаем модель
+    const genModel = client.getGenerativeModel({ model });
+    
+    // Генерируем контент
+    const result = await genModel.generateContent(prompt);
+    const response = result.response;
+    
     // Извлекаем текст из ответа
-    // Согласно документации, response.text должен содержать текст напрямую
-    const generatedContent = response.text || '';
+    const generatedContent = response.text() || '';
     
     if (!generatedContent) {
       throw new Error('Gemini API returned empty content');
