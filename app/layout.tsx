@@ -3,6 +3,7 @@ import './globals.css';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { Analytics } from '@/components/Analytics';
+import { YandexMetrika } from '@/components/YandexMetrika';
 import { CookieConsent } from '@/components/CookieConsent';
 import { ThemeScript } from '@/components/ThemeScript';
 import { generateMetadata as generateBaseMetadata, generateOrganizationStructuredData } from '@/lib/seo';
@@ -45,6 +46,7 @@ export default function RootLayout({
       </head>
       <body className="flex min-h-screen flex-col overflow-x-hidden bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-200">
         <Analytics />
+        <YandexMetrika />
         <SiteHeader />
 
         {/* КОНТЕНТ */}

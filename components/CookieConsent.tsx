@@ -131,7 +131,7 @@ export function CookieConsent() {
                   <div>
                     <p className="text-sm font-medium sm:text-base">Аналитика</p>
                     <p className="text-xs text-slate-600 dark:text-slate-300">
-                      Google Analytics для улучшения сайта
+                      Google Analytics и Яндекс.Метрика для улучшения сайта
                     </p>
                   </div>
                   <input
