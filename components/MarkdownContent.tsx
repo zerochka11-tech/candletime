@@ -79,18 +79,20 @@ export function MarkdownContent({ content, articleTitle }: MarkdownContentProps)
   return (
     <div className="prose prose-slate max-w-none dark:prose-invert w-full overflow-x-hidden [&>*:first-child]:!mt-0
       prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-slate-900 dark:prose-headings:text-slate-100 prose-headings:break-words
-      prose-h2:text-xl sm:prose-h2:text-2xl md:prose-h2:text-3xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:leading-tight
-      prose-h3:text-lg sm:prose-h3:text-xl md:prose-h3:text-2xl prose-h3:mt-6 prose-h3:mb-3 prose-h3:leading-tight
-      prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-p:leading-[1.65] prose-p:text-base sm:prose-p:text-lg prose-p:mb-4 prose-p:break-words prose-p:font-normal prose-p:first:mt-0
-      prose-a:text-slate-900 dark:prose-a:text-slate-100 prose-a:font-medium prose-a:underline prose-a:decoration-2 prose-a:underline-offset-2 prose-a:decoration-amber-500 hover:prose-a:decoration-amber-600 prose-a:break-words
+      prose-h2:text-base prose-h2:sm:text-lg prose-h2:md:text-xl prose-h2:lg:text-2xl prose-h2:xl:text-2xl prose-h2:2xl:text-3xl prose-h2:mt-6 sm:prose-h2:mt-8 lg:prose-h2:mt-10 prose-h2:mb-2.5 sm:prose-h2:mb-3 lg:prose-h2:mb-4 prose-h2:leading-tight prose-h2:first:mt-4 sm:prose-h2:first:mt-5 lg:prose-h2:first:mt-6
+      prose-h3:text-sm prose-h3:sm:text-base prose-h3:md:text-lg prose-h3:lg:text-xl prose-h3:xl:text-xl prose-h3:2xl:text-2xl prose-h3:mt-5 sm:prose-h3:mt-6 lg:prose-h3:mt-8 prose-h3:mb-2 sm:prose-h3:mb-2.5 lg:prose-h3:mb-3 prose-h3:leading-tight
+      prose-h4:text-xs prose-h4:sm:text-sm prose-h4:md:text-base prose-h4:lg:text-lg prose-h4:xl:text-lg prose-h4:2xl:text-xl prose-h4:mt-4 sm:prose-h4:mt-5 lg:prose-h4:mt-6 prose-h4:mb-1.5 sm:prose-h4:mb-2 lg:prose-h4:mb-2.5 prose-h4:leading-tight prose-h4:font-bold
+      prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-p:leading-[1.7] prose-p:text-sm sm:prose-p:text-base lg:prose-p:text-lg prose-p:mb-4 sm:prose-p:mb-5 prose-p:break-words prose-p:font-normal prose-p:first:mt-0
+      prose-a:text-amber-600 dark:prose-a:text-amber-400 prose-a:no-underline hover:prose-a:underline prose-a:text-sm sm:prose-a:text-base lg:prose-a:text-lg prose-a:font-medium prose-a:break-words
       prose-strong:text-slate-900 dark:prose-strong:text-slate-100 prose-strong:font-semibold
-      prose-ul:my-4 prose-ol:my-4 prose-li:my-2 prose-li:leading-[1.65] prose-li:break-words prose-li:text-base sm:prose-li:text-lg
-      prose-hr:my-8 prose-hr:border-slate-200 dark:prose-hr:border-slate-700
-      prose-blockquote:border-l-4 prose-blockquote:border-amber-500 prose-blockquote:bg-amber-50/30 dark:prose-blockquote:bg-amber-900/10 prose-blockquote:py-3 prose-blockquote:px-4 sm:prose-blockquote:px-6 prose-blockquote:my-6 prose-blockquote:rounded-r-lg prose-blockquote:break-words prose-blockquote:text-base sm:prose-blockquote:text-lg prose-blockquote:leading-[1.65] prose-blockquote:italic
-      prose-code:text-slate-900 dark:prose-code:text-slate-100 prose-code:text-sm sm:prose-code:text-base prose-code:break-all
-      prose-pre:bg-slate-900 dark:prose-pre:bg-slate-950 prose-pre:rounded-xl prose-pre:my-6 prose-pre:overflow-x-auto prose-pre:max-w-full
-      prose-table:w-full prose-table:overflow-x-auto prose-table:block prose-table:max-w-full prose-table:my-6
-      prose-img:max-w-full prose-img:h-auto prose-img:rounded-lg prose-img:my-6">
+      prose-ul:my-4 sm:prose-ul:my-5 prose-ol:my-4 sm:prose-ol:my-5 prose-li:my-1 sm:prose-li:my-1.5 prose-li:leading-relaxed prose-li:break-words prose-li:text-sm sm:prose-li:text-base lg:prose-li:text-lg prose-ul:pl-5 sm:prose-ul:pl-6 prose-ol:pl-5 sm:prose-ol:pl-6
+      prose-ul:marker:text-amber-600 dark:prose-ul:marker:text-amber-400 prose-ol:marker:text-amber-600 dark:prose-ol:marker:text-amber-400
+      prose-hr:my-6 sm:prose-hr:my-8 lg:prose-hr:my-10 prose-hr:border-slate-300 dark:prose-hr:border-slate-700
+      prose-blockquote:border-l-amber-500 dark:prose-blockquote:border-l-amber-400 prose-blockquote:bg-slate-50 dark:prose-blockquote:bg-slate-800/50 prose-blockquote:py-2 prose-blockquote:px-3 sm:prose-blockquote:px-4 prose-blockquote:rounded-r-lg prose-blockquote:my-4 sm:prose-blockquote:my-6 prose-blockquote:break-words prose-blockquote:text-sm sm:prose-blockquote:text-base lg:prose-blockquote:text-lg prose-blockquote:leading-relaxed prose-blockquote:italic
+      prose-code:text-amber-700 dark:prose-code:text-amber-300 prose-code:bg-slate-100 dark:prose-code:bg-slate-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-xs sm:prose-code:text-sm prose-code:break-all prose-code:font-mono
+      prose-pre:bg-slate-900 dark:prose-pre:bg-slate-800 prose-pre:border prose-pre:border-slate-300 dark:prose-pre:border-slate-700 prose-pre:rounded-xl prose-pre:my-6 prose-pre:overflow-x-auto prose-pre:max-w-full prose-pre:text-xs sm:prose-pre:text-sm prose-pre:font-mono
+      prose-table:w-full prose-table:overflow-x-auto prose-table:block prose-table:max-w-full prose-table:my-4 sm:prose-table:my-6 lg:prose-table:my-8 prose-table:text-xs sm:prose-table:text-sm prose-table:border-slate-300 dark:prose-table:border-slate-700
+      prose-img:max-w-full prose-img:h-auto prose-img:rounded-xl prose-img:shadow-md prose-img:my-6 sm:prose-img:my-8 lg:prose-img:my-10">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={rehypePlugins}

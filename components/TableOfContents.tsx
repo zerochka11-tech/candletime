@@ -14,43 +14,53 @@ interface TableOfContentsProps {
 
 export function TableOfContents({ content }: TableOfContentsProps) {
   const [headings, setHeadings] = useState<Heading[]>([]);
-  const [activeId, setActiveId] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
+  const [activeId, setActiveId] = useState<string>('');
 
   useEffect(() => {
-    // Извлекаем заголовки из markdown контента
-    const headingRegex = /^(#{1,3})\s+(.+)$/gm;
-    const extracted: Heading[] = [];
-    let match;
-
-    while ((match = headingRegex.exec(content)) !== null) {
+    // Извлекаем заголовки H2 и H3 из markdown контента
+    const headingRegex = /^(#{2,3})\s+(.+)$/gm;
+    const matches = Array.from(content.matchAll(headingRegex));
+    
+    const extractedHeadings: Heading[] = matches.map((match, index) => {
       const level = match[1].length;
       const text = match[2].trim();
-      const id =
-        text
-          .toLowerCase()
-          .replace(/[^a-zа-яё0-9\s]+/g, '')
-          .replace(/\s+/g, '-')
-          .replace(/^-|-$/g, '') || `heading-${extracted.length}`;
+      // Создаем ID из текста заголовка
+      const id = `heading-${index}-${text
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .substring(0, 50)}`;
+      
+      return { id, text, level };
+    });
 
-      extracted.push({ id, text, level });
-    }
+    setHeadings(extractedHeadings);
 
-    setHeadings(extracted);
-
-    // Добавляем id к заголовкам в DOM после рендера
-    const timer = setTimeout(() => {
-      extracted.forEach(({ id, text }) => {
-        const headings = document.querySelectorAll('h2, h3');
-        headings.forEach((h) => {
-          if (h.textContent?.trim() === text && !h.id) {
-            h.id = id;
-          }
-        });
+    // Добавляем ID к заголовкам в DOM после рендера markdown
+    const updateHeadings = () => {
+      const headingElements = document.querySelectorAll('article h2, article h3');
+      headingElements.forEach((el, index) => {
+        if (index < extractedHeadings.length && !el.id) {
+          el.id = extractedHeadings[index].id;
+        }
       });
-    }, 100);
+    };
 
-    // Отслеживание активного заголовка при скролле
+    // Несколько попыток обновления для надежности
+    const timers = [
+      setTimeout(updateHeadings, 100),
+      setTimeout(updateHeadings, 500),
+      setTimeout(updateHeadings, 1000),
+    ];
+    
+    return () => {
+      timers.forEach(timer => clearTimeout(timer));
+    };
+  }, [content]);
+
+  useEffect(() => {
+    if (headings.length === 0) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -59,128 +69,79 @@ export function TableOfContents({ content }: TableOfContentsProps) {
           }
         });
       },
-      { rootMargin: '-20% 0% -70% 0%' }
+      {
+        rootMargin: '-20% 0% -35% 0%',
+        threshold: 0,
+      }
     );
 
-    // Начинаем наблюдение после таймера
-    setTimeout(() => {
-      extracted.forEach(({ id }) => {
-        const element = document.getElementById(id);
-        if (element) observer.observe(element);
-      });
-    }, 200);
+    headings.forEach((heading) => {
+      const element = document.getElementById(heading.id);
+      if (element) {
+        observer.observe(element);
+      }
+    });
 
     return () => {
-      clearTimeout(timer);
-      observer.disconnect();
+      headings.forEach((heading) => {
+        const element = document.getElementById(heading.id);
+        if (element) {
+          observer.unobserve(element);
+        }
+      });
     };
-  }, [content]);
+  }, [headings]);
+
+  const scrollToHeading = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 100; // Отступ от верха
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   if (headings.length === 0) return null;
 
   return (
-    <>
-      {/* Мобильная версия - сворачиваемое */}
-      <div className="lg:hidden mb-4">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          type="button"
-          className="w-full rounded-xl border border-slate-200 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-3 shadow-sm dark:border-slate-700 flex items-center justify-between"
-        >
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
-            Содержание
-          </h3>
-          <svg
-            className={`h-4 w-4 text-slate-600 dark:text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-        {isOpen && (
-          <div className="mt-2 rounded-xl border border-slate-200 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-4 shadow-sm dark:border-slate-700">
-            <ul className="space-y-2 max-h-64 overflow-y-auto">
-              {headings.map((heading) => (
-                <li
-                  key={heading.id}
-                  className={`${heading.level === 3 ? 'ml-4' : ''} ${heading.level === 3 ? 'text-xs' : 'text-sm'}`}
-                >
-                  <a
-                    href={`#${heading.id}`}
-                    className={`block transition-colors hover:text-slate-900 dark:hover:text-slate-100 ${
-                      activeId === heading.id
-                        ? 'text-slate-900 dark:text-slate-100 font-medium'
-                        : 'text-slate-600 dark:text-slate-400'
-                    }`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setIsOpen(false);
-                      const element = document.getElementById(heading.id);
-                      if (element) {
-                        const headerOffset = 100;
-                        const elementPosition = element.getBoundingClientRect().top;
-                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                        window.scrollTo({
-                          top: offsetPosition,
-                          behavior: 'smooth',
-                        });
-                      }
-                    }}
-                  >
-                    {heading.text}
-                  </a>
-                </li>
-              ))}
-            </ul>
+    <nav className="hidden lg:block sticky top-24 self-start w-64 ml-8">
+      <div className="relative overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-4 shadow-md">
+        {/* Декоративный градиент */}
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 dark:from-amber-500/10 dark:to-indigo-500/10" />
+        
+        <div className="relative">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-sm">📑</span>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+              Содержание
+            </h3>
           </div>
-        )}
-      </div>
-
-      {/* Десктопная версия - липкая */}
-      <nav className="table-of-contents sticky top-24 hidden lg:block max-h-[calc(100vh-8rem)] overflow-y-auto">
-        <div className="rounded-xl border border-slate-200 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-4 shadow-sm dark:border-slate-700">
-          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
-            Содержание
-          </h3>
-          <ul className="space-y-2">
+          
+          <ul className="space-y-1.5 text-xs">
             {headings.map((heading) => (
-              <li
-                key={heading.id}
-                className={`${heading.level === 3 ? 'ml-4' : ''} ${heading.level === 3 ? 'text-xs' : 'text-sm'}`}
-              >
-                <a
-                  href={`#${heading.id}`}
-                  className={`block transition-colors hover:text-slate-900 dark:hover:text-slate-100 ${
+              <li key={heading.id}>
+                <button
+                  onClick={() => scrollToHeading(heading.id)}
+                  className={`w-full text-left px-2 py-1 rounded-lg transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-700 ${
+                    heading.level === 3 ? 'pl-4' : ''
+                  } ${
                     activeId === heading.id
-                      ? 'text-slate-900 dark:text-slate-100 font-medium'
-                      : 'text-slate-600 dark:text-slate-400'
+                      ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 font-medium border-l-2 border-amber-500 dark:border-amber-400'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
                   }`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const element = document.getElementById(heading.id);
-                    if (element) {
-                      const headerOffset = 100;
-                      const elementPosition = element.getBoundingClientRect().top;
-                      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                      window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth',
-                      });
-                    }
-                  }}
                 >
                   {heading.text}
-                </a>
+                </button>
               </li>
             ))}
           </ul>
         </div>
-      </nav>
-    </>
+      </div>
+    </nav>
   );
 }
-
