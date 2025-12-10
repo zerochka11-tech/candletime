@@ -174,7 +174,7 @@ export default function HomePage() {
       {/* STATS: 3 блока над "What is this?" */}
       <section className="grid gap-3 sm:gap-4 md:grid-cols-3">
         {/* Активные свечи */}
-        <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 sm:p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg">
+        <Link href="/candles" className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 sm:p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg cursor-pointer">
           <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 dark:from-amber-900/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           <div className="relative">
             <div className="mb-3 flex items-center gap-2">
@@ -198,10 +198,10 @@ export default function HomePage() {
               </span>
             </div>
           </div>
-        </div>
+        </Link>
 
         {/* Свечи, зажжённые сегодня */}
-        <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 sm:p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg">
+        <Link href="/candles" className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 sm:p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg cursor-pointer">
           <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 dark:from-emerald-900/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           <div className="relative">
             <div className="mb-3 flex items-center gap-2">
@@ -225,10 +225,10 @@ export default function HomePage() {
               </span>
             </div>
           </div>
-        </div>
+        </Link>
 
         {/* Самая популярная свеча */}
-        <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 sm:p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg">
+        <Link href="/candles" className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 sm:p-5 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-lg cursor-pointer">
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 dark:from-indigo-900/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           <div className="relative">
             <div className="mb-3 flex items-center gap-2">
@@ -268,7 +268,7 @@ export default function HomePage() {
               )}
             </div>
           </div>
-        </div>
+        </Link>
       </section>
 
       {/* WHAT IS THIS */}
