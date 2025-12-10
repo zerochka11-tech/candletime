@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { checkAdminAccess, getAuthToken } from '@/lib/admin';
 import ConfirmDialog from '@/components/admin/ConfirmDialog';
+import GenerateArticleDialog from '@/components/admin/GenerateArticleDialog';
 
 type Article = {
   id: string;
@@ -44,6 +45,8 @@ export default function AdminArticlesPage() {
   const [draftCount, setDraftCount] = useState(0);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; title: string } | null>(null);
+  const [showGenerateDialog, setShowGenerateDialog] = useState(false);
+  const [categories, setCategories] = useState<Array<{ id: string; name: string; slug: string }>>([]);
 
   // Проверка доступа теперь происходит на сервере через AdminGuard
   // Просто загружаем данные сразу
@@ -51,6 +54,7 @@ export default function AdminArticlesPage() {
     loadArticles();
     loadFileArticles();
     loadStats();
+    loadCategories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter, currentPage]);
 
@@ -160,6 +164,24 @@ export default function AdminArticlesPage() {
       }
     } catch (error) {
       console.error('Error loading file articles:', error);
+    }
+  };
+
+  const loadCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('article_categories')
+        .select('id, name, slug')
+        .order('name');
+
+      if (error) {
+        console.error('Error loading categories:', error);
+        return;
+      }
+
+      setCategories(data || []);
+    } catch (error) {
+      console.error('Error loading categories:', error);
     }
   };
 
@@ -287,15 +309,24 @@ export default function AdminArticlesPage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl">
-      {/* Заголовок с кнопкой создания */}
+      {/* Заголовок с кнопками создания */}
       <div className="mb-6 flex items-center justify-between">
         <div></div>
-        <Link
-          href="/admin/articles/new"
-          className="rounded-full bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700"
-        >
-          + Создать статью
-        </Link>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowGenerateDialog(true)}
+            className="rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 flex items-center gap-2"
+          >
+            <span>🤖</span>
+            <span>Сгенерировать статью</span>
+          </button>
+          <Link
+            href="/admin/articles/new"
+            className="rounded-full bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700"
+          >
+            + Создать статью
+          </Link>
+        </div>
       </div>
 
       {/* Статистика */}
@@ -566,6 +597,17 @@ export default function AdminArticlesPage() {
           onCancel={() => setDeleteConfirm(null)}
         />
       )}
+
+      {/* Диалог генерации статьи */}
+      <GenerateArticleDialog
+        open={showGenerateDialog}
+        onClose={() => setShowGenerateDialog(false)}
+        onSuccess={() => {
+          loadArticles();
+          loadStats();
+        }}
+        categories={categories}
+      />
     </div>
   );
 }
