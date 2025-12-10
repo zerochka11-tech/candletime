@@ -469,12 +469,23 @@ export default function AdminArticlePage() {
                 {editingContent ? 'Редактирование контента' : 'Предпросмотр статьи'}
               </h2>
               {!editingContent && (
-                <button
-                  onClick={() => setEditingContent(true)}
-                  className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600"
-                >
-                  ✏️ Редактировать контент
-                </button>
+                <div className="flex gap-2">
+                  {article.published && (
+                    <Link
+                      href={`/faq/${article.slug}`}
+                      target="_blank"
+                      className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                    >
+                      👁️ Просмотр на сайте
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => setEditingContent(true)}
+                    className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600"
+                  >
+                    ✏️ Редактировать контент
+                  </button>
+                </div>
               )}
             </div>
             {editingContent ? (
@@ -504,7 +515,17 @@ export default function AdminArticlePage() {
                 </div>
               </div>
             ) : (
-              <MarkdownContent content={article.content} articleTitle={article.title} />
+              <div className="min-h-[200px] rounded-lg border border-slate-200 bg-slate-50 p-6 dark:border-slate-700 dark:bg-slate-900/50">
+                {article.content && article.content.trim().length > 0 ? (
+                  <MarkdownContent content={article.content} articleTitle={article.title} />
+                ) : (
+                  <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-center dark:border-amber-800 dark:bg-amber-900/20">
+                    <p className="text-amber-800 dark:text-amber-300">
+                      Контент отсутствует. Нажмите "Редактировать контент" для добавления содержимого статьи.
+                    </p>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -658,8 +679,13 @@ export default function AdminArticlePage() {
               <div>
                 <span className="text-slate-600 dark:text-slate-400">Slug:</span>{' '}
                 <span className="font-mono text-xs text-slate-900 dark:text-slate-100">
-                  {article.slug}
+                  {article.slug || '—'}
                 </span>
+                {!article.slug && (
+                  <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
+                    ⚠️ Slug не установлен. Статья не будет доступна по URL.
+                  </p>
+                )}
               </div>
               {article.category_id && (
                 <div>

@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { checkAdminAccess, getAuthToken } from '@/lib/admin';
 import ConfirmDialog from '@/components/admin/ConfirmDialog';
 import GenerateArticleDialog from '@/components/admin/GenerateArticleDialog';
+import PromptTemplateManager from '@/components/admin/PromptTemplateManager';
 import { showToast } from '@/components/admin/Toast';
 
 type Article = {
@@ -49,6 +50,7 @@ export default function AdminArticlesPage() {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; title: string } | null>(null);
   const [showGenerateDialog, setShowGenerateDialog] = useState(false);
+  const [showTemplateManager, setShowTemplateManager] = useState(false);
   const [categories, setCategories] = useState<Array<{ id: string; name: string; slug: string }>>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('newest');
@@ -366,6 +368,13 @@ export default function AdminArticlesPage() {
       <div className="mb-6 flex items-center justify-between">
         <div></div>
         <div className="flex gap-3">
+          <button
+            onClick={() => setShowTemplateManager(true)}
+            className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 flex items-center gap-2"
+          >
+            <span>📝</span>
+            <span>Шаблоны промптов</span>
+          </button>
           <button
             onClick={() => setShowGenerateDialog(true)}
             className="rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 flex items-center gap-2"
@@ -741,6 +750,16 @@ export default function AdminArticlesPage() {
           loadStats();
         }}
         categories={categories}
+        onManageTemplates={() => {
+          setShowGenerateDialog(false);
+          setShowTemplateManager(true);
+        }}
+      />
+
+      {/* Управление промпт-шаблонами */}
+      <PromptTemplateManager
+        open={showTemplateManager}
+        onClose={() => setShowTemplateManager(false)}
       />
     </div>
   );

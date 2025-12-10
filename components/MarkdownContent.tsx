@@ -17,19 +17,54 @@ interface MarkdownContentProps {
  * Поддерживает GitHub Flavored Markdown и безопасный рендеринг HTML
  */
 export function MarkdownContent({ content, articleTitle }: MarkdownContentProps) {
-  // Если контент пустой, возвращаем пустой div
+  // Если контент пустой, возвращаем сообщение
   if (!content || content.trim() === '') {
-    return <div className="text-slate-600 dark:text-slate-400">Контент отсутствует</div>;
+    return (
+      <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-center dark:border-amber-800 dark:bg-amber-900/20">
+        <p className="text-amber-800 dark:text-amber-300">
+          Контент отсутствует. Пожалуйста, отредактируйте статью и добавьте контент.
+        </p>
+      </div>
+    );
   }
 
+  // Удаляем markdown код блоки из начала контента, если они есть
+  // Иногда контент может содержать ```markdown ... ```
+  let processedContent = content
+    .replace(/^```[\w]*\n?/i, '') // Удаляем открывающий ```markdown
+    .replace(/\n?```\s*$/i, '') // Удаляем закрывающий ```
+    .trim();
+
   // Удаляем первый заголовок, если он совпадает с title статьи
-  let processedContent = content;
   if (articleTitle) {
     // Проверяем, начинается ли контент с заголовка h1 или h2, который совпадает с title
     const titleRegex = new RegExp(`^#+\\s*${articleTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`, 'im');
     if (titleRegex.test(processedContent)) {
       // Удаляем первую строку с заголовком
       processedContent = processedContent.replace(titleRegex, '').trim();
+    } else {
+      // Если точного совпадения нет, удаляем первую строку с #, если она есть
+      // Это помогает избежать дублирования заголовка
+      const lines = processedContent.split('\n');
+      if (lines[0] && lines[0].trim().match(/^#+\s/)) {
+        // Проверяем, не слишком ли длинный заголовок (вероятно, это не title статьи)
+        const firstLine = lines[0].trim();
+        const headerText = firstLine.replace(/^#+\s*/, '').trim();
+        // Если заголовок короткий (до 100 символов) и похож на title, удаляем его
+        if (headerText.length <= 100 && 
+            (headerText.toLowerCase().includes(articleTitle.toLowerCase().substring(0, 20)) ||
+             articleTitle.toLowerCase().includes(headerText.toLowerCase().substring(0, 20)))) {
+          lines.shift();
+          processedContent = lines.join('\n').trim();
+        }
+      }
+    }
+  } else {
+    // Если title не передан, просто удаляем первую строку с #, если она есть
+    const lines = processedContent.split('\n');
+    if (lines[0] && lines[0].trim().match(/^#+\s/)) {
+      lines.shift();
+      processedContent = lines.join('\n').trim();
     }
   }
 

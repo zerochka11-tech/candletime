@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { generateArticle } from '@/lib/gemini';
+import { replaceTemplateVariables, createVariablesFromSimpleMode, validateTemplateVariables } from '@/lib/promptTemplates';
 
 function getSupabaseAdmin() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -51,32 +52,87 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { topic, candleType, language, categoryId } = body;
+    const { 
+      topic, 
+      candleType, 
+      language, 
+      categoryId,
+      // Новые поля для режима шаблона
+      templateId,
+      templateVariables,
+      useTemplate = false,
+    } = body;
 
-    // Валидация входных данных
-    if (!topic || typeof topic !== 'string' || topic.trim().length < 10) {
-      return NextResponse.json(
-        { error: 'Topic must be at least 10 characters long' },
-        { status: 400 }
-      );
-    }
+    let finalPrompt: string | undefined;
 
-    if (topic.length > 200) {
-      return NextResponse.json(
-        { error: 'Topic must be less than 200 characters' },
-        { status: 400 }
-      );
+    // Если используется режим шаблона
+    if (useTemplate && templateId) {
+      const supabaseAdmin = getSupabaseAdmin();
+
+      // Получаем шаблон
+      const { data: template, error: templateError } = await supabaseAdmin
+        .from('prompt_templates')
+        .select('*')
+        .eq('id', templateId)
+        .single();
+
+      if (templateError || !template) {
+        return NextResponse.json(
+          { error: 'Template not found' },
+          { status: 404 }
+        );
+      }
+
+      // В режиме шаблона используем промпт как есть, без подстановки переменных
+      // Мастер-промпт должен быть самодостаточным и содержать всю необходимую информацию
+      finalPrompt = template.prompt;
+    } else {
+      // Простой режим - валидация входных данных
+      if (!topic || typeof topic !== 'string' || topic.trim().length < 10) {
+        return NextResponse.json(
+          { error: 'Topic must be at least 10 characters long' },
+          { status: 400 }
+        );
+      }
+
+      if (topic.length > 200) {
+        return NextResponse.json(
+          { error: 'Topic must be less than 200 characters' },
+          { status: 400 }
+        );
+      }
     }
 
     // Генерация статьи через Gemini
+    // В режиме шаблона промпт самодостаточен, в простом режиме используем стандартные параметры
     const generated = await generateArticle({
-      topic: topic.trim(),
-      candleType: candleType || undefined,
-      language: language || 'ru',
+      topic: useTemplate ? 'Generated from template' : topic?.trim() || '',
+      candleType: useTemplate ? undefined : (candleType || undefined),
+      language: useTemplate ? 'ru' : (language || 'ru') as 'ru' | 'en',
+      customPrompt: finalPrompt,
     });
 
     // Сохранение в БД
     const supabaseAdmin = getSupabaseAdmin();
+
+    // Определяем category_id на основе categorySlug из генерации или переданного categoryId
+    let finalCategoryId: string | null = null;
+    
+    if (categoryId) {
+      // Если категория передана вручную, используем её
+      finalCategoryId = categoryId;
+    } else if (generated.categorySlug) {
+      // Если категория определена автоматически, получаем её ID
+      const { data: category } = await supabaseAdmin
+        .from('article_categories')
+        .select('id')
+        .eq('slug', generated.categorySlug)
+        .single();
+      
+      if (category) {
+        finalCategoryId = category.id;
+      }
+    }
 
     // Проверяем, существует ли уже статья с таким slug
     const { data: existing } = await supabaseAdmin
@@ -102,7 +158,7 @@ export async function POST(request: NextRequest) {
           seo_keywords: generated.seoKeywords,
           updated_at: new Date().toISOString(),
           author_id: user.id,
-          ...(categoryId && { category_id: categoryId }),
+          ...(finalCategoryId && { category_id: finalCategoryId }),
         })
         .eq('slug', generated.slug)
         .select('id')
@@ -120,6 +176,24 @@ export async function POST(request: NextRequest) {
       action = 'updated';
     } else {
       // Создаем новую статью
+      // Проверяем, что slug не пустой
+      if (!generated.slug || generated.slug.trim().length === 0) {
+        console.error('Generated slug is empty. Title:', generated.title);
+        return NextResponse.json(
+          { error: 'Failed to generate slug. Please try again or edit the article manually.' },
+          { status: 500 }
+        );
+      }
+
+      // Проверяем, что контент не пустой
+      if (!generated.content || generated.content.trim().length === 0) {
+        console.error('Generated content is empty');
+        return NextResponse.json(
+          { error: 'Generated content is empty. Please check the prompt template.' },
+          { status: 500 }
+        );
+      }
+
       const { data, error } = await supabaseAdmin
         .from('articles')
         .insert({
@@ -134,9 +208,9 @@ export async function POST(request: NextRequest) {
           author_id: user.id,
           published: false, // Всегда создаем как черновик
           published_at: null,
-          ...(categoryId && { category_id: categoryId }),
+          ...(finalCategoryId && { category_id: finalCategoryId }),
         })
-        .select('id')
+        .select('id, slug')
         .single();
 
       if (error) {

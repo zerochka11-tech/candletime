@@ -344,7 +344,7 @@ export default function ArticlePage() {
             </h1>
             {article.excerpt && (
               <p className="text-base text-slate-600 dark:text-slate-400 sm:text-lg md:text-xl leading-relaxed break-words">
-                {article.excerpt}
+                {article.excerpt.replace(/```[\w]*/g, '').replace(/`/g, '').trim()}
               </p>
             )}
           </div>

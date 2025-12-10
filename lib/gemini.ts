@@ -18,15 +18,58 @@ export function getGeminiClient() {
 }
 
 /**
+ * Транслитерация кириллицы в латиницу для slug
+ */
+function transliterate(text: string): string {
+  const transliterationMap: Record<string, string> = {
+    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
+    'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
+    'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+    'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch',
+    'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya',
+    'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D', 'Е': 'E', 'Ё': 'Yo',
+    'Ж': 'Zh', 'З': 'Z', 'И': 'I', 'Й': 'Y', 'К': 'K', 'Л': 'L', 'М': 'M',
+    'Н': 'N', 'О': 'O', 'П': 'P', 'Р': 'R', 'С': 'S', 'Т': 'T', 'У': 'U',
+    'Ф': 'F', 'Х': 'H', 'Ц': 'Ts', 'Ч': 'Ch', 'Ш': 'Sh', 'Щ': 'Sch',
+    'Ъ': '', 'Ы': 'Y', 'Ь': '', 'Э': 'E', 'Ю': 'Yu', 'Я': 'Ya'
+  };
+
+  return text
+    .split('')
+    .map(char => transliterationMap[char] || char)
+    .join('');
+}
+
+/**
  * Генерирует slug из заголовка
+ * Поддерживает кириллицу через транслитерацию
  */
 export function generateSlug(title: string): string {
-  return title
+  if (!title || title.trim().length === 0) {
+    return 'article-' + Date.now();
+  }
+
+  let slug = title
     .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
     .trim();
+
+  // Транслитерируем кириллицу
+  slug = transliterate(slug);
+
+  // Удаляем все символы, кроме латинских букв, цифр, дефисов и пробелов
+  slug = slug.replace(/[^a-z0-9\s-]/g, '');
+  
+  // Заменяем пробелы и множественные дефисы на один дефис
+  slug = slug.replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, ''); // Удаляем дефисы в начале и конце
+
+  // Если slug пустой после обработки, создаем из timestamp
+  if (!slug || slug.length === 0) {
+    slug = 'article-' + Date.now();
+  }
+
+  return slug;
 }
 
 /**
@@ -41,11 +84,27 @@ export function calculateReadingTime(content: string): number {
  * Генерирует excerpt из контента (первые 150 символов)
  */
 export function generateExcerpt(content: string): string {
-  // Удаляем Markdown разметку для excerpt
-  const plainText = content
-    .replace(/[#*\[\]()]/g, '')
-    .replace(/\n+/g, ' ')
+  if (!content || content.trim().length === 0) {
+    return '';
+  }
+
+  // Удаляем markdown код блоки (```markdown ... ```)
+  let plainText = content
+    .replace(/```[\w]*\n[\s\S]*?```/g, '') // Удаляем все код блоки
+    .replace(/```[\w]*/g, '') // Удаляем оставшиеся открывающие ```
+    .replace(/`[^`]+`/g, '') // Удаляем inline код
+    .replace(/[#*\[\]()]/g, '') // Удаляем markdown символы
+    .replace(/\n+/g, ' ') // Заменяем переносы строк на пробелы
+    .replace(/\s+/g, ' ') // Удаляем множественные пробелы
     .trim();
+  
+  // Если после очистки текст пустой, берем первые 150 символов без обработки
+  if (plainText.length === 0) {
+    plainText = content
+      .replace(/\n+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
   
   const excerpt = plainText.substring(0, 150).trim();
   return excerpt.length < plainText.length ? excerpt + '...' : excerpt;
@@ -220,11 +279,50 @@ function isRateLimitError(error: any): boolean {
 
 /**
  * Генерирует статью через Gemini API с retry механизмом
+ * Поддерживает как стандартный режим, так и кастомный промпт
  */
+/**
+ * Определяет категорию статьи на основе заголовка и контента
+ */
+async function determineArticleCategory(title: string, content: string): Promise<string | null> {
+  try {
+    const client = getGeminiClient();
+    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    
+    const prompt = `Проанализируй следующую статью и определи, к какой категории она относится.
+
+Заголовок: ${title}
+
+Контент (первые 500 символов): ${content.substring(0, 500)}
+
+Доступные категории:
+1. FAQ (slug: "faq") - Часто задаваемые вопросы, ответы на вопросы пользователей
+2. Руководства (slug: "guides") - Пошаговые инструкции и практические руководства
+3. SEO (slug: "seo") - Статьи о личностном росте, эффективности, достижении целей
+4. Новости (slug: "news") - Новые практики, тренды, исследования
+
+Верни ТОЛЬКО slug категории (faq, guides, seo или news) без дополнительных объяснений. Если не можешь определить, верни "faq".`;
+
+    const result = await model.generateContent(prompt);
+    const response = result.response.text().trim().toLowerCase();
+    
+    // Проверяем, что ответ является валидным slug категории
+    const validSlugs = ['faq', 'guides', 'seo', 'news'];
+    const categorySlug = validSlugs.find(slug => response.includes(slug)) || 'faq';
+    
+    return categorySlug;
+  } catch (error) {
+    console.error('Error determining article category:', error);
+    // В случае ошибки возвращаем FAQ как категорию по умолчанию
+    return 'faq';
+  }
+}
+
 export async function generateArticle(params: {
-  topic: string;
+  topic?: string;
   candleType?: string;
   language?: 'ru' | 'en';
+  customPrompt?: string; // Кастомный промпт (уже с подставленными переменными)
 }, retryCount = 0): Promise<{
   title: string;
   content: string;
@@ -234,9 +332,16 @@ export async function generateArticle(params: {
   seoKeywords: string[];
   readingTime: number;
   slug: string;
+  categorySlug: string | null;
 }> {
   const client = getGeminiClient();
-  const prompt = createArticlePrompt(params);
+  
+  // Если передан кастомный промпт, используем его, иначе создаем стандартный
+  const prompt = params.customPrompt || createArticlePrompt({
+    topic: params.topic || 'Статья',
+    candleType: params.candleType,
+    language: params.language || 'ru',
+  });
   
   // Список моделей для fallback (от более новой к более старой)
   const models = [
@@ -266,20 +371,58 @@ export async function generateArticle(params: {
     }
 
     // Извлекаем заголовок из H1
-    const title = extractTitle(generatedContent) || params.topic;
+    const extractedTitle = extractTitle(generatedContent);
+    const title = extractedTitle || params.topic || 'Статья без названия';
     
     // Удаляем H1 из контента, если он там есть (он будет в title)
-    const content = generatedContent
-      .split('\n')
-      .filter(line => !line.startsWith('# '))
-      .join('\n')
+    // Более надежное удаление: ищем H1 в начале контента (с учетом пробелов)
+    let content = generatedContent;
+    if (extractedTitle) {
+      // Удаляем H1 заголовок, который совпадает с извлеченным title
+      // Ищем строку, которая начинается с # и содержит title
+      const h1Pattern = new RegExp(`^#+\\s*${extractedTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`, 'im');
+      content = content.replace(h1Pattern, '').trim();
+      
+      // Также удаляем любую строку, которая начинается с # в начале контента (на случай, если title не совпал)
+      const lines = content.split('\n');
+      if (lines[0] && lines[0].trim().startsWith('#')) {
+        lines.shift();
+        content = lines.join('\n').trim();
+      }
+    } else {
+      // Если title не извлечен, просто удаляем первую строку с #, если она есть
+      const lines = content.split('\n');
+      if (lines[0] && lines[0].trim().startsWith('#')) {
+        lines.shift();
+        content = lines.join('\n').trim();
+      }
+    }
+
+    // Удаляем markdown код блоки из начала контента, если они есть
+    // Иногда Gemini возвращает контент в формате ```markdown ... ```
+    content = content
+      .replace(/^```[\w]*\n?/i, '') // Удаляем открывающий ```markdown
+      .replace(/\n?```\s*$/i, '') // Удаляем закрывающий ```
       .trim();
+
+    // Проверяем, что контент не пустой
+    if (!content || content.trim().length === 0) {
+      throw new Error('Generated content is empty. Please check the prompt template.');
+    }
 
     // Генерируем метаданные
     const { seoTitle, seoDescription, seoKeywords } = generateSEOMetadata(title, content);
     const excerpt = generateExcerpt(content);
     const readingTime = calculateReadingTime(content);
     const slug = generateSlug(title);
+
+    // Проверяем, что slug не пустой
+    if (!slug || slug.trim().length === 0) {
+      throw new Error('Failed to generate slug from title. Title: ' + title);
+    }
+
+    // Определяем категорию статьи на основе заголовка и контента
+    const categorySlug = await determineArticleCategory(title, content);
 
     return {
       title,
@@ -290,6 +433,7 @@ export async function generateArticle(params: {
       seoKeywords,
       readingTime,
       slug,
+      categorySlug,
     };
   } catch (error: any) {
     console.error(`Error generating article with Gemini (model: ${model}, retry: ${retryCount}):`, error);
