@@ -7,7 +7,11 @@ export function getGeminiClient() {
   const apiKey = process.env.GEMINI_API_KEY;
   
   if (!apiKey) {
-    throw new Error('GEMINI_API_KEY is not set in environment variables');
+    const isProduction = process.env.NODE_ENV === 'production';
+    const errorMessage = isProduction
+      ? 'GEMINI_API_KEY is not set in environment variables. Please add it in Vercel: Settings → Environment Variables. See GEMINI_PRODUCTION_SETUP.md for instructions.'
+      : 'GEMINI_API_KEY is not set in environment variables. Please add it to your .env.local file. See GEMINI_SETUP.md for instructions.';
+    throw new Error(errorMessage);
   }
 
   return new GoogleGenAI({ apiKey });

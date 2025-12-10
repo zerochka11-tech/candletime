@@ -41,6 +41,12 @@
    - **Value:** твой Supabase service_role key (⚠️ НЕ anon key!)
    - **Environment:** выбери все (Production, Preview, Development)
 
+   **Переменная 5 (для генерации статей через Gemini API):**
+   - **Key:** `GEMINI_API_KEY`
+   - **Value:** твой Gemini API ключ (получить в [Google AI Studio](https://aistudio.google.com/app/apikey))
+   - **Environment:** выбери все (Production, Preview, Development)
+   - **⚠️ Важно:** Эта переменная нужна только если используешь функцию генерации статей
+
 4. Нажми **Save** для каждой переменной
 
 ### Шаг 3: Перезапусти деплой
@@ -77,6 +83,7 @@
    - ✅ `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - ✅ `NEXT_PUBLIC_ADMIN_EMAILS` (для админ-панели)
    - ✅ `SUPABASE_SERVICE_ROLE_KEY` (для API админ-панели)
+   - ✅ `GEMINI_API_KEY` (для генерации статей, опционально)
 
 ---
 
