@@ -26,56 +26,85 @@ export default function ProfilePage() {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const { data: authData, error } = await supabase.auth.getUser();
-        
-        if (error || !authData.user) {
+        // Таймаут для всего запроса (15 секунд)
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Profile loading timeout')), 15000)
+        );
+
+        const loadPromise = (async () => {
+          const { data: authData, error } = await supabase.auth.getUser();
+          
+          if (error || !authData.user) {
+            router.push('/auth/login');
+            return;
+          }
+
+          setUser({
+            email: authData.user.email ?? null,
+            createdAt: authData.user.created_at ?? null,
+            id: authData.user.id ?? null,
+          });
+
+          // Загружаем статистику
+          const userId = authData.user.id;
+          const thirtyDaysAgo = new Date(
+            Date.now() - 30 * 24 * 60 * 60 * 1000
+          ).toISOString();
+
+          const nowIso = new Date().toISOString();
+          
+          const [totalResult, activeResult, recentResult] = await Promise.all([
+            supabase
+              .from('candles')
+              .select('id', { count: 'exact', head: true })
+              .eq('user_id', userId),
+            supabase
+              .from('candles')
+              .select('id', { count: 'exact', head: true })
+              .eq('user_id', userId)
+              .neq('status', 'extinguished')
+              .gt('expires_at', nowIso),
+            supabase
+              .from('candles')
+              .select('id', { count: 'exact', head: true })
+              .eq('user_id', userId)
+              .gte('created_at', thirtyDaysAgo),
+          ]);
+
+          // Обрабатываем ошибки для каждого запроса
+          if (totalResult.error) {
+            console.error('[Profile] Error loading total candles:', totalResult.error);
+          }
+          if (activeResult.error) {
+            console.error('[Profile] Error loading active candles:', activeResult.error);
+          }
+          if (recentResult.error) {
+            console.error('[Profile] Error loading recent candles:', recentResult.error);
+          }
+
+          setStats({
+            totalCandles: totalResult.count ?? 0,
+            activeCandles: activeResult.count ?? 0,
+            candlesLast30Days: recentResult.count ?? 0,
+          });
+
+          // Проверяем права администратора (не блокируем загрузку при ошибке)
+          try {
+            const { isAdmin: admin } = await checkAdminAccess();
+            setIsAdmin(admin);
+          } catch (adminError) {
+            console.error('[Profile] Error checking admin access:', adminError);
+            setIsAdmin(false);
+          }
+        })();
+
+        await Promise.race([loadPromise, timeoutPromise]);
+      } catch (error: any) {
+        console.error('[Profile] Error loading profile:', error);
+        // Не перенаправляем на логин при таймауте, просто показываем ошибку
+        if (!error.message?.includes('timeout')) {
           router.push('/auth/login');
-          return;
         }
-
-        setUser({
-          email: authData.user.email ?? null,
-          createdAt: authData.user.created_at ?? null,
-          id: authData.user.id ?? null,
-        });
-
-        // Загружаем статистику
-        const userId = authData.user.id;
-        const thirtyDaysAgo = new Date(
-          Date.now() - 30 * 24 * 60 * 60 * 1000
-        ).toISOString();
-
-        const nowIso = new Date().toISOString();
-        
-        const [totalResult, activeResult, recentResult] = await Promise.all([
-          supabase
-            .from('candles')
-            .select('id', { count: 'exact', head: true })
-            .eq('user_id', userId),
-          supabase
-            .from('candles')
-            .select('id', { count: 'exact', head: true })
-            .eq('user_id', userId)
-            .neq('status', 'extinguished')
-            .gt('expires_at', nowIso),
-          supabase
-            .from('candles')
-            .select('id', { count: 'exact', head: true })
-            .eq('user_id', userId)
-            .gte('created_at', thirtyDaysAgo),
-        ]);
-
-        setStats({
-          totalCandles: totalResult.count ?? 0,
-          activeCandles: activeResult.count ?? 0,
-          candlesLast30Days: recentResult.count ?? 0,
-        });
-
-        // Проверяем права администратора
-        const { isAdmin: admin } = await checkAdminAccess();
-        setIsAdmin(admin);
-      } catch (error) {
-        console.error('Error loading profile:', error);
       } finally {
         setLoading(false);
       }

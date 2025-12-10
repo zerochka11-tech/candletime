@@ -298,39 +298,70 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const load = async () => {
-      const { data: authData, error: authError } = await supabase.auth.getUser();
+      try {
+        // Таймаут для всего запроса (15 секунд)
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Dashboard loading timeout')), 15000)
+        );
 
-      if (authError || !authData.user) {
+        const loadPromise = (async () => {
+          const { data: authData, error: authError } = await supabase.auth.getUser();
+
+          if (authError || !authData.user) {
+            setNoUser(true);
+            return;
+          }
+
+          setUserEmail(authData.user.email ?? null);
+
+          // Проверяем права администратора (не блокируем загрузку при ошибке)
+          try {
+            const { isAdmin: admin } = await checkAdminAccess();
+            setIsAdmin(admin);
+          } catch (adminError) {
+            console.error('[Dashboard] Error checking admin access:', adminError);
+            setIsAdmin(false);
+          }
+
+          // История только за последние 30 дней
+          const thirtyDaysAgo = new Date(
+            Date.now() - 30 * 24 * 60 * 60 * 1000
+          ).toISOString();
+
+          const { data, error } = await supabase
+            .from('candles')
+            .select(
+              'id, title, message, created_at, expires_at, status, candle_type'
+            )
+            .eq('user_id', authData.user.id)
+            .gte('created_at', thirtyDaysAgo)
+            .order('created_at', { ascending: false });
+
+          if (error) {
+            console.error('[Dashboard] Error loading candles:', {
+              error,
+              message: error.message,
+              details: error.details,
+              hint: error.hint,
+              code: error.code,
+            });
+            setCandles([]);
+          } else if (data) {
+            setCandles(data as Candle[]);
+          } else {
+            console.warn('[Dashboard] No candles data received, setting empty array.');
+            setCandles([]);
+          }
+        })();
+
+        await Promise.race([loadPromise, timeoutPromise]);
+      } catch (e: any) {
+        console.error('[Dashboard] Failed to load dashboard:', e);
         setNoUser(true);
+        setCandles([]);
+      } finally {
         setLoading(false);
-        return;
       }
-
-      setUserEmail(authData.user.email ?? null);
-
-      // Проверяем права администратора
-      const { isAdmin: admin } = await checkAdminAccess();
-      setIsAdmin(admin);
-
-      // История только за последние 30 дней
-      const thirtyDaysAgo = new Date(
-        Date.now() - 30 * 24 * 60 * 60 * 1000
-      ).toISOString();
-
-      const { data, error } = await supabase
-        .from('candles')
-        .select(
-          'id, title, message, created_at, expires_at, status, candle_type'
-        )
-        .eq('user_id', authData.user.id)
-        .gte('created_at', thirtyDaysAgo)
-        .order('created_at', { ascending: false });
-
-      if (!error && data) {
-        setCandles(data as Candle[]);
-      }
-
-      setLoading(false);
     };
 
     load();

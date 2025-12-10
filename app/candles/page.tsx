@@ -114,24 +114,48 @@ export default function CandlesPage() {
 
   useEffect(() => {
     const loadCandles = async () => {
-      const nowIso = new Date().toISOString();
+      try {
+        // Таймаут для запроса (10 секунд)
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Candles loading timeout')), 10000)
+        );
 
-      const { data, error } = await supabase
-        .from('candles')
-        .select(
-          'id, title, message, created_at, expires_at, is_anonymous, candle_type'
-        )
-        .gt('expires_at', nowIso)
-        .order('created_at', { ascending: false })
-        .limit(50);
+        const candlesPromise = (async () => {
+          const nowIso = new Date().toISOString();
 
-      if (error) {
-        console.error('Supabase select error:', error);
-      } else if (data) {
-        setCandles(data as Candle[]);
+          const { data, error } = await supabase
+            .from('candles')
+            .select(
+              'id, title, message, created_at, expires_at, is_anonymous, candle_type'
+            )
+            .gt('expires_at', nowIso)
+            .order('created_at', { ascending: false })
+            .limit(50);
+
+          if (error) {
+            console.error('[Candles] Supabase select error:', {
+              error,
+              message: error.message,
+              details: error.details,
+              hint: error.hint,
+              code: error.code,
+            });
+            setCandles([]);
+          } else if (data) {
+            setCandles(data as Candle[]);
+          } else {
+            console.warn('[Candles] No data received, setting empty array.');
+            setCandles([]);
+          }
+        })();
+
+        await Promise.race([candlesPromise, timeoutPromise]);
+      } catch (e: any) {
+        console.error('[Candles] Failed to load candles:', e);
+        setCandles([]);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
     loadCandles();

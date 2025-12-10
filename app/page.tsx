@@ -28,49 +28,73 @@ export default function HomePage() {
   useEffect(() => {
     const loadStats = async () => {
       try {
-        const now = new Date();
-        const nowIso = now.toISOString();
-
-        const startOfToday = new Date();
-        startOfToday.setHours(0, 0, 0, 0);
-        const startOfTodayIso = startOfToday.toISOString();
-
-        // 1. Кол-во активных свечей
-        const { count: active } = await supabase
-          .from('candles')
-          .select('id', { count: 'exact', head: true })
-          .gt('expires_at', nowIso);
-
-        setActiveCount(active ?? 0);
-
-        // 2. Кол-во свечей, зажжённых сегодня
-        const { count: today } = await supabase
-          .from('candles')
-          .select('id', { count: 'exact', head: true })
-          .gte('created_at', startOfTodayIso);
-
-        setTodayCount(today ?? 0);
-
-        // 3. Самая популярная свеча (по типу, за всё время)
-        const typeCounts = await Promise.all(
-          CANDLE_TYPES.map(async (t) => {
-            const { count } = await supabase
-              .from('candles')
-              .select('id', { count: 'exact', head: true })
-              .eq('candle_type', t.id);
-            return { id: t.id, count: count ?? 0 };
-          })
+        // Таймаут для всего запроса (10 секунд)
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Stats loading timeout')), 10000)
         );
 
-        let best = { id: null as CandleTypeId | null, count: 0 };
-        for (const item of typeCounts) {
-          if (item.count > best.count) {
-            best = { id: item.id as CandleTypeId, count: item.count };
+        const statsPromise = (async () => {
+          const now = new Date();
+          const nowIso = now.toISOString();
+
+          const startOfToday = new Date();
+          startOfToday.setHours(0, 0, 0, 0);
+          const startOfTodayIso = startOfToday.toISOString();
+
+          // 1. Кол-во активных свечей
+          const { count: active, error: activeError } = await supabase
+            .from('candles')
+            .select('id', { count: 'exact', head: true })
+            .gt('expires_at', nowIso);
+
+          if (activeError) {
+            console.error('[Home] Error loading active count:', activeError);
+          } else {
+            setActiveCount(active ?? 0);
           }
-        }
-        setPopularType(best);
-      } catch (e) {
-        console.error('Failed to load stats:', e);
+
+          // 2. Кол-во свечей, зажжённых сегодня
+          const { count: today, error: todayError } = await supabase
+            .from('candles')
+            .select('id', { count: 'exact', head: true })
+            .gte('created_at', startOfTodayIso);
+
+          if (todayError) {
+            console.error('[Home] Error loading today count:', todayError);
+          } else {
+            setTodayCount(today ?? 0);
+          }
+
+          // 3. Самая популярная свеча (по типу, за всё время)
+          const typeCounts = await Promise.all(
+            CANDLE_TYPES.map(async (t) => {
+              const { count, error } = await supabase
+                .from('candles')
+                .select('id', { count: 'exact', head: true })
+                .eq('candle_type', t.id);
+              if (error) {
+                console.error(`[Home] Error loading type ${t.id}:`, error);
+              }
+              return { id: t.id, count: count ?? 0 };
+            })
+          );
+
+          let best = { id: null as CandleTypeId | null, count: 0 };
+          for (const item of typeCounts) {
+            if (item.count > best.count) {
+              best = { id: item.id as CandleTypeId, count: item.count };
+            }
+          }
+          setPopularType(best);
+        })();
+
+        await Promise.race([statsPromise, timeoutPromise]);
+      } catch (e: any) {
+        console.error('[Home] Failed to load stats:', e);
+        // Устанавливаем значения по умолчанию при ошибке
+        setActiveCount(0);
+        setTodayCount(0);
+        setPopularType({ id: null, count: 0 });
       } finally {
         setStatsLoading(false);
       }

@@ -2,6 +2,7 @@ import { supabase } from './supabaseClient';
 
 /**
  * Проверка прав администратора
+ * Не блокирует выполнение, всегда возвращает результат быстро
  */
 export async function checkAdminAccess(): Promise<{
   isAdmin: boolean;
@@ -9,26 +10,36 @@ export async function checkAdminAccess(): Promise<{
   error: string | null;
 }> {
   try {
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser();
+    // Таймаут для проверки (5 секунд)
+    const timeoutPromise = new Promise<{ isAdmin: boolean; user: any | null; error: string | null }>((resolve) =>
+      setTimeout(() => resolve({ isAdmin: false, user: null, error: 'Timeout' }), 5000)
+    );
 
-    if (error || !user) {
-      return { isAdmin: false, user: null, error: 'Not authenticated' };
-    }
+    const checkPromise = (async () => {
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
 
-    // Простая проверка через переменную окружения
-    // В будущем можно использовать таблицу ролей в БД
-    const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS?.split(',') || [];
-    const isAdmin = adminEmails.includes(user.email || '');
+      if (error || !user) {
+        return { isAdmin: false, user: null, error: 'Not authenticated' };
+      }
 
-    return {
-      isAdmin,
-      user: isAdmin ? user : null,
-      error: isAdmin ? null : 'Access denied',
-    };
+      // Простая проверка через переменную окружения
+      // В будущем можно использовать таблицу ролей в БД
+      const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS?.split(',') || [];
+      const isAdmin = adminEmails.some(email => email.trim().toLowerCase() === (user.email || '').toLowerCase());
+
+      return {
+        isAdmin,
+        user: isAdmin ? user : null,
+        error: isAdmin ? null : 'Access denied',
+      };
+    })();
+
+    return await Promise.race([checkPromise, timeoutPromise]);
   } catch (error: any) {
+    console.error('[Admin] Error checking admin access:', error);
     return {
       isAdmin: false,
       user: null,
