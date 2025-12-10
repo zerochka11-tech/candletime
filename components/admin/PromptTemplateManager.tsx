@@ -22,7 +22,6 @@ type TemplateFormData = {
 export default function PromptTemplateManager({
   open,
   onClose,
-  onTemplateSelect,
 }: PromptTemplateManagerProps) {
   const [templates, setTemplates] = useState<PromptTemplate[]>([]);
   const [loading, setLoading] = useState(true);

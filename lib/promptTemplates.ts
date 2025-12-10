@@ -206,7 +206,7 @@ export function createVariablesFromSimpleMode(params: {
         ? `\n\nВ конце статьи добавь мягкий призыв к действию с упоминанием символической свечи типа "${candleDesc}". Например: "Готовы начать? Зажгите свою первую свечу ${candleLabel} прямо сейчас."`
         : `\n\nAt the end of the article, add a soft call to action mentioning a symbolic candle of type "${candleDesc}".`;
 
-    variables.candleTypeCTA = candleType ? ' с призывом к действию' : '';
+    variables.candleTypeCTA = params.candleType ? ' с призывом к действию' : '';
   } else {
     variables.ctaSection = '';
     variables.candleTypeCTA = '';
