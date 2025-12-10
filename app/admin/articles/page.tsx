@@ -68,24 +68,41 @@ export default function AdminArticlesPage() {
 
   const loadStats = async () => {
     try {
-      // Параллельная загрузка статистики
-      const [allResult, publishedResult, draftResult] = await Promise.all([
-        supabase
-          .from('articles')
-          .select('id', { count: 'exact', head: true }),
-        supabase
-          .from('articles')
-          .select('id', { count: 'exact', head: true })
-          .eq('published', true),
-        supabase
-          .from('articles')
-          .select('id', { count: 'exact', head: true })
-          .eq('published', false)
+      // Используем API route с admin клиентом для обхода RLS
+      const token = await getAuthToken();
+      if (!token) {
+        console.error('No auth token available');
+        return;
+      }
+
+      // Параллельная загрузка статистики через API
+      const [allResponse, publishedResponse, draftResponse] = await Promise.all([
+        fetch('/api/admin/articles?filter=all&page=1&perPage=1', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch('/api/admin/articles?filter=published&page=1&perPage=1', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch('/api/admin/articles?filter=draft&page=1&perPage=1', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
       ]);
 
-      setTotalCount(allResult.count || 0);
-      setPublishedCount(publishedResult.count || 0);
-      setDraftCount(draftResult.count || 0);
+      const [allResult, publishedResult, draftResult] = await Promise.all([
+        allResponse.json(),
+        publishedResponse.json(),
+        draftResponse.json(),
+      ]);
+
+      if (allResult.success) {
+        setTotalCount(allResult.count || 0);
+      }
+      if (publishedResult.success) {
+        setPublishedCount(publishedResult.count || 0);
+      }
+      if (draftResult.success) {
+        setDraftCount(draftResult.count || 0);
+      }
     } catch (error) {
       console.error('Error loading stats:', error);
     }
@@ -95,55 +112,43 @@ export default function AdminArticlesPage() {
     try {
       setLoading(true);
       
-      // Вычисляем диапазон для пагинации
-      const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
-      const endIndex = startIndex + ARTICLES_PER_PAGE - 1;
-
-      // Загружаем только нужные поля (БЕЗ content!)
-      let query = supabase
-        .from('articles')
-        .select(`
-          id,
-          title,
-          slug,
-          excerpt,
-          published,
-          published_at,
-          created_at,
-          updated_at,
-          views_count,
-          reading_time,
-          seo_title,
-          seo_description,
-          author_id
-        `, { count: 'exact' })
-        .order('created_at', { ascending: false })
-        .range(startIndex, endIndex);
-
-      if (filter === 'published') {
-        query = query.eq('published', true);
-      } else if (filter === 'draft') {
-        query = query.eq('published', false);
-      }
-
-      const { data, error, count } = await query;
-
-      if (error) {
-        console.error('Error loading articles:', error);
+      // Используем API route с admin клиентом для обхода RLS
+      const token = await getAuthToken();
+      if (!token) {
+        console.error('No auth token available');
+        setLoading(false);
         return;
       }
 
-      setArticles(data || []);
-      // Обновляем totalCount в зависимости от фильтра
-      if (filter === 'all') {
-        setTotalCount(count || 0);
-      } else if (filter === 'published') {
-        setTotalCount(count || publishedCount);
-      } else if (filter === 'draft') {
-        setTotalCount(count || draftCount);
+      const response = await fetch(
+        `/api/admin/articles?filter=${filter}&page=${currentPage}&perPage=${ARTICLES_PER_PAGE}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const result = await response.json();
+        console.error('Error loading articles:', result.error);
+        setArticles([]);
+        setLoading(false);
+        return;
+      }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setArticles(result.articles || []);
+        setTotalCount(result.count || 0);
+      } else {
+        console.error('Error loading articles:', result.error);
+        setArticles([]);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error loading articles:', error);
+      setArticles([]);
     } finally {
       setLoading(false);
     }

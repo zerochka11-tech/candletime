@@ -38,6 +38,47 @@ async function checkAdminAuth(request: NextRequest) {
   return { error: null, user };
 }
 
+// GET - получение одной статьи (для админ-панели)
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { error: authError } = await checkAdminAuth(request);
+    if (authError) {
+      return NextResponse.json({ error: authError }, { status: 401 });
+    }
+
+    const { id } = await params;
+
+    const supabaseAdmin = getSupabaseAdmin();
+    const { data, error } = await supabaseAdmin
+      .from('articles')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    if (!data) {
+      return NextResponse.json({ error: 'Article not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      article: data,
+    });
+  } catch (error: any) {
+    console.error('Error loading article:', error);
+    return NextResponse.json(
+      { error: error.message || 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
 // DELETE - удаление статьи
 export async function DELETE(
   request: NextRequest,

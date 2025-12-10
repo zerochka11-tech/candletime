@@ -148,3 +148,75 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// GET - получение списка статей (для админ-панели)
+export async function GET(request: NextRequest) {
+  try {
+    const { error: authError } = await checkAdminAuth(request);
+    if (authError) {
+      return NextResponse.json({ error: authError }, { status: 401 });
+    }
+
+    const supabaseAdmin = getSupabaseAdmin();
+    const searchParams = request.nextUrl.searchParams;
+    
+    const filter = searchParams.get('filter') || 'all'; // 'all' | 'published' | 'draft'
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const perPage = parseInt(searchParams.get('perPage') || '50', 10);
+    
+    const startIndex = (page - 1) * perPage;
+    const endIndex = startIndex + perPage - 1;
+
+    // Загружаем только нужные поля (БЕЗ content для списка!)
+    let query = supabaseAdmin
+      .from('articles')
+      .select(`
+        id,
+        title,
+        slug,
+        excerpt,
+        published,
+        published_at,
+        created_at,
+        updated_at,
+        views_count,
+        reading_time,
+        seo_title,
+        seo_description,
+        author_id
+      `, { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(startIndex, endIndex);
+
+    if (filter === 'published') {
+      query = query.eq('published', true);
+    } else if (filter === 'draft') {
+      query = query.eq('published', false);
+    }
+    // 'all' - без фильтра, показываем все
+
+    const { data, error, count } = await query;
+
+    if (error) {
+      console.error('Error loading articles:', error);
+      return NextResponse.json(
+        { error: error.message || 'Failed to load articles' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      articles: data || [],
+      count: count || 0,
+      page,
+      perPage,
+    });
+  } catch (error: any) {
+    console.error('Error loading articles:', error);
+    return NextResponse.json(
+      { error: error.message || 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+

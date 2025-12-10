@@ -88,31 +88,48 @@ export default function AdminArticlePage() {
 
   const loadArticle = async () => {
     try {
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-      if (error || !data) {
-        console.error('Error loading article:', error);
+      // Используем API route с admin клиентом для обхода RLS
+      const token = await getAuthToken();
+      if (!token) {
+        console.error('No auth token available');
+        setLoading(false);
         return;
       }
 
-      setArticle(data);
-      setFormData({
-        seo_title: data.seo_title || '',
-        seo_description: data.seo_description || '',
-        seo_keywords: (data.seo_keywords || []).join(', '),
-        excerpt: data.excerpt || '',
-        title: data.title || '',
-        slug: data.slug || '',
-        content: data.content || '',
-        category_id: data.category_id || '',
-        featured_image_url: data.featured_image_url || '',
+      const response = await fetch(`/api/admin/articles/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+
+      if (!response.ok) {
+        const result = await response.json();
+        console.error('Error loading article:', result.error);
+        setLoading(false);
+        return;
+      }
+
+      const result = await response.json();
+      
+      if (result.success && result.article) {
+        const data = result.article;
+        setArticle(data);
+        setFormData({
+          seo_title: data.seo_title || '',
+          seo_description: data.seo_description || '',
+          seo_keywords: (data.seo_keywords || []).join(', '),
+          excerpt: data.excerpt || '',
+          title: data.title || '',
+          slug: data.slug || '',
+          content: data.content || '',
+          category_id: data.category_id || '',
+          featured_image_url: data.featured_image_url || '',
+        });
+      } else {
+        console.error('Article not found or error:', result.error);
+      }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error loading article:', error);
     } finally {
       setLoading(false);
     }
