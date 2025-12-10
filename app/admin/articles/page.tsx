@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { checkAdminAccess, getAuthToken } from '@/lib/admin';
 import ConfirmDialog from '@/components/admin/ConfirmDialog';
 import GenerateArticleDialog from '@/components/admin/GenerateArticleDialog';
+import { showToast } from '@/components/admin/Toast';
 
 type Article = {
   id: string;
@@ -32,6 +33,8 @@ type FileArticle = {
 
 const ARTICLES_PER_PAGE = 50;
 
+type SortOption = 'newest' | 'oldest' | 'title-asc' | 'title-desc' | 'views-desc' | 'views-asc';
+
 export default function AdminArticlesPage() {
   const router = useRouter();
   const [articles, setArticles] = useState<Article[]>([]);
@@ -47,6 +50,8 @@ export default function AdminArticlesPage() {
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; title: string } | null>(null);
   const [showGenerateDialog, setShowGenerateDialog] = useState(false);
   const [categories, setCategories] = useState<Array<{ id: string; name: string; slug: string }>>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
 
   // Проверка доступа теперь происходит на сервере через AdminGuard
   // Просто загружаем данные сразу
@@ -210,15 +215,16 @@ export default function AdminArticlesPage() {
       const result = await response.json();
 
       if (response.ok) {
-        alert(
-          `Статья "${file.slug}" успешно ${result.action === 'created' ? 'создана' : 'обновлена'}!`
+        showToast(
+          `Статья "${file.slug}" успешно ${result.action === 'created' ? 'создана' : 'обновлена'}!`,
+          'success'
         );
         await Promise.all([loadArticles(), loadStats()]);
       } else {
-        alert(`Ошибка: ${result.error}`);
+        showToast(`Ошибка: ${result.error}`, 'error');
       }
     } catch (error: any) {
-      alert(`Ошибка: ${error.message}`);
+      showToast(`Ошибка: ${error.message}`, 'error');
     } finally {
       setImporting(null);
     }
@@ -252,12 +258,16 @@ export default function AdminArticlesPage() {
       const result = await response.json();
 
       if (response.ok) {
+        showToast(
+          approve ? 'Статья успешно опубликована!' : 'Статья снята с публикации',
+          'success'
+        );
         await Promise.all([loadArticles(), loadStats()]);
       } else {
-        alert(`Ошибка: ${result.error}`);
+        showToast(`Ошибка: ${result.error}`, 'error');
       }
     } catch (error: any) {
-      alert(`Ошибка: ${error.message}`);
+      showToast(`Ошибка: ${error.message}`, 'error');
     }
   };
 
@@ -282,17 +292,55 @@ export default function AdminArticlesPage() {
 
       if (response.ok) {
         await Promise.all([loadArticles(), loadStats()]);
-        alert('Статья успешно удалена');
+        showToast('Статья успешно удалена', 'success');
       } else {
-        alert(`Ошибка: ${result.error || 'Не удалось удалить статью'}`);
+        showToast(`Ошибка: ${result.error || 'Не удалось удалить статью'}`, 'error');
       }
     } catch (error: any) {
-      alert(`Ошибка: ${error.message}`);
+      showToast(`Ошибка: ${error.message}`, 'error');
     } finally {
       setDeleting(null);
       setDeleteConfirm(null);
     }
   };
+
+  // Фильтрация и сортировка статей
+  const filteredAndSortedArticles = useMemo(() => {
+    let filtered = [...articles];
+
+    // Поиск
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (article) =>
+          article.title.toLowerCase().includes(query) ||
+          article.slug.toLowerCase().includes(query) ||
+          (article.excerpt && article.excerpt.toLowerCase().includes(query))
+      );
+    }
+
+    // Сортировка
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'newest':
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        case 'oldest':
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        case 'title-asc':
+          return a.title.localeCompare(b.title, 'ru');
+        case 'title-desc':
+          return b.title.localeCompare(a.title, 'ru');
+        case 'views-desc':
+          return b.views_count - a.views_count;
+        case 'views-asc':
+          return a.views_count - b.views_count;
+        default:
+          return 0;
+      }
+    });
+
+    return filtered;
+  }, [articles, searchQuery, sortBy]);
 
   if (loading) {
     return (
@@ -356,37 +404,96 @@ export default function AdminArticlesPage() {
         </div>
       </div>
 
+      {/* Поиск и сортировка */}
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        {/* Поиск */}
+        <div className="relative flex-1 max-w-md">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <svg
+              className="w-5 h-5 text-slate-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Поиск по названию, slug или описанию..."
+            className="w-full rounded-lg border border-slate-300 bg-white pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-blue-400"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+        </div>
+
+        {/* Сортировка */}
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-slate-600 dark:text-slate-400">Сортировка:</label>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as SortOption)}
+            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          >
+            <option value="newest">Сначала новые</option>
+            <option value="oldest">Сначала старые</option>
+            <option value="title-asc">По названию (А-Я)</option>
+            <option value="title-desc">По названию (Я-А)</option>
+            <option value="views-desc">По просмотрам (↓)</option>
+            <option value="views-asc">По просмотрам (↑)</option>
+          </select>
+        </div>
+      </div>
+
       {/* Фильтры */}
       <div className="mb-6 flex flex-wrap gap-2">
         <button
           onClick={() => setFilter('all')}
-          className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all ${
             filter === 'all'
-              ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
+              ? 'bg-slate-900 text-white shadow-md dark:bg-slate-100 dark:text-slate-900'
               : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
           }`}
         >
-          Все ({totalCount})
+          <span>📋</span>
+          <span>Все ({totalCount})</span>
         </button>
         <button
           onClick={() => setFilter('published')}
-          className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all ${
             filter === 'published'
-              ? 'bg-green-600 text-white dark:bg-green-500'
+              ? 'bg-green-600 text-white shadow-md dark:bg-green-500'
               : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
           }`}
         >
-          Опубликованные ({publishedCount})
+          <span>✅</span>
+          <span>Опубликованные ({publishedCount})</span>
         </button>
         <button
           onClick={() => setFilter('draft')}
-          className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all ${
             filter === 'draft'
-              ? 'bg-amber-600 text-white dark:bg-amber-500'
+              ? 'bg-amber-600 text-white shadow-md dark:bg-amber-500'
               : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
           }`}
         >
-          Черновики ({draftCount})
+          <span>📝</span>
+          <span>Черновики ({draftCount})</span>
         </button>
       </div>
 
@@ -430,78 +537,100 @@ export default function AdminArticlesPage() {
             Статьи не найдены. Импортируйте статьи из файлов или создайте новую.
           </p>
         </div>
+      ) : filteredAndSortedArticles.length === 0 ? (
+        <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center dark:border-slate-800 dark:bg-slate-800">
+          <p className="text-slate-600 dark:text-slate-400">
+            По запросу "{searchQuery}" ничего не найдено.
+          </p>
+        </div>
       ) : (
         <div className="space-y-4">
-          {articles.map((article) => (
+          {filteredAndSortedArticles.map((article) => (
             <div
               key={article.id}
-              className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-800"
+              className="group rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-slate-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-800 dark:hover:border-slate-700"
             >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="mb-2 flex items-center gap-2">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="mb-3 flex items-center gap-2 flex-wrap">
                     <span
-                      className={`rounded-full px-3 py-1 text-xs font-medium ${
+                      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
                         article.published
                           ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                           : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
                       }`}
                     >
-                      {article.published ? 'Опубликовано' : 'Черновик'}
+                      <span>{article.published ? '✅' : '📝'}</span>
+                      <span>{article.published ? 'Опубликовано' : 'Черновик'}</span>
                     </span>
                     {article.published_at && (
-                      <span className="text-sm text-slate-500 dark:text-slate-400">
-                        📅 {new Date(article.published_at).toLocaleDateString('ru-RU')}
+                      <span className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                        <span>📅</span>
+                        <span>{new Date(article.published_at).toLocaleDateString('ru-RU')}</span>
                       </span>
                     )}
                   </div>
-                  <h3 className="mb-2 text-xl font-semibold text-slate-900 dark:text-slate-100">
+                  <h3 className="mb-2 text-xl font-semibold text-slate-900 dark:text-slate-100 line-clamp-2">
                     {article.title}
                   </h3>
                   {article.excerpt && (
-                    <p className="mb-3 text-slate-600 dark:text-slate-400">
+                    <p className="mb-4 text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
                       {article.excerpt}
                     </p>
                   )}
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 dark:text-slate-500">
-                    <span>slug: {article.slug}</span>
+                  <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+                    <span className="inline-flex items-center gap-1 font-mono">
+                      <span>🔗</span>
+                      <span className="truncate max-w-[200px]">{article.slug}</span>
+                    </span>
                     {article.reading_time && (
-                      <span>⏱️ {article.reading_time} мин</span>
+                      <span className="inline-flex items-center gap-1">
+                        <span>⏱️</span>
+                        <span>{article.reading_time} мин</span>
+                      </span>
                     )}
-                    <span>👁️ {article.views_count} просмотров</span>
-                    <span>
-                      Создано: {new Date(article.created_at).toLocaleDateString('ru-RU')}
+                    <span className="inline-flex items-center gap-1">
+                      <span>👁️</span>
+                      <span>{article.views_count}</span>
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <span>📅</span>
+                      <span>{new Date(article.created_at).toLocaleDateString('ru-RU')}</span>
                     </span>
                   </div>
                 </div>
-                <div className="ml-4 flex flex-col gap-2">
+                <div className="flex flex-col gap-2 flex-shrink-0">
                   <Link
                     href={`/admin/articles/${article.id}`}
-                    className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-all hover:bg-slate-50 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
                   >
-                    Просмотр
+                    <span>👁️</span>
+                    <span>Просмотр</span>
                   </Link>
                   {article.published ? (
                     <button
                       onClick={() => handleApprove(article, false)}
-                      className="rounded-full bg-amber-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-amber-700"
+                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-amber-700 hover:shadow-sm"
                     >
-                      Снять
+                      <span>📤</span>
+                      <span>Снять</span>
                     </button>
                   ) : (
                     <button
                       onClick={() => handleApprove(article, true)}
-                      className="rounded-full bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700"
+                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-green-700 hover:shadow-sm"
                     >
-                      Опубликовать
+                      <span>✅</span>
+                      <span>Опубликовать</span>
                     </button>
                   )}
                   <button
                     onClick={() => handleDelete(article)}
                     disabled={deleting === article.id}
-                    className="rounded-full bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-red-700 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {deleting === article.id ? 'Удаление...' : 'Удалить'}
+                    <span>🗑️</span>
+                    <span>{deleting === article.id ? 'Удаление...' : 'Удалить'}</span>
                   </button>
                 </div>
               </div>
@@ -511,7 +640,7 @@ export default function AdminArticlesPage() {
       )}
 
       {/* Пагинация */}
-      {!loading && totalCount > ARTICLES_PER_PAGE && (
+      {!loading && totalCount > ARTICLES_PER_PAGE && !searchQuery && (
         <div className="mt-6 flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-800">
           <div className="text-sm text-slate-600 dark:text-slate-400">
             Показано{' '}

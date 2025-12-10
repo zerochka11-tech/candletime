@@ -8,6 +8,7 @@ import { getAuthToken } from '@/lib/admin';
 import { MarkdownContent } from '@/components/MarkdownContent';
 import ConfirmDialog from '@/components/admin/ConfirmDialog';
 import MarkdownEditor from '@/components/admin/MarkdownEditor';
+import { showToast } from '@/components/admin/Toast';
 
 type Category = {
   id: string;
@@ -156,15 +157,15 @@ export default function AdminArticlePage() {
         .eq('id', id);
 
       if (error) {
-        alert(`Ошибка: ${error.message}`);
+        showToast(`Ошибка: ${error.message}`, 'error');
         return;
       }
 
-      alert('Изменения сохранены!');
+      showToast('Изменения сохранены!', 'success');
       setEditing(false);
       loadArticle();
     } catch (error: any) {
-      alert(`Ошибка: ${error.message}`);
+      showToast(`Ошибка: ${error.message}`, 'error');
     }
   };
 
@@ -177,19 +178,19 @@ export default function AdminArticlePage() {
     if (!article) return;
 
     if (!formData.title.trim()) {
-      alert('Название статьи не может быть пустым');
+      showToast('Название статьи не может быть пустым', 'warning');
       return;
     }
 
     if (!formData.slug.trim()) {
-      alert('Slug не может быть пустым');
+      showToast('Slug не может быть пустым', 'warning');
       return;
     }
 
     // Валидация slug (только латиница, цифры, дефисы)
     const slugRegex = /^[a-z0-9-]+$/;
     if (!slugRegex.test(formData.slug)) {
-      alert('Slug может содержать только латинские буквы, цифры и дефисы');
+      showToast('Slug может содержать только латинские буквы, цифры и дефисы', 'warning');
       return;
     }
 
@@ -217,7 +218,7 @@ export default function AdminArticlePage() {
       const result = await response.json();
 
       if (response.ok) {
-        alert('Изменения сохранены!');
+        showToast('Изменения сохранены!', 'success');
         setEditingMain(false);
         loadArticle();
         // Если slug изменился, обновим URL
@@ -225,10 +226,10 @@ export default function AdminArticlePage() {
           router.push(`/admin/articles/${id}`);
         }
       } else {
-        alert(`Ошибка: ${result.error || 'Не удалось сохранить изменения'}`);
+        showToast(`Ошибка: ${result.error || 'Не удалось сохранить изменения'}`, 'error');
       }
     } catch (error: any) {
-      alert(`Ошибка: ${error.message}`);
+      showToast(`Ошибка: ${error.message}`, 'error');
     } finally {
       setSaving(false);
     }
@@ -238,7 +239,7 @@ export default function AdminArticlePage() {
     if (!article) return;
 
     if (!formData.content.trim()) {
-      alert('Контент статьи не может быть пустым');
+      showToast('Контент статьи не может быть пустым', 'warning');
       return;
     }
 
@@ -262,14 +263,14 @@ export default function AdminArticlePage() {
       const result = await response.json();
 
       if (response.ok) {
-        alert('Контент сохранен!');
+        showToast('Контент сохранен!', 'success');
         setEditingContent(false);
         loadArticle();
       } else {
-        alert(`Ошибка: ${result.error || 'Не удалось сохранить контент'}`);
+        showToast(`Ошибка: ${result.error || 'Не удалось сохранить контент'}`, 'error');
       }
     } catch (error: any) {
-      alert(`Ошибка: ${error.message}`);
+      showToast(`Ошибка: ${error.message}`, 'error');
     } finally {
       setSaving(false);
     }
@@ -291,14 +292,14 @@ export default function AdminArticlePage() {
       const result = await response.json();
 
       if (response.ok) {
-        alert('Статья успешно удалена');
+        showToast('Статья успешно удалена', 'success');
         router.push('/admin/articles');
       } else {
-        alert(`Ошибка: ${result.error || 'Не удалось удалить статью'}`);
+        showToast(`Ошибка: ${result.error || 'Не удалось удалить статью'}`, 'error');
         setDeleting(false);
       }
     } catch (error: any) {
-      alert(`Ошибка: ${error.message}`);
+      showToast(`Ошибка: ${error.message}`, 'error');
       setDeleting(false);
     }
   };
@@ -333,12 +334,16 @@ export default function AdminArticlePage() {
       const result = await response.json();
 
       if (response.ok) {
+        showToast(
+          approve ? 'Статья успешно опубликована!' : 'Статья снята с публикации',
+          'success'
+        );
         loadArticle();
       } else {
-        alert(`Ошибка: ${result.error}`);
+        showToast(`Ошибка: ${result.error}`, 'error');
       }
     } catch (error: any) {
-      alert(`Ошибка: ${error.message}`);
+      showToast(`Ошибка: ${error.message}`, 'error');
     }
   };
 
@@ -701,32 +706,76 @@ export default function AdminArticlePage() {
             {editing ? (
               <div className="space-y-4">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
-                    SEO Title
-                  </label>
+                  <div className="mb-1 flex items-center justify-between">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                      SEO Title
+                    </label>
+                    <span
+                      className={`text-xs ${
+                        formData.seo_title.length > 0 && formData.seo_title.length <= 60
+                          ? 'text-green-600 dark:text-green-400'
+                          : formData.seo_title.length > 60
+                          ? 'text-amber-600 dark:text-amber-400'
+                          : 'text-slate-400'
+                      }`}
+                    >
+                      {formData.seo_title.length}/60
+                    </span>
+                  </div>
                   <input
                     type="text"
                     value={formData.seo_title}
                     onChange={(e) =>
                       setFormData({ ...formData, seo_title: e.target.value })
                     }
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    className={`w-full rounded-lg border px-3 py-2 text-sm text-slate-900 transition-colors dark:bg-slate-900 dark:text-slate-100 ${
+                      formData.seo_title.length > 0 && formData.seo_title.length <= 60
+                        ? 'border-green-500 dark:border-green-500'
+                        : formData.seo_title.length > 60
+                        ? 'border-amber-500 dark:border-amber-500'
+                        : 'border-slate-300 dark:border-slate-700'
+                    }`}
                     placeholder={article.title}
                   />
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    Рекомендуемая длина: до 60 символов
+                  </p>
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
-                    SEO Description
-                  </label>
+                  <div className="mb-1 flex items-center justify-between">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                      SEO Description
+                    </label>
+                    <span
+                      className={`text-xs ${
+                        formData.seo_description.length >= 150 && formData.seo_description.length <= 160
+                          ? 'text-green-600 dark:text-green-400'
+                          : formData.seo_description.length > 0
+                          ? 'text-amber-600 dark:text-amber-400'
+                          : 'text-slate-400'
+                      }`}
+                    >
+                      {formData.seo_description.length}/160
+                    </span>
+                  </div>
                   <textarea
                     value={formData.seo_description}
                     onChange={(e) =>
                       setFormData({ ...formData, seo_description: e.target.value })
                     }
                     rows={3}
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    className={`w-full rounded-lg border px-3 py-2 text-sm text-slate-900 transition-colors dark:bg-slate-900 dark:text-slate-100 ${
+                      formData.seo_description.length >= 150 && formData.seo_description.length <= 160
+                        ? 'border-green-500 dark:border-green-500'
+                        : formData.seo_description.length > 160
+                        ? 'border-amber-500 dark:border-amber-500'
+                        : 'border-slate-300 dark:border-slate-700'
+                    }`}
                     placeholder="Описание для поисковых систем (150-160 символов)"
                   />
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    Рекомендуемая длина: 150-160 символов для лучшей видимости в поисковых системах
+                  </p>
                 </div>
                 <div>
                   <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">

@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import AdminGuard from '../components/AdminGuard';
+import { ToastContainer } from '@/components/admin/Toast';
 
 export const metadata: Metadata = {
   title: 'Админ-панель: Управление статьями | CandleTime',
@@ -39,6 +40,7 @@ export default function AdminArticlesLayout({
         </div>
         {children}
       </div>
+      <ToastContainer />
     </AdminGuard>
   );
 }
