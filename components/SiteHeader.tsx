@@ -72,6 +72,7 @@ export function SiteHeader() {
 
   useEffect(() => {
     let timeoutId: any;
+    let initialLoadComplete = false;
 
     const showNotice = (msg: string) => {
       setAuthNotice(msg);
@@ -92,6 +93,8 @@ export function SiteHeader() {
         setUser(null);
       } finally {
         setLoading(false);
+        // Помечаем, что начальная загрузка завершена
+        initialLoadComplete = true;
       }
     };
 
@@ -108,6 +111,14 @@ export function SiteHeader() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Игнорируем события, которые происходят до завершения начальной загрузки
+      // Это предотвращает показ "Вы вошли в аккаунт" при перезагрузке страницы
+      if (!initialLoadComplete) {
+        return;
+      }
+
+      // Показываем уведомление только при реальном входе/выходе
+      // Игнорируем TOKEN_REFRESHED и другие системные события
       if (event === 'SIGNED_IN') {
         setUser({ email: session?.user.email ?? null });
         showNotice('Вы вошли в аккаунт');
