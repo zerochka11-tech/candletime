@@ -14,6 +14,16 @@ export function SiteFooter() {
             </p>
           </div>
           <nav className="flex flex-wrap items-center justify-center gap-2">
+            <a
+              href="https://t.me/CandleTimeproject"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg px-2 py-0.5 text-[11px] font-medium text-slate-700 dark:text-slate-300 transition-all duration-300 hover:-translate-y-0.5 hover:text-slate-900 dark:hover:text-slate-100 hover:shadow-sm sm:px-2.5 sm:py-1 sm:text-xs flex items-center gap-1"
+              aria-label="Telegram канал CandleTime"
+            >
+              <span>📱</span>
+              <span>Telegram</span>
+            </a>
             <Link
               href="/privacy"
               className="rounded-lg px-2 py-0.5 text-[11px] font-medium text-slate-700 dark:text-slate-300 transition-all duration-300 hover:-translate-y-0.5 hover:text-slate-900 dark:hover:text-slate-100 hover:shadow-sm sm:px-2.5 sm:py-1 sm:text-xs"
