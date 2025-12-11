@@ -36,6 +36,7 @@ export function WorldMap() {
   // Инициализируем тему только на клиенте
   const [mapTheme, setMapTheme] = useState<'light' | 'dark'>('light');
   const [panelVisible, setPanelVisible] = useState(true);
+  const [initialZoom, setInitialZoom] = useState(2);
   const [filters, setFilters] = useState({
     type: 'all' as string,
     status: 'active' as 'active' | 'all',
@@ -45,6 +46,11 @@ export function WorldMap() {
   useEffect(() => {
     // Устанавливаем начальную тему
     setMapTheme(getMapTheme());
+    
+    // Устанавливаем начальный zoom в зависимости от размера экрана
+    if (typeof window !== 'undefined') {
+      setInitialZoom(window.innerWidth < 640 ? 1 : 2);
+    }
 
     // Отслеживаем изменение темы
     const observer = new MutationObserver(() => {
@@ -83,13 +89,17 @@ export function WorldMap() {
   }, [loadCandles]);
 
   return (
-    <div className="relative h-[600px] w-full rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-700 shadow-lg">
+    <div className="relative h-full w-full">
       <MapContainer
         center={[20, 0]}
-        zoom={2}
+        zoom={initialZoom}
         style={{ height: '100%', width: '100%', zIndex: 0 }}
         className="z-0"
         scrollWheelZoom={true}
+        zoomControl={true}
+        touchZoom={true}
+        doubleClickZoom={true}
+        dragging={true}
       >
         {/* Mapbox (требует NEXT_PUBLIC_MAPBOX_TOKEN) */}
         {process.env.NEXT_PUBLIC_MAPBOX_TOKEN ? (
@@ -111,29 +121,30 @@ export function WorldMap() {
       </MapContainer>
 
       {/* Правая панель: кнопка, счетчик и фильтры */}
-      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-[1000] flex flex-col gap-2">
+      <div className="absolute top-2 right-2 sm:top-3 sm:right-3 md:top-4 md:right-4 z-[1000] flex flex-col gap-1.5 sm:gap-2">
         {/* Кнопка показа/скрытия панели */}
         <button
           type="button"
           onClick={() => setPanelVisible(!panelVisible)}
-          className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-lg shadow-md px-2.5 py-1.5 border border-slate-200/50 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+          className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-lg shadow-md px-2 py-1.5 sm:px-2.5 sm:py-1.5 border border-slate-200/50 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors touch-manipulation"
           title={panelVisible ? 'Скрыть панель управления' : 'Показать панель управления'}
+          aria-label={panelVisible ? 'Скрыть панель управления' : 'Показать панель управления'}
         >
           <span className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
             {panelVisible ? (
               <>
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                 </svg>
-                Скрыть
+                <span className="hidden sm:inline">Скрыть</span>
               </>
             ) : (
               <>
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
-                Показать
+                <span className="hidden sm:inline">Показать</span>
               </>
             )}
           </span>
@@ -144,8 +155,8 @@ export function WorldMap() {
           <>
             {/* Счетчик свечей */}
             {!loading && (
-              <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-lg shadow-md px-3 py-1.5 sm:px-4 sm:py-2 border border-slate-200/50 dark:border-slate-700/50">
-                <p className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100">
+              <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-lg shadow-md px-2.5 py-1.5 sm:px-3 sm:py-2 border border-slate-200/50 dark:border-slate-700/50">
+                <p className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 whitespace-nowrap">
                   {candles.length} {candles.length === 1 ? 'свеча' : candles.length < 5 ? 'свечи' : 'свечей'}
                 </p>
               </div>
