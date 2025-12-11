@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { CandlesItemList } from '@/components/StructuredDataList';
+import { CandleSkeleton } from '@/components/ui/CandleSkeleton';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 type Candle = {
   id: string;
@@ -287,19 +289,7 @@ export default function CandlesPage() {
         <section className="relative overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-4 shadow-md sm:p-6 md:p-8">
           <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 dark:from-amber-500/10 dark:to-indigo-500/10" />
           <div className="relative space-y-3 md:space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 sm:p-4 shadow-md animate-pulse">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="h-6 w-24 rounded-full bg-slate-200 dark:bg-slate-700" />
-                    <div className="h-4 w-16 rounded bg-slate-200 dark:bg-slate-700" />
-                  </div>
-                  <div className="h-5 w-3/4 rounded bg-slate-200 dark:bg-slate-700" />
-                  <div className="h-4 w-full rounded bg-slate-200 dark:bg-slate-700" />
-                  <div className="h-3 w-20 rounded bg-slate-200 dark:bg-slate-700" />
-                </div>
-              </div>
-            ))}
+            <CandleSkeleton count={3} />
           </div>
         </section>
       </div>
@@ -410,17 +400,11 @@ export default function CandlesPage() {
           </section>
 
           {/* Empty state */}
-          <section className="relative overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-5 sm:p-6 md:p-8 lg:p-10 shadow-md transition-colors duration-200">
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 dark:from-amber-500/10 dark:to-indigo-500/10" />
-            
-            <div className="relative text-center sm:text-left">
-              <div className="mb-4 sm:mb-5 inline-flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-gradient-to-br from-slate-100 to-slate-50 dark:from-slate-700 dark:to-slate-800 text-3xl sm:text-4xl shadow-sm">
-                🕯️
-              </div>
-              <h2 className="mb-3 sm:mb-4 text-lg sm:text-xl md:text-2xl font-semibold text-slate-900 dark:text-slate-100">
-                Пока нет активных свечей
-              </h2>
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 mb-4 sm:mb-5 leading-relaxed">
+          <EmptyState
+            icon="🕯️"
+            title="Пока нет активных свечей"
+            description={
+              <>
                 Зажги первую свечу на странице{' '}
                 <Link 
                   href="/light" 
@@ -431,16 +415,13 @@ export default function CandlesPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </Link> — и она появится здесь.
-              </p>
-              <Link
-                href="/light"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 dark:bg-slate-100 px-5 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-white dark:text-slate-900 shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-slate-800 dark:hover:bg-slate-200 hover:shadow-lg active:scale-95 touch-manipulation min-h-[44px]"
-              >
-                <span>🕯️</span>
-                <span>Зажечь свечу</span>
-              </Link>
-            </div>
-          </section>
+              </>
+            }
+            action={{
+              label: '🕯️ Зажечь свечу',
+              href: '/light',
+            }}
+          />
         </div>
       </>
     );

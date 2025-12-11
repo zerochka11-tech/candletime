@@ -718,19 +718,24 @@ export default function LightCandlePage() {
       if (error) {
         console.error(error);
         setError('Не удалось создать свечу. Попробуй ещё раз.');
+        setLoading(false);
       } else {
         // Сохраняем ID созданной свечи
         setCreatedCandleId(data?.id || null);
         
-        // Очистка черновика после успешного создания
+        // Оптимистичное обновление: очищаем форму и черновик сразу
+        // Это дает мгновенную обратную связь пользователю
         clearDraft();
-
+        setTitle('');
+        setMessage('');
+        
+        // Открываем модалку успеха (уже показывает оптимистичный результат)
         setShowSuccessModal(true);
+        setLoading(false);
       }
     } catch (err) {
       console.error(err);
       setError('Произошла ошибка. Попробуй ещё раз.');
-    } finally {
       setLoading(false);
     }
   };

@@ -3,8 +3,21 @@ import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 
 /**
- * API Route для проверки прав администратора
- * Используется как fallback если Server Component не работает
+ * API endpoint для проверки прав администратора текущего пользователя
+ * Используется как fallback, если Server Component не работает
+ * Проверяет сессию через cookies или Bearer token
+ * 
+ * @param request - Next.js request объект
+ * @returns JSON с результатом проверки: isAdmin (boolean), user (объект пользователя или null), error (строка или null)
+ * 
+ * @example
+ * GET /api/admin/check
+ * 
+ * Response:
+ * {
+ *   "isAdmin": true,
+ *   "user": { "email": "admin@example.com" }
+ * }
  */
 export async function GET(request: NextRequest) {
   try {

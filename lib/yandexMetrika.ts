@@ -16,9 +16,15 @@ declare global {
 const YANDEX_METRIKA_ID = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID || '105780499'
 
 /**
- * Отправка цели (конверсии) в Яндекс.Метрику
- * @param target - название цели (например, 'light_candle', 'sign_up')
- * @param params - дополнительные параметры
+ * Отправляет цель (конверсию) в Яндекс.Метрику
+ * 
+ * @param target - Название цели (например, 'light_candle', 'sign_up')
+ * @param params - Дополнительные параметры цели (опционально)
+ * 
+ * @example
+ * ```typescript
+ * reachGoal('light_candle', { candle_type: 'calm' });
+ * ```
  */
 export const reachGoal = (target: string, params?: any) => {
   if (typeof window !== 'undefined' && window.ym && YANDEX_METRIKA_ID) {
@@ -31,9 +37,15 @@ export const reachGoal = (target: string, params?: any) => {
 }
 
 /**
- * Отправка виртуального хита (переход на страницу) в Яндекс.Метрику
+ * Отправляет виртуальный хит (переход на страницу) в Яндекс.Метрику
+ * 
  * @param url - URL страницы
- * @param params - дополнительные параметры
+ * @param params - Дополнительные параметры (опционально)
+ * 
+ * @example
+ * ```typescript
+ * hit('/candle/123', { title: 'Моя свеча' });
+ * ```
  */
 export const hit = (url: string, params?: any) => {
   if (typeof window !== 'undefined' && window.ym && YANDEX_METRIKA_ID) {
@@ -46,8 +58,14 @@ export const hit = (url: string, params?: any) => {
 }
 
 /**
- * Отправка параметров визита в Яндекс.Метрику
- * @param params - параметры визита
+ * Отправляет параметры визита в Яндекс.Метрику
+ * 
+ * @param params - Параметры визита (ключ-значение)
+ * 
+ * @example
+ * ```typescript
+ * params({ user_type: 'registered', plan: 'free' });
+ * ```
  */
 export const params = (params: Record<string, any>) => {
   if (typeof window !== 'undefined' && window.ym && YANDEX_METRIKA_ID) {

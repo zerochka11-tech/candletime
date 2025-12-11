@@ -6,7 +6,22 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 /**
- * Статистика по странам и городам для карты
+ * API endpoint для получения статистики по свечам на карте
+ * Возвращает количество свечей по странам, топ городов и общее количество
+ * 
+ * @returns JSON со статистикой: countries (объект страна->количество), topCities (массив топ-20 городов), totalCandles (общее количество)
+ * 
+ * @example
+ * GET /api/map/stats
+ * 
+ * Response:
+ * {
+ *   "countries": { "Россия": 150, "Украина": 45 },
+ *   "topCities": [
+ *     { "city": "Москва", "country": "Россия", "count": 50 }
+ *   ],
+ *   "totalCandles": 225
+ * }
  */
 export async function GET() {
   try {

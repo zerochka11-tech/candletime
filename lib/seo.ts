@@ -6,7 +6,26 @@ const defaultDescription =
   'Тихое место, чтобы зажечь символическую свечу онлайн. Без ленты и лайков — только спокойный жест внимания.';
 
 /**
- * Генерирует базовые мета-теги для страницы
+ * Генерирует полный набор мета-тегов для страницы (Open Graph, Twitter, SEO)
+ * 
+ * @param params - Параметры мета-тегов
+ * @param params.title - Заголовок страницы
+ * @param params.description - Описание страницы (по умолчанию используется базовое описание)
+ * @param params.image - URL изображения для OG (по умолчанию генерируется динамически)
+ * @param params.path - Путь страницы для canonical URL
+ * @param params.type - Тип контента: 'website' или 'article'
+ * @param params.keywords - Массив ключевых слов для SEO
+ * @returns Объект Metadata для Next.js
+ * 
+ * @example
+ * ```typescript
+ * export const metadata = generateMetadata({
+ *   title: 'Моя страница',
+ *   description: 'Описание страницы',
+ *   path: '/my-page',
+ *   keywords: ['ключевое', 'слово']
+ * });
+ * ```
  */
 export function generateMetadata({
   title,
@@ -78,7 +97,17 @@ export function generateMetadata({
 }
 
 /**
- * Генерирует структурированные данные (JSON-LD) для главной страницы
+ * Генерирует структурированные данные Schema.org для главной страницы (WebSite)
+ * 
+ * @returns JSON-LD объект для вставки в <script type="application/ld+json">
+ * 
+ * @example
+ * ```typescript
+ * const data = generateHomePageStructuredData();
+ * <script type="application/ld+json">
+ *   {JSON.stringify(data)}
+ * </script>
+ * ```
  */
 export function generateHomePageStructuredData() {
   return {
@@ -100,7 +129,25 @@ export function generateHomePageStructuredData() {
 }
 
 /**
- * Генерирует структурированные данные для страницы свечи
+ * Генерирует структурированные данные Schema.org для страницы свечи (CreativeWork)
+ * 
+ * @param params - Параметры свечи
+ * @param params.title - Название свечи
+ * @param params.description - Описание свечи (опционально)
+ * @param params.createdAt - Дата создания в ISO формате
+ * @param params.expiresAt - Дата истечения в ISO формате
+ * @param params.url - Полный URL страницы свечи
+ * @returns JSON-LD объект типа CreativeWork
+ * 
+ * @example
+ * ```typescript
+ * const data = generateCandleStructuredData({
+ *   title: 'Моя свеча',
+ *   createdAt: '2025-01-15T10:00:00Z',
+ *   expiresAt: '2025-01-16T10:00:00Z',
+ *   url: 'https://candletime.ru/candle/123'
+ * });
+ * ```
  */
 export function generateCandleStructuredData({
   title,
@@ -128,7 +175,14 @@ export function generateCandleStructuredData({
 }
 
 /**
- * Генерирует структурированные данные для организации
+ * Генерирует структурированные данные Schema.org для организации (Organization)
+ * 
+ * @returns JSON-LD объект типа Organization с информацией о CandleTime
+ * 
+ * @example
+ * ```typescript
+ * const data = generateOrganizationStructuredData();
+ * ```
  */
 export function generateOrganizationStructuredData() {
   return {
@@ -142,7 +196,18 @@ export function generateOrganizationStructuredData() {
 }
 
 /**
- * Генерирует структурированные данные BreadcrumbList для навигации
+ * Генерирует структурированные данные Schema.org для хлебных крошек (BreadcrumbList)
+ * 
+ * @param items - Массив элементов навигации с именем и URL
+ * @returns JSON-LD объект типа BreadcrumbList
+ * 
+ * @example
+ * ```typescript
+ * const breadcrumbs = generateBreadcrumbList([
+ *   { name: 'Главная', url: 'https://candletime.ru' },
+ *   { name: 'Свечи', url: 'https://candletime.ru/candles' }
+ * ]);
+ * ```
  */
 export function generateBreadcrumbList(items: { name: string; url: string }[]) {
   return {
@@ -158,7 +223,18 @@ export function generateBreadcrumbList(items: { name: string; url: string }[]) {
 }
 
 /**
- * Генерирует структурированные данные ItemList для страницы со списком свечей
+ * Генерирует структурированные данные Schema.org для списка свечей (ItemList)
+ * 
+ * @param candles - Массив свечей с id и title
+ * @returns JSON-LD объект типа ItemList
+ * 
+ * @example
+ * ```typescript
+ * const list = generateCandlesItemList([
+ *   { id: '123', title: 'Свеча 1' },
+ *   { id: '456', title: 'Свеча 2' }
+ * ]);
+ * ```
  */
 export function generateCandlesItemList(candles: Array<{ id: string; title: string }>) {
   return {
@@ -181,7 +257,31 @@ export function generateCandlesItemList(candles: Array<{ id: string; title: stri
 }
 
 /**
- * Генерирует структурированные данные Article для статей/FAQ
+ * Генерирует структурированные данные Schema.org для статьи (Article)
+ * 
+ * @param params - Параметры статьи
+ * @param params.title - Заголовок статьи
+ * @param params.description - Описание статьи
+ * @param params.content - Полный текст статьи
+ * @param params.publishedAt - Дата публикации в ISO формате
+ * @param params.modifiedAt - Дата последнего изменения в ISO формате
+ * @param params.url - URL статьи
+ * @param params.author - Информация об авторе
+ * @param params.image - URL изображения статьи (опционально)
+ * @returns JSON-LD объект типа Article
+ * 
+ * @example
+ * ```typescript
+ * const article = generateArticleStructuredData({
+ *   title: 'Как зажечь свечу',
+ *   description: 'Инструкция...',
+ *   content: 'Полный текст...',
+ *   publishedAt: '2025-01-15T10:00:00Z',
+ *   modifiedAt: '2025-01-15T10:00:00Z',
+ *   url: 'https://candletime.ru/faq/kak-zazhech',
+ *   author: { name: 'CandleTime' }
+ * });
+ * ```
  */
 export function generateArticleStructuredData({
   title,
@@ -238,7 +338,18 @@ export function generateArticleStructuredData({
 }
 
 /**
- * Генерирует структурированные данные FAQPage для страницы FAQ
+ * Генерирует структурированные данные Schema.org для страницы FAQ (FAQPage)
+ * 
+ * @param faqItems - Массив вопросов и ответов
+ * @returns JSON-LD объект типа FAQPage
+ * 
+ * @example
+ * ```typescript
+ * const faq = generateFAQPageStructuredData([
+ *   { question: 'Что такое CandleTime?', answer: 'Это сервис...' },
+ *   { question: 'Как зажечь свечу?', answer: 'Перейдите на страницу...' }
+ * ]);
+ * ```
  */
 export function generateFAQPageStructuredData(faqItems: Array<{ question: string; answer: string }>) {
   return {
@@ -256,7 +367,27 @@ export function generateFAQPageStructuredData(faqItems: Array<{ question: string
 }
 
 /**
- * Генерирует структурированные данные HowTo для инструкций
+ * Генерирует структурированные данные Schema.org для инструкции (HowTo)
+ * 
+ * @param params - Параметры инструкции
+ * @param params.name - Название инструкции
+ * @param params.description - Описание инструкции
+ * @param params.steps - Массив шагов инструкции
+ * @param params.url - URL страницы с инструкцией
+ * @returns JSON-LD объект типа HowTo
+ * 
+ * @example
+ * ```typescript
+ * const howTo = generateHowToStructuredData({
+ *   name: 'Как зажечь свечу',
+ *   description: 'Пошаговая инструкция',
+ *   steps: [
+ *     { name: 'Шаг 1', text: 'Выберите тип свечи' },
+ *     { name: 'Шаг 2', text: 'Введите название' }
+ *   ],
+ *   url: 'https://candletime.ru/light'
+ * });
+ * ```
  */
 export function generateHowToStructuredData({
   name,
@@ -285,7 +416,24 @@ export function generateHowToStructuredData({
 }
 
 /**
- * Генерирует структурированные данные для интерактивной карты
+ * Генерирует структурированные данные Schema.org для страницы карты (WebPage с ItemList)
+ * 
+ * @param params - Параметры карты
+ * @param params.name - Название страницы карты
+ * @param params.description - Описание карты
+ * @param params.url - URL страницы карты
+ * @param params.numberOfItems - Количество свечей на карте (опционально)
+ * @returns JSON-LD объект типа WebPage с вложенным ItemList
+ * 
+ * @example
+ * ```typescript
+ * const map = generateMapStructuredData({
+ *   name: 'Карта свечей',
+ *   description: 'Интерактивная карта...',
+ *   url: 'https://candletime.ru/map',
+ *   numberOfItems: 150
+ * });
+ * ```
  */
 export function generateMapStructuredData({
   name,

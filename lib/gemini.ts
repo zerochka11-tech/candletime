@@ -1,7 +1,16 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 /**
- * Получить клиент Gemini API
+ * Создает и возвращает клиент Google Gemini API
+ * 
+ * @returns Экземпляр GoogleGenerativeAI
+ * @throws {Error} Если GEMINI_API_KEY не установлен в переменных окружения
+ * 
+ * @example
+ * ```typescript
+ * const client = getGeminiClient();
+ * const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' });
+ * ```
  */
 export function getGeminiClient() {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -41,8 +50,17 @@ function transliterate(text: string): string {
 }
 
 /**
- * Генерирует slug из заголовка
- * Поддерживает кириллицу через транслитерацию
+ * Генерирует URL-friendly slug из заголовка с поддержкой кириллицы
+ * 
+ * @param title - Заголовок статьи (может содержать кириллицу)
+ * @returns Slug в формате lowercase с дефисами (например: 'kak-zazhech-svechu')
+ *          Если заголовок пустой, возвращает 'article-{timestamp}'
+ * 
+ * @example
+ * ```typescript
+ * const slug = generateSlug('Как зажечь свечу');
+ * // Возвращает: 'kak-zazhech-svechu'
+ * ```
  */
 export function generateSlug(title: string): string {
   if (!title || title.trim().length === 0) {
@@ -73,7 +91,16 @@ export function generateSlug(title: string): string {
 }
 
 /**
- * Вычисляет время чтения статьи (200 слов в минуту)
+ * Вычисляет примерное время чтения статьи (200 слов в минуту)
+ * 
+ * @param content - Текст статьи
+ * @returns Время чтения в минутах (минимум 1 минута)
+ * 
+ * @example
+ * ```typescript
+ * const time = calculateReadingTime('Длинный текст статьи...');
+ * // Возвращает: 5 (минут)
+ * ```
  */
 export function calculateReadingTime(content: string): number {
   const wordCount = content.split(/\s+/).length;
@@ -81,7 +108,17 @@ export function calculateReadingTime(content: string): number {
 }
 
 /**
- * Генерирует excerpt из контента (первые 150 символов)
+ * Генерирует краткое описание (excerpt) из контента статьи
+ * Удаляет markdown разметку и возвращает первые 150 символов
+ * 
+ * @param content - Полный текст статьи в Markdown формате
+ * @returns Краткое описание (первые 150 символов) с '...' в конце, если текст обрезан
+ * 
+ * @example
+ * ```typescript
+ * const excerpt = generateExcerpt('# Заголовок\n\nПолный текст статьи...');
+ * // Возвращает: 'Полный текст статьи...' (первые 150 символов)
+ * ```
  */
 export function generateExcerpt(content: string): string {
   if (!content || content.trim().length === 0) {
@@ -112,6 +149,15 @@ export function generateExcerpt(content: string): string {
 
 /**
  * Извлекает H1 заголовок из Markdown контента
+ * 
+ * @param content - Текст в Markdown формате
+ * @returns Заголовок H1 без символа '#' или пустая строка, если H1 не найден
+ * 
+ * @example
+ * ```typescript
+ * const title = extractTitle('# Мой заголовок\n\nТекст...');
+ * // Возвращает: 'Мой заголовок'
+ * ```
  */
 export function extractTitle(content: string): string {
   const lines = content.split('\n');
@@ -124,7 +170,17 @@ export function extractTitle(content: string): string {
 }
 
 /**
- * Генерирует SEO метаданные из заголовка и контента
+ * Генерирует SEO метаданные (title, description, keywords) из заголовка и контента
+ * 
+ * @param title - Заголовок статьи
+ * @param content - Полный текст статьи
+ * @returns Объект с SEO title, description и keywords
+ * 
+ * @example
+ * ```typescript
+ * const seo = generateSEOMetadata('Как зажечь свечу', 'Полный текст...');
+ * // Возвращает: { seoTitle: 'Как зажечь свечу | CandleTime', seoDescription: '...', seoKeywords: [...] }
+ * ```
  */
 export function generateSEOMetadata(title: string, content: string): {
   seoTitle: string;
@@ -182,7 +238,22 @@ function extractKeywords(title: string, content: string): string[] {
 }
 
 /**
- * Создает промпт для Gemini API
+ * Создает промпт для генерации статьи через Gemini API
+ * 
+ * @param params - Параметры генерации
+ * @param params.topic - Тема статьи
+ * @param params.candleType - Тип свечи для CTA (опционально)
+ * @param params.language - Язык статьи ('ru' или 'en', по умолчанию 'ru')
+ * @returns Готовый промпт для отправки в Gemini API
+ * 
+ * @example
+ * ```typescript
+ * const prompt = createArticlePrompt({
+ *   topic: 'Медитация',
+ *   candleType: 'calm',
+ *   language: 'ru'
+ * });
+ * ```
  */
 export function createArticlePrompt(params: {
   topic: string;
@@ -318,6 +389,28 @@ async function determineArticleCategory(title: string, content: string): Promise
   }
 }
 
+/**
+ * Генерирует статью через Gemini API с автоматическим retry при rate limit
+ * 
+ * @param params - Параметры генерации статьи
+ * @param params.topic - Тема статьи (используется если customPrompt не указан)
+ * @param params.candleType - Тип свечи для CTA (опционально)
+ * @param params.language - Язык статьи ('ru' или 'en')
+ * @param params.customPrompt - Кастомный промпт с уже подставленными переменными (опционально)
+ * @param retryCount - Количество попыток (внутренний параметр, не передавать вручную)
+ * @returns Объект с полной статьей и метаданными
+ * @throws {Error} Если генерация не удалась после всех попыток
+ * 
+ * @example
+ * ```typescript
+ * const article = await generateArticle({
+ *   topic: 'Медитация',
+ *   candleType: 'calm',
+ *   language: 'ru'
+ * });
+ * // Возвращает: { title, content, excerpt, seoTitle, seoDescription, seoKeywords, readingTime, slug, categorySlug }
+ * ```
+ */
 export async function generateArticle(params: {
   topic?: string;
   candleType?: string;

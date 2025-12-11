@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { checkAdminAccess } from '@/lib/admin';
+import { CandleSkeleton } from '@/components/ui/CandleSkeleton';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 type Candle = {
   id: string;
@@ -374,9 +376,16 @@ export default function DashboardPage() {
     const ok = window.confirm('Погасить эту свечу раньше времени?');
     if (!ok) return;
 
+    const nowIso = new Date().toISOString();
+    
+    // Оптимистичное обновление: сразу обновляем UI
+    const optimisticUpdate = { ...candle, status: 'extinguished' as const, expires_at: nowIso };
+    setCandles((prev) =>
+      prev.map((c) => (c.id === candle.id ? optimisticUpdate : c))
+    );
+
     try {
       setUpdatingId(candle.id);
-      const nowIso = new Date().toISOString();
 
       const { error } = await supabase
         .from('candles')
@@ -388,10 +397,15 @@ export default function DashboardPage() {
 
       if (error) {
         console.error('Extinguish error:', error);
+        // Откатываем оптимистичное обновление в случае ошибки
+        setCandles((prev) =>
+          prev.map((c) => (c.id === candle.id ? candle : c))
+        );
         alert('Не получилось погасить свечу. Попробуй ещё раз.');
         return;
       }
 
+      // Подтверждаем обновление (оно уже было сделано оптимистично)
       setCandles((prev) =>
         prev.map((c) =>
           c.id === candle.id
@@ -399,6 +413,13 @@ export default function DashboardPage() {
             : c
         )
       );
+    } catch (err) {
+      console.error('Extinguish error:', err);
+      // Откатываем оптимистичное обновление в случае ошибки
+      setCandles((prev) =>
+        prev.map((c) => (c.id === candle.id ? candle : c))
+      );
+      alert('Не получилось погасить свечу. Попробуй ещё раз.');
     } finally {
       setUpdatingId(null);
     }
@@ -411,7 +432,24 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <p className="text-sm text-slate-600 dark:text-slate-400">Загружаем твои свечи…</p>
+      <div className="flex flex-col gap-6 md:gap-8">
+        {/* Skeleton для заголовка */}
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div className="space-y-1">
+            <div className="h-8 w-32 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
+            <div className="h-5 w-48 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
+          </div>
+          <div className="h-10 w-40 animate-pulse rounded-full bg-slate-200 dark:bg-slate-700" />
+        </div>
+
+        {/* Skeleton для контента */}
+        <section className="relative overflow-hidden rounded-3xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-4 shadow-md sm:p-6 md:p-8">
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 dark:from-amber-500/10 dark:to-indigo-500/10" />
+          <div className="relative space-y-4">
+            <CandleSkeleton count={3} />
+          </div>
+        </section>
+      </div>
     );
   }
 
@@ -506,10 +544,22 @@ export default function DashboardPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 dark:from-amber-500/10 dark:to-indigo-500/10" />
         <div className="relative">
           {!hasCandles ? (
-            <p className="text-sm text-slate-600 dark:text-slate-400 md:text-base">
-              У тебя пока нет свечей за последние 30 дней. Зажги первую на странице{' '}
-              <span className="font-medium text-slate-900 dark:text-slate-100">Зажечь</span>.
-            </p>
+            <EmptyState
+              icon="🕯️"
+              title="У тебя пока нет свечей"
+              description={
+                <>
+                  У тебя пока нет свечей за последние 30 дней. Зажги первую на странице{' '}
+                  <Link href="/light" className="font-medium text-slate-900 dark:text-slate-100 underline hover:text-slate-700 dark:hover:text-slate-300">
+                    Зажечь
+                  </Link>.
+                </>
+              }
+              action={{
+                label: 'Зажечь новую свечу',
+                href: '/light',
+              }}
+            />
           ) : (
             <>
               {/* Подзаголовок */}
@@ -551,9 +601,11 @@ export default function DashboardPage() {
 
             {/* Список свечей + пагинация */}
             {totalItems === 0 ? (
-              <p className="text-xs text-slate-500">
-                В этом разделе пока нет свечей за последние 30 дней.
-              </p>
+              <EmptyState
+                icon="🔍"
+                title="В этом разделе пока нет свечей"
+                description="В этом разделе пока нет свечей за последние 30 дней. Попробуйте выбрать другой фильтр."
+              />
             ) : (
               <>
                 <div className="space-y-4">

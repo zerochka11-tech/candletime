@@ -10,7 +10,19 @@ type ErrorContext = {
 };
 
 /**
- * Логирование ошибок с контекстом
+ * Логирует ошибку с дополнительным контекстом для отладки
+ * 
+ * @param error - Ошибка (Error объект или любое значение)
+ * @param context - Дополнительный контекст (компонент, действие, метаданные)
+ * 
+ * @example
+ * ```typescript
+ * logError(new Error('Failed to load'), {
+ *   component: 'HomePage',
+ *   action: 'loadStats',
+ *   metadata: { userId: '123' }
+ * });
+ * ```
  */
 export function logError(
   error: Error | unknown,
@@ -47,7 +59,21 @@ export function logError(
 }
 
 /**
- * Обработка ошибок Supabase
+ * Обрабатывает ошибки Supabase и возвращает понятное пользователю сообщение
+ * 
+ * @param error - Ошибка от Supabase или другая ошибка
+ * @param context - Дополнительный контекст для логирования
+ * @returns Понятное сообщение об ошибке на русском языке
+ * 
+ * @example
+ * ```typescript
+ * try {
+ *   await supabase.from('candles').insert(data);
+ * } catch (error) {
+ *   const message = handleSupabaseError(error, { component: 'LightPage' });
+ *   setError(message);
+ * }
+ * ```
  */
 export function handleSupabaseError(
   error: unknown,
@@ -75,7 +101,16 @@ export function handleSupabaseError(
 }
 
 /**
- * Создать пользовательское сообщение об ошибке
+ * Создает пользовательское сообщение об ошибке из любого типа ошибки
+ * 
+ * @param error - Ошибка любого типа
+ * @returns Сообщение об ошибке или 'Произошла неизвестная ошибка'
+ * 
+ * @example
+ * ```typescript
+ * const message = createErrorMessage(new Error('Network error'));
+ * // Возвращает: 'Network error'
+ * ```
  */
 export function createErrorMessage(error: unknown): string {
   if (error instanceof Error) {

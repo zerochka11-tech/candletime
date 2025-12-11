@@ -1,8 +1,18 @@
 import { supabase } from './supabaseClient';
 
 /**
- * Проверка прав администратора
- * Не блокирует выполнение, всегда возвращает результат быстро
+ * Проверяет права администратора текущего пользователя
+ * Использует таймаут 5 секунд для предотвращения зависаний
+ * 
+ * @returns Объект с результатом проверки: isAdmin (boolean), user (объект пользователя или null), error (строка или null)
+ * 
+ * @example
+ * ```typescript
+ * const { isAdmin, user } = await checkAdminAccess();
+ * if (isAdmin) {
+ *   // Показать админ-панель
+ * }
+ * ```
  */
 export async function checkAdminAccess(): Promise<{
   isAdmin: boolean;
@@ -49,7 +59,19 @@ export async function checkAdminAccess(): Promise<{
 }
 
 /**
- * Получить токен для API запросов
+ * Получает токен доступа текущей сессии для использования в API запросах
+ * 
+ * @returns Access token или null, если пользователь не авторизован
+ * 
+ * @example
+ * ```typescript
+ * const token = await getAuthToken();
+ * if (token) {
+ *   const response = await fetch('/api/admin/articles', {
+ *     headers: { Authorization: `Bearer ${token}` }
+ *   });
+ * }
+ * ```
  */
 export async function getAuthToken(): Promise<string | null> {
   const {

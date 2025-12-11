@@ -4,6 +4,25 @@ import { useEffect, useState } from 'react';
 
 export type Theme = 'light' | 'dark' | 'system';
 
+/**
+ * React хук для управления темой приложения (light/dark/system)
+ * Автоматически синхронизируется с localStorage и системными настройками
+ * 
+ * @returns Объект с текущей темой, resolved темой, функцией установки темы и флагом монтирования
+ * 
+ * @example
+ * ```typescript
+ * const { theme, resolvedTheme, setTheme, mounted } = useTheme();
+ * 
+ * if (!mounted) return null; // Предотвращает hydration mismatch
+ * 
+ * return (
+ *   <button onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}>
+ *     Текущая тема: {resolvedTheme}
+ *   </button>
+ * );
+ * ```
+ */
 export function useTheme() {
   const [theme, setTheme] = useState<Theme>('system');
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');

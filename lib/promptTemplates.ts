@@ -28,6 +28,15 @@ export type PromptTemplate = {
 /**
  * Извлекает все переменные из промпт-шаблона
  * Находит все вхождения вида {variableName}
+ * 
+ * @param prompt - Текст промпта с переменными в фигурных скобках
+ * @returns Массив уникальных имен переменных
+ * 
+ * @example
+ * ```typescript
+ * const vars = extractVariablesFromPrompt('Напиши статью про {topic} для {language}');
+ * // Возвращает: ['topic', 'language']
+ * ```
  */
 export function extractVariablesFromPrompt(prompt: string): string[] {
   const regex = /\{([^}]+)\}/g;
@@ -47,6 +56,19 @@ export function extractVariablesFromPrompt(prompt: string): string[] {
 
 /**
  * Заменяет переменные в шаблоне на их значения
+ * 
+ * @param template - Шаблон с переменными вида {variableName}
+ * @param variables - Объект с значениями переменных
+ * @returns Шаблон с подставленными значениями
+ * 
+ * @example
+ * ```typescript
+ * const result = replaceTemplateVariables(
+ *   'Напиши про {topic}',
+ *   { topic: 'медитация' }
+ * );
+ * // Возвращает: 'Напиши про медитация'
+ * ```
  */
 export function replaceTemplateVariables(
   template: string,
@@ -68,6 +90,16 @@ export function replaceTemplateVariables(
 
 /**
  * Проверяет, все ли обязательные переменные заполнены
+ * 
+ * @param template - Шаблон промпта с описанием переменных
+ * @param providedVariables - Предоставленные значения переменных
+ * @returns Объект с результатом валидации и списком отсутствующих переменных
+ * 
+ * @example
+ * ```typescript
+ * const result = validateTemplateVariables(template, { topic: 'медитация' });
+ * // Возвращает: { valid: true, missing: [] } или { valid: false, missing: ['language'] }
+ * ```
  */
 export function validateTemplateVariables(
   template: PromptTemplate,
@@ -104,7 +136,23 @@ export function validateTemplateVariables(
 }
 
 /**
- * Валидирует промпт-шаблон
+ * Валидирует промпт-шаблон на корректность
+ * 
+ * @param template - Шаблон для валидации
+ * @param template.name - Название шаблона (минимум 3 символа, максимум 100)
+ * @param template.prompt - Текст промпта (минимум 50 символов)
+ * @param template.variables - Массив объявленных переменных (опционально)
+ * @returns Объект с результатом валидации и списком ошибок
+ * 
+ * @example
+ * ```typescript
+ * const result = validatePromptTemplate({
+ *   name: 'Мой шаблон',
+ *   prompt: 'Напиши статью про {topic}',
+ *   variables: ['topic']
+ * });
+ * // Возвращает: { valid: true, errors: [] } или { valid: false, errors: [...] }
+ * ```
  */
 export function validatePromptTemplate(template: {
   name: string;
@@ -147,7 +195,24 @@ export function validatePromptTemplate(template: {
 }
 
 /**
- * Создает объект с переменными из простого режима генерации
+ * Создает объект с переменными из простого режима генерации статьи
+ * Автоматически добавляет CTA секцию для типа свечи, если указан
+ * 
+ * @param params - Параметры простого режима
+ * @param params.topic - Тема статьи
+ * @param params.candleType - Тип свечи (опционально)
+ * @param params.language - Язык статьи (по умолчанию 'ru')
+ * @param params.categoryName - Название категории (опционально)
+ * @returns Объект с переменными для подстановки в шаблон
+ * 
+ * @example
+ * ```typescript
+ * const vars = createVariablesFromSimpleMode({
+ *   topic: 'Медитация',
+ *   candleType: 'calm',
+ *   language: 'ru'
+ * });
+ * ```
  */
 export function createVariablesFromSimpleMode(params: {
   topic: string;
@@ -221,6 +286,16 @@ export function createVariablesFromSimpleMode(params: {
 
 /**
  * Получает значение переменной из объекта переменных
+ * 
+ * @param variables - Объект с переменными
+ * @param variableName - Имя переменной
+ * @returns Значение переменной или пустая строка, если переменная не найдена
+ * 
+ * @example
+ * ```typescript
+ * const value = getVariableValue({ topic: 'медитация' }, 'topic');
+ * // Возвращает: 'медитация'
+ * ```
  */
 export function getVariableValue(
   variables: Record<string, string>,

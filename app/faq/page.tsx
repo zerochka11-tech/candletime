@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { generateCandlesItemList } from '@/lib/seo';
+import { ArticleSkeleton } from '@/components/ui/ArticleSkeleton';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 type Article = {
   id: string;
@@ -478,35 +480,14 @@ export default function FAQPage() {
       {/* Список статей */}
       {loading ? (
         <div className="grid gap-3 sm:gap-4">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="relative overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-3 sm:p-4 shadow-md animate-pulse"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 dark:from-amber-500/10 dark:to-indigo-500/10" />
-              <div className="relative">
-                <div className="h-5 sm:h-6 w-3/4 rounded bg-slate-200 dark:bg-slate-700 mb-2" />
-                <div className="h-4 w-full rounded bg-slate-200 dark:bg-slate-700 mb-1" />
-                <div className="h-4 w-2/3 rounded bg-slate-200 dark:bg-slate-700" />
-              </div>
-            </div>
-          ))}
+          <ArticleSkeleton count={3} />
         </div>
       ) : articles.length === 0 ? (
-        <section className="relative overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-6 sm:p-8 md:p-10 text-center shadow-md transition-colors duration-200">
-          <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 dark:from-amber-500/10 dark:to-indigo-500/10" />
-          
-          <div className="relative">
-            <div className="mb-3 sm:mb-4 inline-flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-gradient-to-br from-slate-100 to-slate-50 dark:from-slate-700 dark:to-slate-800 text-xl sm:text-2xl md:text-3xl shadow-sm">
-              {searchQuery ? '🔍' : '📝'}
-            </div>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 px-2">
-              {searchQuery
-                ? `Ничего не найдено по запросу "${searchQuery}"`
-                : 'Статьи пока не опубликованы. Скоро здесь появятся полезные материалы!'}
-            </p>
-          </div>
-        </section>
+        <EmptyState
+          icon={searchQuery ? '🔍' : '📝'}
+          title={searchQuery ? `Ничего не найдено по запросу "${searchQuery}"` : 'Статьи пока не опубликованы'}
+          description={searchQuery ? 'Попробуйте изменить поисковый запрос или очистить фильтры.' : 'Скоро здесь появятся полезные материалы!'}
+        />
       ) : (
         <div className="grid gap-3 sm:gap-4">
           {articles.map((article) => (

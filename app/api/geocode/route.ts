@@ -1,8 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
- * Геокодинг через Nominatim (OpenStreetMap)
- * Преобразует адрес/название места в координаты
+ * API endpoint для геокодирования адресов через Nominatim (OpenStreetMap)
+ * Преобразует адрес или название места в координаты
+ * 
+ * @param request - Next.js request объект
+ * @returns JSON с массивом результатов геокодирования или ошибкой
+ * 
+ * @example
+ * GET /api/geocode?q=Москва, Россия
+ * 
+ * Response:
+ * {
+ *   "results": [
+ *     {
+ *       "display_name": "Москва, Россия",
+ *       "latitude": 55.7558,
+ *       "longitude": 37.6173,
+ *       "country": "Россия",
+ *       "city": "Москва"
+ *     }
+ *   ]
+ * }
  */
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;

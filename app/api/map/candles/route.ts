@@ -6,8 +6,32 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 /**
- * Получение свечей для отображения на карте
- * Поддерживает фильтрацию по границам карты (bounds), типу и статусу
+ * API endpoint для получения свечей для отображения на интерактивной карте
+ * Поддерживает фильтрацию по границам карты, типу свечи и статусу
+ * 
+ * @param request - Next.js request объект с query параметрами
+ * @param request.query.bounds - Границы карты в формате "minLat,minLng,maxLat,maxLng" (опционально)
+ * @param request.query.type - Тип свечи: 'calm', 'support', 'memory', 'gratitude', 'focus', или 'all' (опционально)
+ * @param request.query.status - Статус свечи: 'active' (по умолчанию) или 'all' (опционально)
+ * @returns JSON с массивом свечей для карты или ошибкой
+ * 
+ * @example
+ * GET /api/map/candles?bounds=55.5,37.5,56.0,38.0&type=calm&status=active
+ * 
+ * Response:
+ * {
+ *   "candles": [
+ *     {
+ *       "id": "...",
+ *       "title": "Моя свеча",
+ *       "type": "calm",
+ *       "lat": 55.7558,
+ *       "lng": 37.6173,
+ *       "country": "Россия",
+ *       "city": "Москва"
+ *     }
+ *   ]
+ * }
  */
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
