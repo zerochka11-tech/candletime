@@ -152,9 +152,213 @@ function CandleHero({
     return (
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 px-4 py-6 text-white shadow-[0_16px_40px_rgba(15,23,42,0.5)] sm:px-6 sm:py-8 md:px-10 md:py-10">
         {/* Декоративный градиент */}
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 z-0" />
         
-        <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-8 md:flex-row md:items-center md:justify-between">
+        {/* Звездочки (мерцающие) - равномерно распределены по всей высоте HERO блока */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          {/* Звезды распределены по всей высоте HERO блока (0-100%) */}
+          {/* Верхняя часть (0-20%) */}
+          <div className="absolute top-[5%] left-[5%] w-0.5 h-0.5 bg-white rounded-full opacity-70 animate-twinkle" style={{ animationDelay: '0s', animationDuration: '3s' }} />
+          <div className="absolute top-[8%] left-[12%] w-1 h-1 bg-white rounded-full opacity-80 animate-twinkle" style={{ animationDelay: '0.5s', animationDuration: '4s' }} />
+          <div className="absolute top-[6%] left-[20%] w-0.5 h-0.5 bg-white rounded-full opacity-60 animate-twinkle" style={{ animationDelay: '1s', animationDuration: '3.5s' }} />
+          <div className="absolute top-[10%] left-[28%] w-0.5 h-0.5 bg-white rounded-full opacity-50 animate-twinkle" style={{ animationDelay: '1.5s', animationDuration: '4.5s' }} />
+          <div className="absolute top-[4%] left-[36%] w-0.5 h-0.5 bg-white rounded-full opacity-65 animate-twinkle" style={{ animationDelay: '0.8s', animationDuration: '3.2s' }} />
+          <div className="absolute top-[12%] left-[44%] w-1 h-1 bg-white rounded-full opacity-75 animate-twinkle" style={{ animationDelay: '1.2s', animationDuration: '3.8s' }} />
+          <div className="absolute top-[7%] left-[52%] w-0.5 h-0.5 bg-white rounded-full opacity-55 animate-twinkle" style={{ animationDelay: '0.3s', animationDuration: '4.2s' }} />
+          <div className="absolute top-[9%] left-[60%] w-0.5 h-0.5 bg-white rounded-full opacity-60 animate-twinkle" style={{ animationDelay: '1.8s', animationDuration: '3.6s' }} />
+          <div className="absolute top-[11%] left-[68%] w-0.5 h-0.5 bg-white rounded-full opacity-70 animate-twinkle" style={{ animationDelay: '0.6s', animationDuration: '4s' }} />
+          <div className="absolute top-[5%] left-[76%] w-1 h-1 bg-white rounded-full opacity-65 animate-twinkle" style={{ animationDelay: '0.9s', animationDuration: '3.4s' }} />
+          <div className="absolute top-[8%] left-[84%] w-0.5 h-0.5 bg-white rounded-full opacity-75 animate-twinkle" style={{ animationDelay: '1.4s', animationDuration: '3.9s' }} />
+          <div className="absolute top-[13%] right-[10%] w-0.5 h-0.5 bg-white rounded-full opacity-55 animate-twinkle" style={{ animationDelay: '0.7s', animationDuration: '4.1s' }} />
+          <div className="absolute top-[6%] right-[5%] w-0.5 h-0.5 bg-white rounded-full opacity-70 animate-twinkle" style={{ animationDelay: '1.1s', animationDuration: '3.7s' }} />
+          <div className="absolute top-[10%] right-[2%] w-1 h-1 bg-white rounded-full opacity-60 animate-twinkle" style={{ animationDelay: '0.4s', animationDuration: '4.3s' }} />
+          <div className="absolute top-[3%] left-[92%] w-0.5 h-0.5 bg-white rounded-full opacity-65 animate-twinkle" style={{ animationDelay: '1.6s', animationDuration: '3.8s' }} />
+          
+          {/* Верхняя-средняя часть (20-40%) */}
+          <div className="absolute top-[22%] left-[3%] w-0.5 h-0.5 bg-white/40 rounded-full animate-twinkle" style={{ animationDelay: '2s', animationDuration: '3.3s' }} />
+          <div className="absolute top-[25%] left-[8%] w-0.5 h-0.5 bg-white/50 rounded-full animate-twinkle" style={{ animationDelay: '2.5s', animationDuration: '3.7s' }} />
+          <div className="absolute top-[28%] left-[15%] w-0.5 h-0.5 bg-white/45 rounded-full animate-twinkle" style={{ animationDelay: '1.3s', animationDuration: '4.1s' }} />
+          <div className="absolute top-[24%] left-[22%] w-0.5 h-0.5 bg-white/55 rounded-full animate-twinkle" style={{ animationDelay: '2.2s', animationDuration: '3.5s' }} />
+          <div className="absolute top-[26%] left-[30%] w-0.5 h-0.5 bg-white/40 rounded-full animate-twinkle" style={{ animationDelay: '1.7s', animationDuration: '3.9s' }} />
+          <div className="absolute top-[30%] left-[38%] w-0.5 h-0.5 bg-white/50 rounded-full animate-twinkle" style={{ animationDelay: '2.8s', animationDuration: '3.4s' }} />
+          <div className="absolute top-[23%] left-[46%] w-0.5 h-0.5 bg-white/45 rounded-full animate-twinkle" style={{ animationDelay: '1.5s', animationDuration: '4.3s' }} />
+          <div className="absolute top-[32%] left-[54%] w-0.5 h-0.5 bg-white/55 rounded-full animate-twinkle" style={{ animationDelay: '2.3s', animationDuration: '3.6s' }} />
+          <div className="absolute top-[27%] left-[62%] w-0.5 h-0.5 bg-white/40 rounded-full animate-twinkle" style={{ animationDelay: '1.9s', animationDuration: '3.8s' }} />
+          <div className="absolute top-[35%] left-[70%] w-0.5 h-0.5 bg-white/50 rounded-full animate-twinkle" style={{ animationDelay: '2.6s', animationDuration: '3.5s' }} />
+          <div className="absolute top-[29%] left-[78%] w-0.5 h-0.5 bg-white/45 rounded-full animate-twinkle" style={{ animationDelay: '1.4s', animationDuration: '4.2s' }} />
+          <div className="absolute top-[33%] right-[12%] w-0.5 h-0.5 bg-white/55 rounded-full animate-twinkle" style={{ animationDelay: '2.9s', animationDuration: '3.4s' }} />
+          <div className="absolute top-[21%] right-[6%] w-0.5 h-0.5 bg-white/40 rounded-full animate-twinkle" style={{ animationDelay: '2.1s', animationDuration: '3.7s' }} />
+          <div className="absolute top-[36%] right-[3%] w-0.5 h-0.5 bg-white/50 rounded-full animate-twinkle" style={{ animationDelay: '1.8s', animationDuration: '3.9s' }} />
+          <div className="absolute top-[31%] left-[86%] w-0.5 h-0.5 bg-white/45 rounded-full animate-twinkle" style={{ animationDelay: '2.4s', animationDuration: '3.6s' }} />
+          <div className="absolute top-[20%] left-[50%] w-0.5 h-0.5 bg-white/50 rounded-full animate-twinkle" style={{ animationDelay: '2.7s', animationDuration: '3.5s' }} />
+          <div className="absolute top-[24%] right-[20%] w-0.5 h-0.5 bg-white/40 rounded-full animate-twinkle" style={{ animationDelay: '1.6s', animationDuration: '4s' }} />
+          <div className="absolute top-[28%] left-[94%] w-0.5 h-0.5 bg-white/55 rounded-full animate-twinkle" style={{ animationDelay: '2.5s', animationDuration: '3.4s' }} />
+          <div className="absolute top-[34%] left-[6%] w-0.5 h-0.5 bg-white/45 rounded-full animate-twinkle" style={{ animationDelay: '1.2s', animationDuration: '4.1s' }} />
+          <div className="absolute top-[26%] right-[8%] w-0.5 h-0.5 bg-white/50 rounded-full animate-twinkle" style={{ animationDelay: '2.8s', animationDuration: '3.3s' }} />
+          
+          {/* Средняя часть (40-60%) */}
+          <div className="absolute top-[42%] left-[4%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '3s', animationDuration: '5s' }} />
+          <div className="absolute top-[45%] left-[10%] w-0.5 h-0.5 bg-white/35 rounded-full animate-twinkle" style={{ animationDelay: '3.5s', animationDuration: '5.5s' }} />
+          <div className="absolute top-[48%] left-[16%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '4s', animationDuration: '4.5s' }} />
+          <div className="absolute top-[44%] left-[24%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '3.2s', animationDuration: '5.2s' }} />
+          <div className="absolute top-[52%] left-[32%] w-0.5 h-0.5 bg-white/35 rounded-full animate-twinkle" style={{ animationDelay: '4.5s', animationDuration: '4.8s' }} />
+          <div className="absolute top-[47%] left-[40%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '3.8s', animationDuration: '5.3s' }} />
+          <div className="absolute top-[49%] left-[48%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '4.2s', animationDuration: '4.7s' }} />
+          <div className="absolute top-[46%] left-[56%] w-0.5 h-0.5 bg-white/35 rounded-full animate-twinkle" style={{ animationDelay: '3.6s', animationDuration: '5.1s' }} />
+          <div className="absolute top-[51%] left-[64%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '4.8s', animationDuration: '4.9s' }} />
+          <div className="absolute top-[43%] left-[72%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '3.4s', animationDuration: '5.4s' }} />
+          <div className="absolute top-[50%] left-[80%] w-0.5 h-0.5 bg-white/35 rounded-full animate-twinkle" style={{ animationDelay: '4.1s', animationDuration: '4.6s' }} />
+          <div className="absolute top-[45%] right-[10%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '3.9s', animationDuration: '5.2s' }} />
+          <div className="absolute top-[48%] right-[4%] w-0.5 h-0.5 bg-white/35 rounded-full animate-twinkle" style={{ animationDelay: '4.3s', animationDuration: '4.8s' }} />
+          <div className="absolute top-[44%] right-[2%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '3.7s', animationDuration: '5.3s' }} />
+          <div className="absolute top-[52%] left-[88%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '4.6s', animationDuration: '4.7s' }} />
+          <div className="absolute top-[55%] left-[6%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '5s', animationDuration: '5.5s' }} />
+          <div className="absolute top-[58%] left-[14%] w-0.5 h-0.5 bg-white/35 rounded-full animate-twinkle" style={{ animationDelay: '5.5s', animationDuration: '5.8s' }} />
+          <div className="absolute top-[54%] left-[26%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '6s', animationDuration: '5.2s' }} />
+          <div className="absolute top-[60%] left-[50%] w-0.5 h-0.5 bg-white/35 rounded-full animate-twinkle" style={{ animationDelay: '5.2s', animationDuration: '5.6s' }} />
+          <div className="absolute top-[57%] left-[66%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '5.8s', animationDuration: '5.4s' }} />
+          <div className="absolute top-[59%] left-[74%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '5.3s', animationDuration: '5.7s' }} />
+          <div className="absolute top-[55%] right-[8%] w-0.5 h-0.5 bg-white/35 rounded-full animate-twinkle" style={{ animationDelay: '5.7s', animationDuration: '5.3s' }} />
+          <div className="absolute top-[61%] right-[2%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '5.4s', animationDuration: '5.5s' }} />
+          <div className="absolute top-[53%] left-[82%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '6.2s', animationDuration: '5.1s' }} />
+          <div className="absolute top-[56%] left-[90%] w-0.5 h-0.5 bg-white/35 rounded-full animate-twinkle" style={{ animationDelay: '5.9s', animationDuration: '5.4s' }} />
+          
+          {/* Нижняя-средняя часть (60-80%) */}
+          <div className="absolute top-[62%] left-[2%] w-0.5 h-0.5 bg-white/20 rounded-full animate-twinkle" style={{ animationDelay: '5s', animationDuration: '6s' }} />
+          <div className="absolute top-[65%] left-[18%] w-0.5 h-0.5 bg-white/25 rounded-full animate-twinkle" style={{ animationDelay: '5.5s', animationDuration: '6.5s' }} />
+          <div className="absolute top-[63%] left-[34%] w-0.5 h-0.5 bg-white/20 rounded-full animate-twinkle" style={{ animationDelay: '6s', animationDuration: '5.5s' }} />
+          <div className="absolute top-[66%] left-[50%] w-0.5 h-0.5 bg-white/25 rounded-full animate-twinkle" style={{ animationDelay: '5.2s', animationDuration: '6.2s' }} />
+          <div className="absolute top-[64%] left-[66%] w-0.5 h-0.5 bg-white/20 rounded-full animate-twinkle" style={{ animationDelay: '6.5s', animationDuration: '5.8s' }} />
+          <div className="absolute top-[68%] left-[82%] w-0.5 h-0.5 bg-white/25 rounded-full animate-twinkle" style={{ animationDelay: '5.7s', animationDuration: '6.1s' }} />
+          <div className="absolute top-[61%] right-[6%] w-0.5 h-0.5 bg-white/20 rounded-full animate-twinkle" style={{ animationDelay: '6.2s', animationDuration: '5.9s' }} />
+          <div className="absolute top-[70%] left-[8%] w-0.5 h-0.5 bg-white/20 rounded-full animate-twinkle" style={{ animationDelay: '6.8s', animationDuration: '5.7s' }} />
+          <div className="absolute top-[72%] left-[22%] w-0.5 h-0.5 bg-white/25 rounded-full animate-twinkle" style={{ animationDelay: '7s', animationDuration: '5.6s' }} />
+          <div className="absolute top-[69%] left-[38%] w-0.5 h-0.5 bg-white/20 rounded-full animate-twinkle" style={{ animationDelay: '6.3s', animationDuration: '5.8s' }} />
+          <div className="absolute top-[74%] left-[54%] w-0.5 h-0.5 bg-white/25 rounded-full animate-twinkle" style={{ animationDelay: '7.2s', animationDuration: '5.5s' }} />
+          <div className="absolute top-[71%] left-[70%] w-0.5 h-0.5 bg-white/20 rounded-full animate-twinkle" style={{ animationDelay: '6.5s', animationDuration: '5.9s' }} />
+          <div className="absolute top-[73%] right-[14%] w-0.5 h-0.5 bg-white/25 rounded-full animate-twinkle" style={{ animationDelay: '7.5s', animationDuration: '5.4s' }} />
+          <div className="absolute top-[75%] right-[2%] w-0.5 h-0.5 bg-white/20 rounded-full animate-twinkle" style={{ animationDelay: '6.7s', animationDuration: '5.7s' }} />
+          <div className="absolute top-[67%] left-[86%] w-0.5 h-0.5 bg-white/25 rounded-full animate-twinkle" style={{ animationDelay: '7.3s', animationDuration: '5.6s' }} />
+          <div className="absolute top-[76%] left-[6%] w-0.5 h-0.5 bg-white/20 rounded-full animate-twinkle" style={{ animationDelay: '7.8s', animationDuration: '5.3s' }} />
+          <div className="absolute top-[78%] left-[42%] w-0.5 h-0.5 bg-white/25 rounded-full animate-twinkle" style={{ animationDelay: '7.1s', animationDuration: '5.8s' }} />
+          <div className="absolute top-[77%] left-[58%] w-0.5 h-0.5 bg-white/20 rounded-full animate-twinkle" style={{ animationDelay: '6.9s', animationDuration: '5.7s' }} />
+          <div className="absolute top-[79%] left-[74%] w-0.5 h-0.5 bg-white/25 rounded-full animate-twinkle" style={{ animationDelay: '7.4s', animationDuration: '5.5s' }} />
+          <div className="absolute top-[80%] right-[10%] w-0.5 h-0.5 bg-white/20 rounded-full animate-twinkle" style={{ animationDelay: '7.6s', animationDuration: '5.4s' }} />
+          
+          {/* Нижняя часть (80-100%) */}
+          <div className="absolute top-[82%] left-[7%] w-0.5 h-0.5 bg-white/25 rounded-full animate-twinkle" style={{ animationDelay: '8s', animationDuration: '4.5s' }} />
+          <div className="absolute top-[85%] left-[33%] w-0.5 h-0.5 bg-white/40 rounded-full animate-twinkle" style={{ animationDelay: '8.5s', animationDuration: '4.2s' }} />
+          <div className="absolute top-[83%] left-[59%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '9s', animationDuration: '4.8s' }} />
+          <div className="absolute top-[86%] left-[85%] w-0.5 h-0.5 bg-white/35 rounded-full animate-twinkle" style={{ animationDelay: '8.2s', animationDuration: '4.6s' }} />
+          <div className="absolute top-[88%] left-[11%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '9.5s', animationDuration: '4.3s' }} />
+          <div className="absolute top-[90%] left-[47%] w-0.5 h-0.5 bg-white/40 rounded-full animate-twinkle" style={{ animationDelay: '10s', animationDuration: '4.7s' }} />
+          <div className="absolute top-[87%] left-[73%] w-0.5 h-0.5 bg-white/25 rounded-full animate-twinkle" style={{ animationDelay: '9.2s', animationDuration: '4.4s' }} />
+          <div className="absolute top-[84%] left-[18%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '10.5s', animationDuration: '4.9s' }} />
+          <div className="absolute top-[89%] left-[46%] w-0.5 h-0.5 bg-white/35 rounded-full animate-twinkle" style={{ animationDelay: '11s', animationDuration: '4.6s' }} />
+          <div className="absolute top-[91%] left-[78%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '10.2s', animationDuration: '4.8s' }} />
+          <div className="absolute top-[92%] left-[15%] w-0.5 h-0.5 bg-white/25 rounded-full animate-twinkle" style={{ animationDelay: '11.5s', animationDuration: '4.5s' }} />
+          <div className="absolute top-[93%] left-[55%] w-0.5 h-0.5 bg-white/35 rounded-full animate-twinkle" style={{ animationDelay: '12s', animationDuration: '4.3s' }} />
+          <div className="absolute top-[94%] right-[12%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '11.2s', animationDuration: '4.7s' }} />
+          <div className="absolute top-[95%] left-[35%] w-0.5 h-0.5 bg-white/25 rounded-full animate-twinkle" style={{ animationDelay: '12.5s', animationDuration: '4.4s' }} />
+          <div className="absolute top-[96%] left-[68%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '11.8s', animationDuration: '4.6s' }} />
+        </div>
+        
+        {/* Облака (пушистые, светло-голубые) - равномерно распределены по всей высоте (0-100%) */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+          {/* Верхние облака (0-25%) */}
+          <div className="absolute top-[2%] left-0 w-40 h-20 bg-sky-200/15 dark:bg-sky-300/8 rounded-full blur-2xl animate-float-slow" style={{ animationDelay: '0s', animationDuration: '20s' }} />
+          <div className="absolute top-[5%] right-[5%] w-32 h-16 bg-sky-200/20 dark:bg-sky-300/12 rounded-full blur-xl animate-float" style={{ animationDelay: '2s', animationDuration: '15s' }} />
+          <div className="absolute top-[8%] left-[15%] w-36 h-18 bg-sky-200/15 dark:bg-sky-300/8 rounded-full blur-2xl animate-float-slow" style={{ animationDelay: '4s', animationDuration: '18s' }} />
+          <div className="absolute top-[3%] right-[25%] w-28 h-14 bg-sky-200/20 dark:bg-sky-300/12 rounded-full blur-xl animate-float" style={{ animationDelay: '1s', animationDuration: '16s' }} />
+          <div className="absolute top-[6%] left-[50%] w-34 h-17 bg-sky-200/15 dark:bg-sky-300/8 rounded-full blur-2xl animate-float-slow" style={{ animationDelay: '3s', animationDuration: '22s' }} />
+          <div className="absolute top-[10%] right-[45%] w-30 h-15 bg-sky-200/18 dark:bg-sky-300/10 rounded-full blur-xl animate-float" style={{ animationDelay: '2.5s', animationDuration: '17s' }} />
+          <div className="absolute top-[12%] left-[25%] w-26 h-13 bg-sky-200/12 dark:bg-sky-300/6 rounded-full blur-xl animate-float-slow" style={{ animationDelay: '12s', animationDuration: '18s' }} />
+          <div className="absolute top-[15%] right-[18%] w-24 h-12 bg-sky-200/18 dark:bg-sky-300/10 rounded-full blur-lg animate-float" style={{ animationDelay: '13s', animationDuration: '14s' }} />
+          
+          {/* Средние облака (25-75%) */}
+          <div className="absolute top-[28%] left-[8%] w-38 h-19 bg-sky-200/12 dark:bg-sky-300/6 rounded-full blur-2xl animate-float-slow" style={{ animationDelay: '5s', animationDuration: '19s' }} />
+          <div className="absolute top-[32%] right-[12%] w-30 h-15 bg-sky-200/18 dark:bg-sky-300/10 rounded-full blur-xl animate-float" style={{ animationDelay: '6s', animationDuration: '16s' }} />
+          <div className="absolute top-[35%] left-[55%] w-32 h-16 bg-sky-200/15 dark:bg-sky-300/8 rounded-full blur-2xl animate-float-slow" style={{ animationDelay: '7s', animationDuration: '21s' }} />
+          <div className="absolute top-[50%] left-[30%] w-28 h-14 bg-sky-200/10 dark:bg-sky-300/5 rounded-full blur-2xl animate-float-slow" style={{ animationDelay: '14s', animationDuration: '20s' }} />
+          <div className="absolute top-[52%] right-[22%] w-26 h-13 bg-sky-200/15 dark:bg-sky-300/8 rounded-full blur-xl animate-float" style={{ animationDelay: '15s', animationDuration: '16s' }} />
+          <div className="absolute top-[60%] left-[40%] w-30 h-15 bg-sky-200/12 dark:bg-sky-300/6 rounded-full blur-xl animate-float-slow" style={{ animationDelay: '16s', animationDuration: '18s' }} />
+          <div className="absolute top-[65%] right-[15%] w-28 h-14 bg-sky-200/18 dark:bg-sky-300/10 rounded-full blur-xl animate-float" style={{ animationDelay: '17s', animationDuration: '15s' }} />
+          
+          {/* Нижние облака (75-100%) */}
+          <div className="absolute top-[78%] right-[8%] w-36 h-18 bg-sky-200/12 dark:bg-sky-300/6 rounded-full blur-2xl animate-float-slow" style={{ animationDelay: '8s', animationDuration: '20s' }} />
+          <div className="absolute top-[82%] left-[20%] w-28 h-14 bg-sky-200/18 dark:bg-sky-300/10 rounded-full blur-xl animate-float" style={{ animationDelay: '9s', animationDuration: '17s' }} />
+          <div className="absolute top-[76%] right-[30%] w-34 h-17 bg-sky-200/15 dark:bg-sky-300/8 rounded-full blur-2xl animate-float-slow" style={{ animationDelay: '10s', animationDuration: '18s' }} />
+          <div className="absolute top-[80%] left-[70%] w-30 h-15 bg-sky-200/18 dark:bg-sky-300/10 rounded-full blur-xl animate-float" style={{ animationDelay: '11s', animationDuration: '15s' }} />
+          <div className="absolute top-[85%] left-[45%] w-32 h-16 bg-sky-200/12 dark:bg-sky-300/6 rounded-full blur-2xl animate-float-slow" style={{ animationDelay: '16s', animationDuration: '19s' }} />
+          <div className="absolute top-[88%] right-[18%] w-28 h-14 bg-sky-200/18 dark:bg-sky-300/10 rounded-full blur-xl animate-float" style={{ animationDelay: '17s', animationDuration: '15s' }} />
+        </div>
+        
+        {/* Астрологические символы (едва заметные в облаках) - равномерно распределены по всей высоте (0-100%) */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.08] z-0">
+          {/* Верхние символы (0-25%) */}
+          <div className="absolute top-[8%] left-[12%] text-sky-200/40 text-xs font-light" style={{ fontFamily: 'serif' }}>♈</div>
+          <div className="absolute top-[6%] left-[28%] text-sky-200/40 text-xs font-light" style={{ fontFamily: 'serif' }}>♉</div>
+          <div className="absolute top-[10%] left-[48%] text-sky-200/40 text-xs font-light" style={{ fontFamily: 'serif' }}>♊</div>
+          <div className="absolute top-[7%] left-[68%] text-sky-200/40 text-xs font-light" style={{ fontFamily: 'serif' }}>♋</div>
+          <div className="absolute top-[9%] right-[15%] text-sky-200/40 text-xs font-light" style={{ fontFamily: 'serif' }}>♌</div>
+          <div className="absolute top-[5%] right-[35%] text-sky-200/40 text-xs font-light" style={{ fontFamily: 'serif' }}>♍</div>
+          <div className="absolute top-[12%] left-[38%] text-sky-200/35 text-xs font-light" style={{ fontFamily: 'serif' }}>☉</div>
+          <div className="absolute top-[14%] left-[64%] text-sky-200/35 text-xs font-light" style={{ fontFamily: 'serif' }}>☽</div>
+          <div className="absolute top-[11%] right-[28%] text-sky-200/35 text-xs font-light" style={{ fontFamily: 'serif' }}>☿</div>
+          
+          {/* Средние символы (25-75%) */}
+          <div className="absolute top-[30%] left-[20%] text-sky-200/35 text-xs font-light" style={{ fontFamily: 'serif' }}>♎</div>
+          <div className="absolute top-[35%] left-[45%] text-sky-200/35 text-xs font-light" style={{ fontFamily: 'serif' }}>♏</div>
+          <div className="absolute top-[32%] right-[25%] text-sky-200/35 text-xs font-light" style={{ fontFamily: 'serif' }}>♐</div>
+          <div className="absolute top-[50%] left-[38%] text-sky-200/30 text-xs font-light" style={{ fontFamily: 'serif' }}>♀</div>
+          <div className="absolute top-[52%] right-[30%] text-sky-200/30 text-xs font-light" style={{ fontFamily: 'serif' }}>♂</div>
+          <div className="absolute top-[58%] left-[55%] text-sky-200/30 text-xs font-light" style={{ fontFamily: 'serif' }}>♃</div>
+          <div className="absolute top-[62%] right-[20%] text-sky-200/30 text-xs font-light" style={{ fontFamily: 'serif' }}>♄</div>
+          
+          {/* Нижние символы (75-100%) */}
+          <div className="absolute top-[78%] right-[12%] text-sky-200/30 text-xs font-light" style={{ fontFamily: 'serif' }}>♑</div>
+          <div className="absolute top-[82%] left-[35%] text-sky-200/30 text-xs font-light" style={{ fontFamily: 'serif' }}>♒</div>
+          <div className="absolute top-[76%] right-[40%] text-sky-200/30 text-xs font-light" style={{ fontFamily: 'serif' }}>♓</div>
+          <div className="absolute top-[85%] left-[52%] text-sky-200/30 text-xs font-light" style={{ fontFamily: 'serif' }}>♃</div>
+          <div className="absolute top-[88%] right-[28%] text-sky-200/30 text-xs font-light" style={{ fontFamily: 'serif' }}>♄</div>
+        </div>
+        
+        {/* Золотые декоративные элементы (листья/лепестки) - равномерно распределены по всей высоте (0-100%) */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          {/* Верхние элементы (0-25%) */}
+          <div className="absolute top-[12%] left-[8%] w-1.5 h-1.5 bg-amber-300/25 rounded-full blur-sm animate-float" style={{ animationDelay: '5s', animationDuration: '12s' }} />
+          <div className="absolute top-[16%] left-[25%] w-2 h-2 bg-amber-400/20 rounded-full blur-sm animate-float-slow" style={{ animationDelay: '6s', animationDuration: '14s' }} />
+          <div className="absolute top-[14%] left-[42%] w-1.5 h-1.5 bg-amber-300/25 rounded-full blur-sm animate-float" style={{ animationDelay: '7s', animationDuration: '13s' }} />
+          <div className="absolute top-[18%] left-[58%] w-2 h-2 bg-amber-400/20 rounded-full blur-sm animate-float-slow" style={{ animationDelay: '8s', animationDuration: '15s' }} />
+          <div className="absolute top-[13%] left-[75%] w-1.5 h-1.5 bg-amber-300/25 rounded-full blur-sm animate-float" style={{ animationDelay: '6.5s', animationDuration: '11s' }} />
+          <div className="absolute top-[15%] right-[8%] w-2 h-2 bg-amber-400/20 rounded-full blur-sm animate-float-slow" style={{ animationDelay: '7.5s', animationDuration: '13.5s' }} />
+          <div className="absolute top-[9%] left-[19%] w-1.5 h-1.5 bg-amber-300/20 rounded-full blur-sm animate-float" style={{ animationDelay: '13s', animationDuration: '11.5s' }} />
+          <div className="absolute top-[11%] left-[53%] w-2 h-2 bg-amber-400/18 rounded-full blur-sm animate-float-slow" style={{ animationDelay: '13.5s', animationDuration: '13.8s' }} />
+          <div className="absolute top-[7%] right-[22%] w-1.5 h-1.5 bg-amber-300/22 rounded-full blur-sm animate-float" style={{ animationDelay: '14s', animationDuration: '12s' }} />
+          
+          {/* Средние элементы (25-75%) */}
+          <div className="absolute top-[30%] left-[15%] w-1.5 h-1.5 bg-amber-300/25 rounded-full blur-sm animate-float" style={{ animationDelay: '8.5s', animationDuration: '12.5s' }} />
+          <div className="absolute top-[35%] left-[50%] w-2 h-2 bg-amber-400/20 rounded-full blur-sm animate-float-slow" style={{ animationDelay: '9s', animationDuration: '14.5s' }} />
+          <div className="absolute top-[32%] right-[18%] w-1.5 h-1.5 bg-amber-300/25 rounded-full blur-sm animate-float" style={{ animationDelay: '9.5s', animationDuration: '12s' }} />
+          <div className="absolute top-[50%] left-[32%] w-2 h-2 bg-amber-400/18 rounded-full blur-sm animate-float-slow" style={{ animationDelay: '14.5s', animationDuration: '14.2s' }} />
+          <div className="absolute top-[52%] right-[28%] w-1.5 h-1.5 bg-amber-300/20 rounded-full blur-sm animate-float" style={{ animationDelay: '15s', animationDuration: '11.8s' }} />
+          <div className="absolute top-[60%] left-[45%] w-2 h-2 bg-amber-400/18 rounded-full blur-sm animate-float-slow" style={{ animationDelay: '16s', animationDuration: '14.5s' }} />
+          <div className="absolute top-[65%] right-[25%] w-1.5 h-1.5 bg-amber-300/20 rounded-full blur-sm animate-float" style={{ animationDelay: '16.5s', animationDuration: '12.5s' }} />
+          
+          {/* Нижние элементы (75-100%) */}
+          <div className="absolute top-[68%] left-[12%] w-1.5 h-1.5 bg-amber-300/25 rounded-full blur-sm animate-float" style={{ animationDelay: '10s', animationDuration: '11s' }} />
+          <div className="absolute top-[72%] left-[38%] w-2 h-2 bg-amber-400/20 rounded-full blur-sm animate-float-slow" style={{ animationDelay: '10.5s', animationDuration: '13.5s' }} />
+          <div className="absolute top-[70%] left-[62%] w-1.5 h-1.5 bg-amber-300/25 rounded-full blur-sm animate-float" style={{ animationDelay: '11s', animationDuration: '12.5s' }} />
+          <div className="absolute top-[74%] right-[15%] w-2 h-2 bg-amber-400/20 rounded-full blur-sm animate-float-slow" style={{ animationDelay: '11.5s', animationDuration: '14s' }} />
+          <div className="absolute top-[82%] right-[5%] w-1.5 h-1.5 bg-amber-300/25 rounded-full blur-sm animate-float" style={{ animationDelay: '12s', animationDuration: '11.5s' }} />
+          <div className="absolute top-[80%] left-[80%] w-2 h-2 bg-amber-400/20 rounded-full blur-sm animate-float-slow" style={{ animationDelay: '12.5s', animationDuration: '13s' }} />
+          <div className="absolute top-[76%] left-[28%] w-1.5 h-1.5 bg-amber-300/22 rounded-full blur-sm animate-float" style={{ animationDelay: '15.5s', animationDuration: '12.2s' }} />
+          <div className="absolute top-[85%] left-[56%] w-2 h-2 bg-amber-400/18 rounded-full blur-sm animate-float-slow" style={{ animationDelay: '16s', animationDuration: '14.5s' }} />
+          <div className="absolute top-[88%] right-[22%] w-1.5 h-1.5 bg-amber-300/20 rounded-full blur-sm animate-float" style={{ animationDelay: '16.5s', animationDuration: '12.5s' }} />
+          <div className="absolute top-[90%] left-[88%] w-2 h-2 bg-amber-400/18 rounded-full blur-sm animate-float-slow" style={{ animationDelay: '17s', animationDuration: '13.8s' }} />
+        </div>
+        
+        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-8 md:flex-row md:items-center md:justify-between">
           {/* Текст */}
           <div className="max-w-lg space-y-3 text-center md:text-left">
             <h2 className="text-2xl font-bold leading-tight md:text-3xl lg:text-4xl lg:leading-tight">
@@ -197,9 +401,59 @@ function CandleHero({
   return (
     <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 px-4 py-5 text-white shadow-[0_16px_40px_rgba(15,23,42,0.5)] sm:px-6 sm:py-6 md:px-8 md:py-7">
       {/* Декоративный градиент */}
-      <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5" />
+      <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 via-transparent to-indigo-500/5 z-0" />
       
-      <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-6 md:flex-row md:items-center md:justify-between">
+      {/* Декоративные элементы (звезды, облака, символы, золотые элементы) - аналогично главной странице */}
+      {/* Звездочки */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute top-[5%] left-[5%] w-0.5 h-0.5 bg-white rounded-full opacity-70 animate-twinkle" style={{ animationDelay: '0s', animationDuration: '3s' }} />
+        <div className="absolute top-[8%] left-[12%] w-1 h-1 bg-white rounded-full opacity-80 animate-twinkle" style={{ animationDelay: '0.5s', animationDuration: '4s' }} />
+        <div className="absolute top-[6%] left-[20%] w-0.5 h-0.5 bg-white rounded-full opacity-60 animate-twinkle" style={{ animationDelay: '1s', animationDuration: '3.5s' }} />
+        <div className="absolute top-[10%] left-[28%] w-0.5 h-0.5 bg-white rounded-full opacity-50 animate-twinkle" style={{ animationDelay: '1.5s', animationDuration: '4.5s' }} />
+        <div className="absolute top-[4%] left-[36%] w-0.5 h-0.5 bg-white rounded-full opacity-65 animate-twinkle" style={{ animationDelay: '0.8s', animationDuration: '3.2s' }} />
+        <div className="absolute top-[12%] left-[44%] w-1 h-1 bg-white rounded-full opacity-75 animate-twinkle" style={{ animationDelay: '1.2s', animationDuration: '3.8s' }} />
+        <div className="absolute top-[7%] left-[52%] w-0.5 h-0.5 bg-white rounded-full opacity-55 animate-twinkle" style={{ animationDelay: '0.3s', animationDuration: '4.2s' }} />
+        <div className="absolute top-[9%] left-[60%] w-0.5 h-0.5 bg-white rounded-full opacity-60 animate-twinkle" style={{ animationDelay: '1.8s', animationDuration: '3.6s' }} />
+        <div className="absolute top-[11%] left-[68%] w-0.5 h-0.5 bg-white rounded-full opacity-70 animate-twinkle" style={{ animationDelay: '0.6s', animationDuration: '4s' }} />
+        <div className="absolute top-[5%] left-[76%] w-1 h-1 bg-white rounded-full opacity-65 animate-twinkle" style={{ animationDelay: '0.9s', animationDuration: '3.4s' }} />
+        <div className="absolute top-[8%] left-[84%] w-0.5 h-0.5 bg-white rounded-full opacity-75 animate-twinkle" style={{ animationDelay: '1.4s', animationDuration: '3.9s' }} />
+        <div className="absolute top-[13%] right-[10%] w-0.5 h-0.5 bg-white rounded-full opacity-55 animate-twinkle" style={{ animationDelay: '0.7s', animationDuration: '4.1s' }} />
+        <div className="absolute top-[6%] right-[5%] w-0.5 h-0.5 bg-white rounded-full opacity-70 animate-twinkle" style={{ animationDelay: '1.1s', animationDuration: '3.7s' }} />
+        <div className="absolute top-[10%] right-[2%] w-1 h-1 bg-white rounded-full opacity-60 animate-twinkle" style={{ animationDelay: '0.4s', animationDuration: '4.3s' }} />
+        <div className="absolute top-[3%] left-[92%] w-0.5 h-0.5 bg-white rounded-full opacity-65 animate-twinkle" style={{ animationDelay: '1.6s', animationDuration: '3.8s' }} />
+        <div className="absolute top-[22%] left-[3%] w-0.5 h-0.5 bg-white/40 rounded-full animate-twinkle" style={{ animationDelay: '2s', animationDuration: '3.3s' }} />
+        <div className="absolute top-[25%] left-[8%] w-0.5 h-0.5 bg-white/50 rounded-full animate-twinkle" style={{ animationDelay: '2.5s', animationDuration: '3.7s' }} />
+        <div className="absolute top-[50%] left-[50%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '4.2s', animationDuration: '4.7s' }} />
+        <div className="absolute top-[75%] left-[50%] w-0.5 h-0.5 bg-white/25 rounded-full animate-twinkle" style={{ animationDelay: '7.2s', animationDuration: '5.5s' }} />
+        <div className="absolute top-[95%] left-[50%] w-0.5 h-0.5 bg-white/30 rounded-full animate-twinkle" style={{ animationDelay: '12s', animationDuration: '4.3s' }} />
+      </div>
+      
+      {/* Облака */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-[2%] left-0 w-40 h-20 bg-sky-200/15 dark:bg-sky-300/8 rounded-full blur-2xl animate-float-slow" style={{ animationDelay: '0s', animationDuration: '20s' }} />
+        <div className="absolute top-[5%] right-[5%] w-32 h-16 bg-sky-200/20 dark:bg-sky-300/12 rounded-full blur-xl animate-float" style={{ animationDelay: '2s', animationDuration: '15s' }} />
+        <div className="absolute top-[50%] left-[30%] w-28 h-14 bg-sky-200/10 dark:bg-sky-300/5 rounded-full blur-2xl animate-float-slow" style={{ animationDelay: '14s', animationDuration: '20s' }} />
+        <div className="absolute top-[85%] left-[45%] w-32 h-16 bg-sky-200/12 dark:bg-sky-300/6 rounded-full blur-2xl animate-float-slow" style={{ animationDelay: '16s', animationDuration: '19s' }} />
+      </div>
+      
+      {/* Астрологические символы */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.08] z-0">
+        <div className="absolute top-[8%] left-[12%] text-sky-200/40 text-xs font-light" style={{ fontFamily: 'serif' }}>♈</div>
+        <div className="absolute top-[6%] left-[28%] text-sky-200/40 text-xs font-light" style={{ fontFamily: 'serif' }}>♉</div>
+        <div className="absolute top-[10%] left-[48%] text-sky-200/40 text-xs font-light" style={{ fontFamily: 'serif' }}>♊</div>
+        <div className="absolute top-[50%] left-[38%] text-sky-200/30 text-xs font-light" style={{ fontFamily: 'serif' }}>♀</div>
+        <div className="absolute top-[85%] left-[52%] text-sky-200/30 text-xs font-light" style={{ fontFamily: 'serif' }}>♃</div>
+      </div>
+      
+      {/* Золотые элементы */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute top-[12%] left-[8%] w-1.5 h-1.5 bg-amber-300/25 rounded-full blur-sm animate-float" style={{ animationDelay: '5s', animationDuration: '12s' }} />
+        <div className="absolute top-[16%] left-[25%] w-2 h-2 bg-amber-400/20 rounded-full blur-sm animate-float-slow" style={{ animationDelay: '6s', animationDuration: '14s' }} />
+        <div className="absolute top-[50%] left-[32%] w-2 h-2 bg-amber-400/18 rounded-full blur-sm animate-float-slow" style={{ animationDelay: '14.5s', animationDuration: '14.2s' }} />
+        <div className="absolute top-[85%] left-[56%] w-2 h-2 bg-amber-400/18 rounded-full blur-sm animate-float-slow" style={{ animationDelay: '16s', animationDuration: '14.5s' }} />
+      </div>
+      
+      <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-6 md:flex-row md:items-center md:justify-between">
         {/* Текст */}
         <div className="max-w-md space-y-2 text-center md:text-left">
           <h2 className="text-lg font-semibold leading-snug md:text-xl">

@@ -30,6 +30,62 @@ body {
   transform-origin: center bottom;
 }
 
+/* Анимация мерцания звезд */
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.animate-twinkle {
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+/* Анимация плавного движения (облака, золотые элементы) */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.6;
+  }
+  33% {
+    transform: translateY(-10px) translateX(5px);
+    opacity: 0.8;
+  }
+  66% {
+    transform: translateY(-5px) translateX(-5px);
+    opacity: 0.7;
+  }
+}
+
+.animate-float {
+  animation: float 15s ease-in-out infinite;
+}
+
+/* Медленная анимация плавного движения */
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.5;
+  }
+  33% {
+    transform: translateY(-15px) translateX(8px);
+    opacity: 0.7;
+  }
+  66% {
+    transform: translateY(-8px) translateX(-8px);
+    opacity: 0.6;
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 20s ease-in-out infinite;
+}
+
 /* Leaflet стили для popup */
 .leaflet-popup-content-wrapper {
   @apply bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700;
