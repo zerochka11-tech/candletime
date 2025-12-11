@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { DynamicMeta } from '@/components/DynamicMeta';
+import { formatDate } from '@/lib/utils';
 
 type Candle = {
   id: string;
@@ -71,15 +72,6 @@ function getCandleTypeMeta(type: string | null) {
   return CANDLE_TYPE_STYLES[type];
 }
 
-function formatDate(d: Date) {
-  return d
-    .toLocaleDateString('ru-RU', {
-      day: '2-digit',
-      month: '2-digit',
-      year: '2-digit',
-    })
-    .replace(/\//g, '.');
-}
 
 function formatDateTime(d: Date) {
   return d.toLocaleString('ru-RU', {
@@ -88,7 +80,7 @@ function formatDateTime(d: Date) {
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-  });
+  }).replace(/\//g, '.');
 }
 
 function formatRemainingText(expires: Date) {

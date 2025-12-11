@@ -131,7 +131,7 @@ console.log(meta.emoji); // '🕊️'
 
 // Форматирование даты
 const formatted = formatDate(new Date());
-console.log(formatted); // '15.01.25'
+console.log(formatted); // '15.01.2025'
 
 // Форматирование оставшегося времени
 const remaining = formatRemainingTime(new Date(Date.now() + 3600000));

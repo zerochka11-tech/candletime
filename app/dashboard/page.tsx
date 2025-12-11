@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { checkAdminAccess } from '@/lib/admin';
 import { CandleSkeleton } from '@/components/ui/CandleSkeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { formatDate } from '@/lib/utils';
 
 type Candle = {
   id: string;
@@ -71,16 +72,6 @@ function getCandleTypeMeta(type: string | null) {
   return CANDLE_TYPE_STYLES[type];
 }
 
-// Единый формат даты: DD.MM.YY
-function formatDate(d: Date) {
-  return d
-    .toLocaleDateString(undefined, {
-      day: '2-digit',
-      month: '2-digit',
-      year: '2-digit',
-    })
-    .replace(/\//g, '.');
-}
 
 type CandleStatus = 'active' | 'expired' | 'extinguished';
 type Filter = 'all' | CandleStatus;

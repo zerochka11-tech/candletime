@@ -575,7 +575,11 @@ export default function AdminArticlesPage() {
                     {article.published_at && (
                       <span className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
                         <span>📅</span>
-                        <span>{new Date(article.published_at).toLocaleDateString('ru-RU')}</span>
+                        <span>{new Date(article.published_at).toLocaleDateString('ru-RU', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        }).replace(/\//g, '.')}</span>
                       </span>
                     )}
                   </div>
@@ -604,7 +608,11 @@ export default function AdminArticlesPage() {
                     </span>
                     <span className="inline-flex items-center gap-1">
                       <span>📅</span>
-                      <span>{new Date(article.created_at).toLocaleDateString('ru-RU')}</span>
+                      <span>{new Date(article.created_at).toLocaleDateString('ru-RU', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                      }).replace(/\//g, '.')}</span>
                     </span>
                   </div>
                 </div>

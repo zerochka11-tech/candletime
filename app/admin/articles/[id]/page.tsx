@@ -430,7 +430,11 @@ export default function AdminArticlePage() {
                   </span>
                   {article.published_at && (
                     <span className="text-xs text-slate-600 dark:text-slate-400">
-                      📅 {new Date(article.published_at).toLocaleDateString('ru-RU')}
+                      📅 {new Date(article.published_at).toLocaleDateString('ru-RU', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                      }).replace(/\//g, '.')}
                     </span>
                   )}
                   {categories.find((c) => c.id === article.category_id) && (
@@ -764,7 +768,7 @@ export default function AdminArticlePage() {
                       day: '2-digit',
                       month: '2-digit',
                       year: 'numeric',
-                    })}
+                    }).replace(/\//g, '.')}
                   </div>
                 </div>
                 <div className="rounded-lg bg-slate-50 p-2 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
@@ -774,7 +778,7 @@ export default function AdminArticlePage() {
                       day: '2-digit',
                       month: '2-digit',
                       year: 'numeric',
-                    })}
+                    }).replace(/\//g, '.')}
                   </div>
                 </div>
               </div>

@@ -15,22 +15,22 @@ import type { Candle } from '@/lib/types';
 
 describe('lib/utils', () => {
   describe('formatDate', () => {
-    it('форматирует дату в формат DD.MM.YY', () => {
+    it('форматирует дату в формат DD.MM.YYYY', () => {
       const date = new Date('2025-01-15T10:30:00Z');
       const result = formatDate(date);
-      expect(result).toBe('15.01.25');
+      expect(result).toBe('15.01.2025');
     });
 
     it('работает с ISO строками', () => {
       const isoString = '2025-01-15T10:30:00Z';
       const result = formatDate(isoString);
-      expect(result).toBe('15.01.25');
+      expect(result).toBe('15.01.2025');
     });
 
     it('обрабатывает разные даты', () => {
-      expect(formatDate(new Date('2024-12-31'))).toBe('31.12.24');
-      expect(formatDate(new Date('2026-06-01'))).toBe('01.06.26');
-      expect(formatDate(new Date('2025-03-05'))).toBe('05.03.25');
+      expect(formatDate(new Date('2024-12-31'))).toBe('31.12.2024');
+      expect(formatDate(new Date('2026-06-01'))).toBe('01.06.2026');
+      expect(formatDate(new Date('2025-03-05'))).toBe('05.03.2025');
     });
 
     it('заменяет слэши на точки', () => {
@@ -41,11 +41,11 @@ describe('lib/utils', () => {
       expect(result).toContain('.');
     });
 
-    it('работает с разными локалями', () => {
-      // Даже если локаль использует слэши, функция должна заменить их на точки
+    it('использует формат DD.MM.YYYY (4-значный год)', () => {
       const date = new Date('2025-01-15');
       const result = formatDate(date);
-      expect(result).toMatch(/^\d{2}\.\d{2}\.\d{2}$/);
+      // Проверяем формат DD.MM.YYYY
+      expect(result).toMatch(/^\d{2}\.\d{2}\.\d{4}$/);
     });
   });
 

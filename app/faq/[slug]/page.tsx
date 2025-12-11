@@ -359,7 +359,7 @@ export default function ArticlePage() {
                   <span className="inline-flex items-center gap-0.5 sm:gap-1 whitespace-nowrap">
                     <span className="text-[9px] sm:text-[10px]">📅</span>
                     <span className="hidden sm:inline">{formatDate(article.published_at)}</span>
-                    <span className="sm:hidden">{new Date(article.published_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
+                    <span className="sm:hidden">{new Date(article.published_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                   </span>
                 )}
                 {article.reading_time && (
@@ -377,7 +377,7 @@ export default function ArticlePage() {
                     <span className="text-[9px] sm:text-[10px]">🔄</span>
                     <span className="hidden sm:inline">Обновлено </span>
                     <span className="hidden sm:inline">{formatDate(article.updated_at)}</span>
-                    <span className="sm:hidden">{new Date(article.updated_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</span>
+                    <span className="sm:hidden">{new Date(article.updated_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                   </span>
                 )}
               </div>

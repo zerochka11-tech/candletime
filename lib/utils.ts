@@ -78,24 +78,24 @@ export function getStatusLabel(status: CandleStatus): string {
 }
 
 /**
- * Форматирует дату в формат DD.MM.YY
+ * Форматирует дату в формат DD.MM.YYYY
  * 
  * @param date - Дата в формате Date или ISO строки
- * @returns Отформатированная дата в формате DD.MM.YY
+ * @returns Отформатированная дата в формате DD.MM.YYYY
  * 
  * @example
  * ```typescript
  * const formatted = formatDate(new Date('2025-01-15'));
- * // Возвращает: '15.01.25'
+ * // Возвращает: '15.01.2025'
  * ```
  */
 export function formatDate(date: Date | string): string {
   const d = typeof date === 'string' ? new Date(date) : date;
   return d
-    .toLocaleDateString(undefined, {
+    .toLocaleDateString('ru-RU', {
       day: '2-digit',
       month: '2-digit',
-      year: '2-digit',
+      year: 'numeric',
     })
     .replace(/\//g, '.');
 }

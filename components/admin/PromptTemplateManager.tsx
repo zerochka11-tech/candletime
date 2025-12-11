@@ -526,7 +526,11 @@ export default function PromptTemplateManager({
                               </>
                             )}
                             <span>
-                              Создан: {new Date(template.created_at).toLocaleDateString('ru-RU')}
+                              Создан: {new Date(template.created_at).toLocaleDateString('ru-RU', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                              }).replace(/\//g, '.')}
                             </span>
                           </div>
                         </div>

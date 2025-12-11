@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { CandlesItemList } from '@/components/StructuredDataList';
 import { CandleSkeleton } from '@/components/ui/CandleSkeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { formatDate } from '@/lib/utils';
 
 type Candle = {
   id: string;
@@ -110,16 +111,6 @@ function formatRemainingText(expires: Date) {
   return `Осталось ~${days.toFixed(1)} дн`;
 }
 
-// Единый формат даты: DD.MM.YY (без времени)
-function formatDate(d: Date) {
-  return d
-    .toLocaleDateString(undefined, {
-      day: '2-digit',
-      month: '2-digit',
-      year: '2-digit',
-    })
-    .replace(/\//g, '.');
-}
 
 export default function CandlesPage() {
   const [candles, setCandles] = useState<Candle[]>([]);

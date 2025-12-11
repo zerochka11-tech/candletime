@@ -539,7 +539,7 @@ export default function FAQPage() {
                       <span className="inline-flex items-center gap-1 whitespace-nowrap">
                         <span className="text-xs">📅</span>
                         <span className="hidden sm:inline">{formatDate(article.published_at)}</span>
-                        <span className="sm:hidden">{new Date(article.published_at).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' })}</span>
+                        <span className="sm:hidden">{new Date(article.published_at).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '.')}</span>
                       </span>
                     )}
                     {article.reading_time && (
