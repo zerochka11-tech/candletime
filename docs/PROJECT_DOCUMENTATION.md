@@ -105,7 +105,7 @@ CandleTime — это веб-приложение для зажигания си
 ### Оптимизация производительности
 
 - **Resource Hints** - preconnect и dns-prefetch для ускорения загрузки
-- **Next.js оптимизации** - compress, swcMinify, optimizeCss
+- **Next.js оптимизации** - compress, optimizeCss, optimizePackageImports
 - **Динамическая загрузка** - lazy loading не-критических компонентов
 - **HTTP заголовки** - оптимизация кэширования и безопасности
 
@@ -486,7 +486,7 @@ const isValid = isValidPosition(50);
 В `next.config.ts` настроены оптимизации:
 
 - **compress: true** - включено gzip/brotli сжатие
-- **swcMinify: true** - минификация через SWC
+- **SWC минификация** - используется по умолчанию в Next.js 16 (опция swcMinify удалена)
 - **optimizeCss: true** - оптимизация CSS
 - **optimizePackageImports** - tree-shaking для:
   - `lucide-react`

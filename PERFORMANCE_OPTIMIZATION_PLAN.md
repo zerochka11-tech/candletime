@@ -188,11 +188,10 @@ const nextConfig: NextConfig = {
     ],
   },
   
-  // Оптимизация сборки
-  swcMinify: true,
-  
   // Оптимизация production сборки
   productionBrowserSourceMaps: false,
+  
+  // Примечание: swcMinify удален из Next.js 16, так как SWC используется по умолчанию
 };
 
 export default withNextIntl(nextConfig);
@@ -538,7 +537,7 @@ export async function GET(
   - [x] Добавить headers для DNS prefetch и безопасности
   - [x] Включить экспериментальные оптимизации
   - [x] Настроить оптимизацию изображений
-  - [x] Включить swcMinify
+  - [x] Отключить source maps в production
 
 - [ ] **Использовать dynamic import** для Analytics, YandexMetrika, CookieConsent
   - [ ] Обновить `app/layout.tsx`
