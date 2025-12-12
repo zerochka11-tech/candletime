@@ -7,6 +7,7 @@ import { SiteFooter } from '@/components/SiteFooter';
 import { Analytics } from '@/components/Analytics';
 import { CookieConsent } from '@/components/CookieConsent';
 import { ThemeScript } from '@/components/ThemeScript';
+import { Analytics as VercelAnalytics } from '@vercel/analytics/react';
 import { generateMetadata as generateBaseMetadata, generateOrganizationStructuredData } from '@/lib/seo';
 import '../globals.css';
 
@@ -89,6 +90,7 @@ export default async function LocaleLayout({
       <body className="flex min-h-screen flex-col overflow-x-hidden bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-200">
         <NextIntlClientProvider messages={messages}>
           <Analytics />
+          <VercelAnalytics />
           <SiteHeader />
           <main className="flex-1 mx-auto w-full max-w-5xl px-3 sm:px-4 py-6 sm:py-8 md:py-10">
             {children}

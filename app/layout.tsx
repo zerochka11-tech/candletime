@@ -6,6 +6,7 @@ import { Analytics } from '@/components/Analytics';
 import { YandexMetrika } from '@/components/YandexMetrika';
 import { CookieConsent } from '@/components/CookieConsent';
 import { ThemeScript } from '@/components/ThemeScript';
+import { Analytics as VercelAnalytics } from '@vercel/analytics/react';
 import { generateMetadata as generateBaseMetadata, generateOrganizationStructuredData } from '@/lib/seo';
 
 const baseMetadata = generateBaseMetadata({
@@ -55,6 +56,7 @@ export default function RootLayout({
       <body className="flex min-h-screen flex-col overflow-x-hidden bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-200">
         <Analytics />
         <YandexMetrika />
+        <VercelAnalytics />
         <SiteHeader />
 
         {/* КОНТЕНТ */}
