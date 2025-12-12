@@ -20,9 +20,9 @@ export async function checkAdminAccess(): Promise<{
   error: string | null;
 }> {
   try {
-    // Таймаут для проверки (5 секунд)
+    // Таймаут для проверки (3 секунды - уменьшено для быстрой загрузки)
     const timeoutPromise = new Promise<{ isAdmin: boolean; user: any | null; error: string | null }>((resolve) =>
-      setTimeout(() => resolve({ isAdmin: false, user: null, error: 'Timeout' }), 5000)
+      setTimeout(() => resolve({ isAdmin: false, user: null, error: 'Timeout' }), 3000)
     );
 
     const checkPromise = (async () => {

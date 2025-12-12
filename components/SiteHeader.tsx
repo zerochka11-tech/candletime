@@ -82,11 +82,22 @@ export function SiteHeader() {
 
     const loadUser = async () => {
       try {
-        const { data, error } = await supabase.auth.getUser();
-        if (error || !data.user) {
+        // Таймаут для запроса (3 секунды)
+        const timeoutPromise = new Promise<{ data: { user: null }; error: { message: string } }>((resolve) =>
+          setTimeout(() => resolve({ data: { user: null }, error: { message: 'Timeout' } }), 3000)
+        );
+
+        const userPromise = supabase.auth.getUser();
+        const result = await Promise.race([userPromise, timeoutPromise]);
+        
+        // Проверяем, был ли это таймаут
+        if (result.error && result.error.message === 'Timeout') {
+          console.warn('[SiteHeader] Auth getUser timeout, assuming no user');
+          setUser(null);
+        } else if (result.error || !result.data.user) {
           setUser(null);
         } else {
-          setUser({ email: data.user.email ?? null });
+          setUser({ email: result.data.user.email ?? null });
         }
       } catch (e) {
         console.error('auth getUser error', e);
@@ -98,14 +109,16 @@ export function SiteHeader() {
       }
     };
 
-    loadUser();
-
-    // Проверка прав администратора
-    const checkAdmin = async () => {
-      const { isAdmin: admin } = await checkAdminAccess();
-      setIsAdmin(admin);
-    };
-    checkAdmin();
+    // Загружаем пользователя и проверяем админ-права параллельно
+    Promise.all([
+      loadUser(),
+      // Проверка прав администратора (с таймаутом уже внутри checkAdminAccess)
+      checkAdminAccess().then(({ isAdmin: admin }) => {
+        setIsAdmin(admin);
+      }).catch(() => {
+        setIsAdmin(false);
+      })
+    ]);
 
     // Подписка на изменения авторизации — мгновенно обновляем UI
     const {

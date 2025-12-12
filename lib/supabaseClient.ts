@@ -22,5 +22,21 @@ if (!supabaseUrl || !supabaseAnonKey) {
 // - NEXT_PUBLIC_SUPABASE_ANON_KEY
 export const supabase = createClient(
   supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder-key'
+  supabaseAnonKey || 'placeholder-key',
+  {
+    // Оптимизация для быстрой загрузки
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      flowType: 'pkce',
+    },
+    // Отключаем автоматическое подключение к Realtime
+    // Realtime будет использоваться только при явной подписке через .channel()
+    global: {
+      headers: {
+        'x-client-info': 'candletime-web',
+      },
+    },
+  }
 );
