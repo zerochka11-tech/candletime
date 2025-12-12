@@ -2,7 +2,7 @@
 import '@testing-library/jest-dom'
 
 // Мокаем переменные окружения
-process.env.NEXT_PUBLIC_SITE_URL = 'http://localhost:3000'
+process.env.NEXT_PUBLIC_SITE_URL = 'https://candletime.ru'
 
 // Мокаем window.matchMedia для тестов (используется в useTheme)
 Object.defineProperty(window, 'matchMedia', {

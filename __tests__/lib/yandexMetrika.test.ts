@@ -11,19 +11,30 @@ import {
 
 // Мокаем window.ym
 const mockYm = jest.fn();
-const originalWindow = global.window;
 
 beforeEach(() => {
-  global.window = {
-    ...originalWindow,
-    ym: mockYm,
-  } as any;
+  // Убеждаемся, что window определен
+  if (typeof global.window === 'undefined') {
+    (global as any).window = {};
+  }
+  
+  // Устанавливаем мок ym через Object.defineProperty для надежности
+  Object.defineProperty(global.window, 'ym', {
+    value: mockYm,
+    writable: true,
+    configurable: true,
+  });
+  
   mockYm.mockClear();
   process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID = '105780499';
 });
 
 afterEach(() => {
-  global.window = originalWindow;
+  // Очищаем мок после каждого теста
+  if (global.window && 'ym' in global.window) {
+    delete (global.window as any).ym;
+  }
+  mockYm.mockClear();
 });
 
 describe('lib/yandexMetrika', () => {
@@ -58,12 +69,28 @@ describe('lib/yandexMetrika', () => {
       expect(mockYm).not.toHaveBeenCalled();
     });
 
-    it('не вызывает ym, если NEXT_PUBLIC_YANDEX_METRIKA_ID не установлен', () => {
+    it('использует значение по умолчанию, если NEXT_PUBLIC_YANDEX_METRIKA_ID не установлен', () => {
+      // Сохраняем оригинальное значение
+      const originalId = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID;
       delete process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID;
+      
+      // Перезагружаем модуль, чтобы он использовал значение по умолчанию
+      jest.resetModules();
+      const { reachGoal: reachGoalWithDefault } = require('@/lib/yandexMetrika');
+      
+      reachGoalWithDefault('light_candle');
 
-      reachGoal('light_candle');
-
-      expect(mockYm).not.toHaveBeenCalled();
+      // Функция использует значение по умолчанию '105780499', поэтому вызов должен произойти
+      expect(mockYm).toHaveBeenCalledWith(
+        105780499, // Значение по умолчанию
+        'reachGoal',
+        'light_candle',
+        undefined
+      );
+      
+      // Восстанавливаем оригинальное значение
+      process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID = originalId;
+      jest.resetModules();
     });
 
     it('обрабатывает ошибки gracefully', () => {

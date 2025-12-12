@@ -38,6 +38,13 @@ export default function RootLayout({
     <html lang="ru" suppressHydrationWarning>
       <head>
         <ThemeScript />
+        
+        {/* Resource Hints для оптимизации загрузки */}
+        <link rel="preconnect" href="https://candletime.ru" />
+        <link rel="preconnect" href="https://vercel.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://mc.yandex.ru" />
+        
         <meta name="google-site-verification" content="3vjdPzwkJwKsBjdNwjtKg2-qf31TK6Ymv7RMkjp0kTQ" />
         <meta name="yandex-verification" content="c1fb551ad90d3556" />
         <script

@@ -336,7 +336,9 @@ describe('lib/promptTemplates', () => {
       });
 
       expect(vars.language).toBe('en');
-      expect(vars.ctaSection).toContain('calm');
+      // Проверяем, что ctaSection содержит описание типа свечи (не просто "calm", а полное описание)
+      expect(vars.ctaSection.toLowerCase()).toContain('calm');
+      expect(vars.ctaSection).toContain('Calm - for peace and harmony');
     });
 
     it('добавляет categoryName, если указано', () => {

@@ -15,6 +15,14 @@ let generateHowToStructuredData: any;
 let generateMapStructuredData: any;
 
 beforeAll(async () => {
+  // Убеждаемся, что переменная окружения установлена перед импортом модуля
+  if (!process.env.NEXT_PUBLIC_SITE_URL) {
+    process.env.NEXT_PUBLIC_SITE_URL = 'https://candletime.ru';
+  }
+  
+  // Сбрасываем кэш модулей для перезагрузки с правильной переменной окружения
+  jest.resetModules();
+  
   const seoModule = await import('@/lib/seo');
   generateMetadata = seoModule.generateMetadata;
   generateHomePageStructuredData = seoModule.generateHomePageStructuredData;
