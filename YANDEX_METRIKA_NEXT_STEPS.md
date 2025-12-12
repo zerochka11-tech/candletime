@@ -196,7 +196,7 @@ reachGoal(YandexMetrikaGoals.SHARE_CANDLE)
 
 Теперь, когда аналитика настроена, можно переходить к:
 
-1. **Контент-маркетингу** (см. `MARKETING_PROMOTION_PLAN.md`)
+1. **Контент-маркетингу** (см. `MARKETING_PLAN_PROFESSIONAL.md`)
    - Создание Telegram канала
    - Создание VK группы
    - Подготовка первых постов
