@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { Analytics as VercelAnalytics } from '@vercel/analytics/next';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { Analytics } from '@/components/Analytics';
@@ -63,6 +64,7 @@ export default function RootLayout({
         </main>
         <SiteFooter />
         <CookieConsent />
+        <VercelAnalytics />
       </body>
     </html>
   );
