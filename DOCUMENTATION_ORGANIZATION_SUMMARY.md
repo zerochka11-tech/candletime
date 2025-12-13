@@ -184,12 +184,8 @@ docs/
 │   ├── ADMIN_GUARD_TROUBLESHOOTING.md
 │   └── ADMIN_ACCESS_SERVER_SIDE.md
 │
-├── marketing/                         # Маркетинг (5 файлов)
-│   ├── MARKETING_PLAN.md
-│   ├── MARKETING_PLAN_PROFESSIONAL.md
-│   ├── MARKETING_QUICK_START.md
-│   ├── MARKETING_PROMOTION.md
-│   └── TELEGRAM_CHANNEL.md
+├── marketing/                         # Маркетинг (1 файл)
+│   └── MARKETING_PLAN_PROFESSIONAL.md
 │
 ├── legal/                             # Юридические вопросы (1 файл)
 │   └── GDPR_PRIVACY.md

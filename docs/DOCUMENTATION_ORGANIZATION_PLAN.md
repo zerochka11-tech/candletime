@@ -91,10 +91,7 @@
 - Все файлы с `FIX`, `TROUBLESHOOTING`, `RESOLVE` в названии
 
 ### 13. Маркетинг (marketing/)
-- `MARKETING_PLAN.md` - Основной план
-- `MARKETING_PLAN_PROFESSIONAL.md` - Профессиональный план (объединить)
-- `MARKETING_PROMOTION_PLAN.md` - План продвижения (объединить)
-- `MARKETING_QUICK_START.md` - Быстрый старт
+- `MARKETING_PLAN_PROFESSIONAL.md` - Полный план продвижения проекта (единственный файл маркетинговой документации)
 
 ### 14. UI (ui/)
 - `HERO_DECORATIVE_ELEMENTS.md` - Элементы HERO
