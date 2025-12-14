@@ -23,6 +23,15 @@ export function SiteFooter() {
             >
               📱 Telegram
             </a>
+            <a
+              href="https://vk.com/candletimeproject"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg px-2 py-0.5 text-[11px] font-medium text-slate-700 dark:text-slate-300 transition-all duration-300 hover:-translate-y-0.5 hover:text-slate-900 dark:hover:text-slate-100 hover:shadow-sm sm:px-2.5 sm:py-1 sm:text-xs"
+              title="VK группа CandleTime"
+            >
+              VK
+            </a>
             <Link
               href="/privacy"
               className="rounded-lg px-2 py-0.5 text-[11px] font-medium text-slate-700 dark:text-slate-300 transition-all duration-300 hover:-translate-y-0.5 hover:text-slate-900 dark:hover:text-slate-100 hover:shadow-sm sm:px-2.5 sm:py-1 sm:text-xs"
