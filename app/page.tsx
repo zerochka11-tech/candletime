@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { HomePageStructuredData } from '@/components/StructuredData';
+import Snowflakes from '@/components/Snowflakes';
+import { useChristmasTheme } from '@/hooks/useChristmasTheme';
+import Wish2026FloatingButton from '@/components/Wish2026FloatingButton';
 
 // Типы свечей для статистики
 const CANDLE_TYPES = [
@@ -24,6 +27,7 @@ export default function HomePage() {
     count: number;
   }>({ id: null, count: 0 });
   const [statsLoading, setStatsLoading] = useState(true);
+  const christmasThemeEnabled = useChristmasTheme();
 
   useEffect(() => {
     const loadStats = async () => {
@@ -111,6 +115,18 @@ export default function HomePage() {
   return (
     // общий вертикальный стек секций
     <>
+      {christmasThemeEnabled && (
+        <Snowflakes 
+          count={35}
+          speed={0.8}
+          minSize={0.8}
+          maxSize={2.5}
+          color="rgba(255, 255, 255, 0.6)"
+          wind={true}
+          rotation={true}
+          zIndex={1}
+        />
+      )}
       <HomePageStructuredData />
       <div className="flex flex-col gap-6 md:gap-8">
       {/* HERO */}
@@ -374,6 +390,36 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Новогодний блок о 2025 годе - компактный и в стиле проекта */}
+      {christmasThemeEnabled && (
+        <section className="relative overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-800 p-4 sm:p-6 shadow-md">
+          {/* Декоративный градиент */}
+          <div className="absolute inset-0 bg-gradient-to-r from-rose-500/5 via-transparent to-emerald-500/5 dark:from-rose-500/10 dark:to-emerald-500/10" />
+          
+          <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex-1 space-y-2">
+              <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100">
+                Загадай желание на 2026 год
+              </h2>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Запиши своё намерение на новый год и зажги свечу. Вернись к ней позже, 
+                когда захочешь вспомнить о важном или проверить, как идут дела.
+              </p>
+            </div>
+            <Link
+              href="/wish-2026"
+              className="group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 sm:px-6 py-2.5 sm:py-3 text-sm font-medium text-slate-700 dark:text-slate-300 shadow-md transition-all hover:-translate-y-0.5 hover:border-slate-400 dark:hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-lg min-h-[44px] sm:min-h-0"
+            >
+              <span>✨</span>
+              <span>Загадать желание</span>
+              <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* STATS: 3 блока над "What is this?" */}
       <section className="grid gap-3 sm:gap-4 md:grid-cols-3">
@@ -658,6 +704,7 @@ export default function HomePage() {
         </div>
       </section>
       </div>
+      <Wish2026FloatingButton />
     </>
   );
 }

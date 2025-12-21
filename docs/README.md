@@ -27,6 +27,7 @@
 - [Настройка Gemini API](./setup/GEMINI_SETUP.md) - Интеграция с Gemini для генерации статей
 
 #### SEO и аналитика
+- [Комплексная SEO стратегия](./seo/SEO_STRATEGY_COMPREHENSIVE.md) - **Главная SEO стратегия** (рекомендуется начать с этого)
 - [Руководство по SEO](./seo/SEO_SETUP.md) - Базовые настройки SEO
 - [План улучшения SEO](./seo/SEO_IMPROVEMENT_PLAN.md) - План улучшения SEO
 - [Комплексный план SEO](./seo/SEO_IMPROVEMENT_PLAN_COMPREHENSIVE.md) - Комплексный план улучшения SEO
@@ -53,6 +54,7 @@
 - [Шаблоны промптов FAQ](./features/PROMPT_TEMPLATE_FAQ.md) - FAQ шаблон
 - [Шаблоны промптов News](./features/PROMPT_TEMPLATE_NEWS.md) - Новостной шаблон
 - [Использование шаблонов](./features/PROMPT_TEMPLATE_USAGE.md) - Инструкции по использованию
+- [Рождественская тема](./features/CHRISTMAS_THEME.md) - Новогоднее оформление и загадывание желаний
 
 #### UI/UX
 - [Декоративные элементы HERO](./ui/HERO_DECORATIVE_ELEMENTS.md) - Элементы главной страницы
@@ -83,6 +85,7 @@
 #### Креативные идеи
 - [Креативные идеи](./ideas/CREATIVE_IDEAS.md) - Идеи для развития
 - [Новые идеи](./ideas/NEW_CREATIVE_IDEAS.md) - Дополнительные идеи
+- [Идеи для Нового года](./ideas/NEW_YEAR_IDEAS.md) - Новогодние праздники и события
 
 #### Планы реализации
 - [Реализация подаренных свечей](./implementation/GIFTED_CANDLES.md)
@@ -179,7 +182,7 @@ docs/
 ---
 
 **Последнее обновление:** 2025-01-27
-**Версия документации:** 2.0
+**Версия документации:** 2.1
 
 ---
 

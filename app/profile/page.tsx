@@ -280,20 +280,32 @@ export default function ProfilePage() {
                   Админ-панель
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                  Управление контентом и статьями
+                  Управление сайтом и контентом
                 </p>
               </div>
             </div>
-            <Link
-              href="/admin/articles"
-              className="group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border-2 border-amber-400 dark:border-amber-600 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-800/20 px-4 sm:px-6 py-3 sm:py-3.5 text-sm font-semibold text-amber-900 dark:text-amber-100 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-500 dark:hover:border-amber-500 hover:from-amber-200 hover:to-amber-100 dark:hover:from-amber-900/50 dark:hover:to-amber-800/30 hover:shadow-lg min-h-[48px] sm:min-h-0 w-full sm:w-auto"
-            >
-              <span>📝</span>
-              <span>Управление статьями</span>
-              <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                href="/admin/articles"
+                className="group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border-2 border-amber-400 dark:border-amber-600 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-800/20 px-4 sm:px-6 py-3 sm:py-3.5 text-sm font-semibold text-amber-900 dark:text-amber-100 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-500 dark:hover:border-amber-500 hover:from-amber-200 hover:to-amber-100 dark:hover:from-amber-900/50 dark:hover:to-amber-800/30 hover:shadow-lg min-h-[48px] sm:min-h-0 w-full sm:w-auto"
+              >
+                <span>📝</span>
+                <span>Управление статьями</span>
+                <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+              <Link
+                href="/admin/settings"
+                className="group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border-2 border-amber-400 dark:border-amber-600 bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-800/20 px-4 sm:px-6 py-3 sm:py-3.5 text-sm font-semibold text-amber-900 dark:text-amber-100 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-500 dark:hover:border-amber-500 hover:from-amber-200 hover:to-amber-100 dark:hover:from-amber-900/50 dark:hover:to-amber-800/30 hover:shadow-lg min-h-[48px] sm:min-h-0 w-full sm:w-auto"
+              >
+                <span>⚙️</span>
+                <span>Настройки</span>
+                <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
           </div>
         </section>
       )}
